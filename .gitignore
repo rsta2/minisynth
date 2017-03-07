@@ -1,0 +1,12 @@
+*.o
+*.a
+*.elf
+*.lst
+*.img
+*.map
+*.bin
+*.com
+*~
+Config.mk
+.directory
+tmp/
