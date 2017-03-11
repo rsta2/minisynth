@@ -31,16 +31,27 @@ enum TSynthParameter			// the parameters of a patch
 	// VCO
 	LFOVCOWaveform,
 	LFOVCOFrequency,
-	LFOVCOPulseWidth,
 
 	VCOWaveform,
-	VCOPulseWidth,
-	VCOModulationFrequency,
+	VCOModulationVolume,
+
+	// VCF
+	LFOVCFWaveform,
+	LFOVCFFrequency,
+
+	VCFCutoffFrequency,
+	VCFResonance,
+
+	EGVCFAttack,
+	EGVCFDecay,
+	EGVCFSustain,
+	EGVCFRelease,
+
+	VCFModulationVolume,
 
 	// VCA
 	LFOVCAWaveform,
 	LFOVCAFrequency,
-	LFOVCAPulseWidth,
 
 	EGVCAAttack,
 	EGVCADecay,
@@ -70,6 +81,7 @@ public:
 	boolean ParameterDown (TSynthParameter Parameter);	// returns TRUE if value has changed
 	boolean ParameterUp (TSynthParameter Parameter);	// returns TRUE if value has changed
 
+	const char *GetParameterHelp (TSynthParameter Parameter);
 	const char *GetParameterString (TSynthParameter Parameter);
 
 private:

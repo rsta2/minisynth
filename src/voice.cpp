@@ -45,7 +45,8 @@ static const float KeyFrequency[/* MIDI key number */] =
 
 CVoice::CVoice (void)
 :	m_VCO (&m_LFO_VCO),
-	m_VCA (&m_VCO, &m_LFO_VCA, &m_EG_VCA),
+	m_VCF (&m_VCO, &m_LFO_VCF, &m_EG_VCF),
+	m_VCA (&m_VCF, &m_LFO_VCA, &m_EG_VCA),
 	m_ucKeyNumber (0)
 {
 }
@@ -61,16 +62,27 @@ void CVoice::SetPatch (CPatch *pPatch)
 	// VCO
 	m_LFO_VCO.SetWaveform ((TWaveform) pPatch->GetParameter (LFOVCOWaveform));
 	m_LFO_VCO.SetFrequency (pPatch->GetParameter (LFOVCOFrequency));
-	m_LFO_VCO.SetPulseWidth (pPatch->GetParameter (LFOVCOPulseWidth) / 100.0);
 
 	m_VCO.SetWaveform ((TWaveform) pPatch->GetParameter (VCOWaveform));
-	m_VCO.SetPulseWidth (pPatch->GetParameter (VCOPulseWidth) / 100.0);
-	m_VCO.SetModulationFrequency (pPatch->GetParameter (VCOModulationFrequency));
+	m_VCO.SetModulationVolume (pPatch->GetParameter (VCOModulationVolume) / 100.0);
+
+	// VCF
+	m_LFO_VCF.SetWaveform ((TWaveform) pPatch->GetParameter (LFOVCFWaveform));
+	m_LFO_VCF.SetFrequency (pPatch->GetParameter (LFOVCFFrequency));
+
+	m_VCF.SetCutoffFrequency (pPatch->GetParameter (VCFCutoffFrequency));
+	m_VCF.SetResonance (pPatch->GetParameter (VCFResonance));
+
+	m_EG_VCF.SetAttack (pPatch->GetParameter (EGVCFAttack));
+	m_EG_VCF.SetDecay (pPatch->GetParameter (EGVCFDecay));
+	m_EG_VCF.SetSustain (pPatch->GetParameter (EGVCFSustain) / 100.0);
+	m_EG_VCF.SetRelease (pPatch->GetParameter (EGVCFRelease));
+
+	m_VCF.SetModulationVolume (pPatch->GetParameter (VCFModulationVolume) / 100.0);
 
 	// VCA
 	m_LFO_VCA.SetWaveform ((TWaveform) pPatch->GetParameter (LFOVCAWaveform));
 	m_LFO_VCA.SetFrequency (pPatch->GetParameter (LFOVCAFrequency));
-	m_LFO_VCA.SetPulseWidth (pPatch->GetParameter (LFOVCAPulseWidth) / 100.0);
 
 	m_EG_VCA.SetAttack (pPatch->GetParameter (EGVCAAttack));
 	m_EG_VCA.SetDecay (pPatch->GetParameter (EGVCADecay));
@@ -91,12 +103,14 @@ void CVoice::NoteOn (u8 ucKeyNumber, u8 ucVelocity)
 
 		assert (1 <= ucVelocity && ucVelocity <= 127);
 		float fVelocityLevel = ucVelocity / 127.0;
+		m_EG_VCF.NoteOn (fVelocityLevel);
 		m_EG_VCA.NoteOn (fVelocityLevel);
 	}
 }
 
 void CVoice::NoteOff (void)
 {
+	m_EG_VCF.NoteOff ();
 	m_EG_VCA.NoteOff ();
 
 	m_ucKeyNumber = 0;
@@ -133,6 +147,11 @@ void CVoice::NextSample (void)
 	// VCO
 	m_LFO_VCO.NextSample ();
 	m_VCO.NextSample ();
+
+	// VCF
+	m_LFO_VCF.NextSample ();
+	m_EG_VCF.NextSample ();
+	m_VCF.NextSample ();
 
 	// VCA
 	m_LFO_VCA.NextSample ();

@@ -53,7 +53,7 @@ void CGUIParameter::Create (unsigned nTextboxID, unsigned nButtonDownID, unsigne
 
 	UG_TextboxSetFont (m_pWindow, m_nTextboxID, &FONT_8X14);
 
-	Update ();
+	Update (FALSE);
 
 	UG_TextboxSetBackColor (m_pWindow, m_nTextboxID, C_LIGHT_GRAY);
 	UG_TextboxSetForeColor (m_pWindow, m_nTextboxID, C_BLACK);
@@ -65,16 +65,25 @@ void CGUIParameter::Create (unsigned nTextboxID, unsigned nButtonDownID, unsigne
 	UG_ButtonSetText (m_pWindow, m_nButtonUpID, ">");
 }
 
-void CGUIParameter::Update (void)
+void CGUIParameter::Update (boolean bShowHelp)
 {
 	assert (m_pWindow != 0);
 	assert (m_pConfig != 0);
 
-	UG_TextboxSetText (m_pWindow, m_nTextboxID,
-			   (char *) m_pConfig->GetActivePatch ()->GetParameterString (m_Parameter));
+	const char *pText;
+	if (bShowHelp)
+	{
+		pText = m_pConfig->GetActivePatch ()->GetParameterHelp (m_Parameter);
+	}
+	else
+	{
+		pText = m_pConfig->GetActivePatch ()->GetParameterString (m_Parameter);
+	}
+
+	UG_TextboxSetText (m_pWindow, m_nTextboxID, (char *) pText);
 }
 
-boolean CGUIParameter::ButtonPressed (unsigned nButtonID)
+boolean CGUIParameter::ButtonPressed (unsigned nButtonID, boolean bShowHelp)
 {
 	assert (m_pConfig != 0);
 
@@ -90,7 +99,7 @@ boolean CGUIParameter::ButtonPressed (unsigned nButtonID)
 
 	if (bUpdated)
 	{
-		Update ();
+		Update (bShowHelp);
 	}
 
 	return bUpdated;

@@ -29,32 +29,44 @@ struct
 	unsigned	 nMaximum;
 	unsigned	 nStep;
 	unsigned	 nDefault;
+	const char	*pHelp;
 }
-ParameterList[] =
+ParameterList[] =		// must match TSynthParameter
 {
 	// VCO
-	{"LFOVCOWaveform", ParameterWaveform, WaveformSine, WaveformPulse, 1, WaveformSine},
-	{"LFOVCOFrequency", ParameterFrequency, 1, 35, 1, 20},
-	{"LFOVCOPulseWidth", ParameterPercent, 10, 50, 10, 50},
+	{"LFOVCOWaveform", ParameterWaveform, WaveformSine, WaveformUnknown-1, 1, WaveformSine, "Wave"},
+	{"LFOVCOFrequency", ParameterFrequency, 1, 35, 1, 20, "Rate"},
 
-	{"VCOWaveform", ParameterWaveform, WaveformSine, WaveformPulse, 1, WaveformSquare},
-	{"VCOPulseWidth", ParameterPercent, 10, 50, 10, 50},
-	{"VCOModulationFrequency", ParameterFrequency, 0, 10, 1, 0},
+	{"VCOWaveform", ParameterWaveform, WaveformSine, WaveformUnknown-1, 1, WaveformSquare, "Wave"},
+	{"VCOModulationVolume", ParameterPercent, 0, 100, 10, 0, "Volume"},
+
+	// VCF
+	{"LFOVCFWaveform", ParameterWaveform, WaveformSine, WaveformUnknown-1, 1, WaveformSine, "Wave"},
+	{"LFOVCFFrequency", ParameterFrequency, 1, 35, 1, 20, "Rate"},
+
+	{"VCFCutoffFrequency", ParameterPercent, 10, 100, 2, 80, "Cutoff"},
+	{"VCFCutoffResonance", ParameterPercent, 0, 100, 2, 50, "Resonance"},
+
+	{"EGVCFAttack", ParameterTime, 0, 2000, 50, 0, "Attack"},
+	{"EGVCFDecay", ParameterTime, 100, 10000, 100, 4000, "Decay"},
+	{"EGVCFSustain", ParameterPercent, 0, 100, 10, 100, "Sustain"},
+	{"EGVCFRelease", ParameterTime, 0, 5000, 100, 1000, "Release"},
+
+	{"VCFModulationVolume", ParameterPercent, 0, 90, 5, 0, "Volume"},
 
 	// VCA
-	{"LFOVCAWaveform", ParameterWaveform, WaveformSine, WaveformPulse, 1, WaveformSine},
-	{"LFOVCAFrequency", ParameterFrequency, 1, 35, 1, 5},
-	{"LFOVCAPulseWidth", ParameterPercent, 10, 50, 10, 50},
+	{"LFOVCAWaveform", ParameterWaveform, WaveformSine, WaveformUnknown-1, 1, WaveformSine, "Wave"},
+	{"LFOVCAFrequency", ParameterFrequency, 1, 35, 1, 5, "Rate"},
 
-	{"EGVCAAttack", ParameterTime, 0, 2000, 50, 100},
-	{"EGVCADecay", ParameterTime, 100, 10000, 100, 4000},
-	{"EGVCASustain", ParameterPercent, 0, 100, 10, 100},
-	{"EGVCARelease", ParameterTime, 0, 5000, 100, 100},
+	{"EGVCAAttack", ParameterTime, 0, 2000, 50, 100, "Attack"},
+	{"EGVCADecay", ParameterTime, 100, 10000, 100, 4000, "Decay"},
+	{"EGVCASustain", ParameterPercent, 0, 100, 10, 100, "Sustain"},
+	{"EGVCARelease", ParameterTime, 0, 5000, 100, 100, "Release"},
 
-	{"VCAModulationVolume", ParameterPercent, 0, 90, 10, 0},
+	{"VCAModulationVolume", ParameterPercent, 0, 90, 10, 0, "Volume"},
 
 	// Synth
-	{"SynthVolume", ParameterPercent, 0, 100, 10, 50}
+	{"SynthVolume", ParameterPercent, 0, 100, 10, 50, "Volume"}
 };
 
 CPatch::CPatch (const char *pFileName, CFATFileSystem *pFileSystem)
@@ -67,7 +79,8 @@ CPatch::CPatch (const char *pFileName, CFATFileSystem *pFileSystem)
 						  ParameterList[i].nMinimum,
 						  ParameterList[i].nMaximum,
 						  ParameterList[i].nStep,
-						  ParameterList[i].nDefault);
+						  ParameterList[i].nDefault,
+						  ParameterList[i].pHelp);
 		assert (m_pParameter[i] != 0);
 	}
 }
@@ -134,6 +147,12 @@ boolean CPatch::ParameterUp (TSynthParameter Parameter)
 {
 	assert (m_pParameter[Parameter] != 0);
 	return m_pParameter[Parameter]->Up ();
+}
+
+const char *CPatch::GetParameterHelp (TSynthParameter Parameter)
+{
+	assert (m_pParameter[Parameter] != 0);
+	return m_pParameter[Parameter]->GetHelp ();
 }
 
 const char *CPatch::GetParameterString (TSynthParameter Parameter)

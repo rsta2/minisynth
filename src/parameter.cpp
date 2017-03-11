@@ -21,19 +21,22 @@
 #include <assert.h>
 
 CParameter::CParameter (const char *pName, TParameterType Type,
-			unsigned nMinimum, unsigned nMaximum, unsigned nStep, unsigned nDefault)
+			unsigned nMinimum, unsigned nMaximum, unsigned nStep, unsigned nDefault,
+			const char *pHelp)
 :	m_pName (pName),
 	m_Type (Type),
 	m_nMinimum (nMinimum),
 	m_nMaximum (nMaximum),
 	m_nStep (nStep),
 	m_nDefault (nDefault),
+	m_pHelp (pHelp),
 	m_nValue (nDefault)
 {
 	assert (m_pName != 0);
 	assert (m_Type < ParameterTypeUnknown);
 	assert (m_nMinimum < m_nMaximum);
 	assert (m_nMinimum <= m_nDefault && m_nDefault <= m_nMaximum);
+	assert (m_pHelp != 0);
 }
 
 CParameter::~CParameter (void)
@@ -48,6 +51,11 @@ const char *CParameter::GetName (void)
 unsigned CParameter::GetDefault (void) const
 {
 	return m_nDefault;
+}
+
+const char *CParameter::GetHelp (void)
+{
+	return m_pHelp;
 }
 
 unsigned CParameter::Get (void) const
@@ -97,7 +105,8 @@ const char *CParameter::GetString (void)
 		"Square",
 		"Sawtooth",
 		"Triangle",
-		"Pulse"
+		"Pulse12",
+		"Pulse25"
 	};
 
 	switch (m_Type)

@@ -25,6 +25,7 @@
 #include <ugui/uguicpp.h>
 #include "patch.h"
 #include "synthconfig.h"
+#include <circle/types.h>
 
 class CGUIParameter
 {
@@ -35,9 +36,9 @@ public:
 	void Create (unsigned nTextboxID, unsigned nButtonDownID, unsigned nButtonUpID,
 		     unsigned nPosX, unsigned nPosY);
 
-	void Update (void);
+	void Update (boolean bShowHelp);
 
-	boolean ButtonPressed (unsigned nButtonID);
+	boolean ButtonPressed (unsigned nButtonID, boolean bShowHelp);
 
 private:
 	UG_WINDOW *m_pWindow;

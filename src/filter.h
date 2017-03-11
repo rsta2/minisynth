@@ -1,7 +1,7 @@
 //
-// oscillator.h
+// filter.h
 //
-// General purpose oscillator
+// Low-pass filter
 //
 // MiniSynth Pi - A virtual analogue synthesizer for Raspberry Pi
 // Copyright (C) 2017  R. Stange <rsta2@o2online.de>
@@ -19,47 +19,49 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
-#ifndef _oscillator_h
-#define _oscillator_h
+#ifndef _filter_h
+#define _filter_h
 
 #include "synthmodule.h"
 
-enum TWaveform
-{
-	WaveformSine,
-	WaveformSquare,
-	WaveformSawtooth,
-	WaveformTriangle,
-	WaveformPulse12,
-	WaveformPulse25,
-	WaveformUnknown
-};
-
-class COscillator : public CSynthModule
+class CFilter : public CSynthModule
 {
 public:
-	COscillator (CSynthModule *pModulator = 0);
-	~COscillator (void);
+	CFilter (CSynthModule *pInput, CSynthModule *pModulator, CSynthModule *pEnvelope);
+	~CFilter (void);
 
-	void SetWaveform (TWaveform Waveform);
-	void SetFrequency (float fFrequency);			// in Hz
-	void SetModulationVolume (float fVolume);		// [0.0, 1.0]
+	void SetCutoffFrequency (unsigned nPercent);
+	void SetResonance (unsigned nPercent);
+	void SetModulationVolume (float fVolume);	// [0.0, 1.0]
 
 	void NextSample (void);
-	float GetOutputLevel (void) const;			// returns [-1.0, 1.0]
+	float GetOutputLevel (void) const;		// returns [-1.0, 1.0]
 
 private:
-	CSynthModule *m_pModulator;
+	void CalculateCoefficients (float fCutoffFrequency);
 
-	TWaveform m_Waveform;
-	float m_fFrequency;
+private:
+	CSynthModule *m_pInput;
+	CSynthModule *m_pModulator;
+	CSynthModule *m_pEnvelope;
+
+	float m_fCutoffFrequency;
+	float m_fResonance;
 	float m_fModulationVolume;
 
-	unsigned m_nSampleCount;
+	float m_Q;
 
-	float m_fOutputLevel;
+	float m_A0;
+	float m_A1;
+	float m_A2;
+	float m_B0_B2;
+	float m_B1;
 
-	static float s_SineTable[];
+	float m_X1;
+	float m_X2;
+	float m_Y0;
+	float m_Y1;
+	float m_Y2;
 };
 
 #endif

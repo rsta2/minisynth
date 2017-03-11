@@ -24,6 +24,7 @@
 
 #include "oscillator.h"
 #include "envelopegenerator.h"
+#include "filter.h"
 #include "amplifier.h"
 #include "patch.h"
 #include <circle/types.h>
@@ -57,6 +58,11 @@ private:
 	// VCO
 	COscillator m_LFO_VCO;
 	COscillator m_VCO;
+
+	// VCF
+	COscillator m_LFO_VCF;
+	CEnvelopeGenerator m_EG_VCF;
+	CFilter m_VCF;
 
 	// VCA
 	COscillator m_LFO_VCA;

@@ -38,11 +38,13 @@ class CParameter
 {
 public:
 	CParameter (const char *pName, TParameterType Type,
-		    unsigned nMinimum, unsigned nMaximum, unsigned nStep, unsigned nDefault);
+		    unsigned nMinimum, unsigned nMaximum, unsigned nStep, unsigned nDefault,
+		    const char *pHelp);
 	~CParameter (void);
 
 	const char *GetName (void);
 	unsigned GetDefault (void) const;
+	const char *GetHelp (void);
 
 	unsigned Get (void) const;
 	void Set (unsigned nValue);
@@ -59,6 +61,7 @@ private:
 	unsigned m_nMaximum;
 	unsigned m_nStep;
 	unsigned m_nDefault;
+	const char *m_pHelp;
 
 	unsigned m_nValue;
 

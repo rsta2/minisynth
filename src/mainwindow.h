@@ -24,6 +24,7 @@
 #include "minisynth.h"
 #include "synthconfig.h"
 #include "guiparameter.h"
+#include <circle/types.h>
 
 class CMainWindow
 {
@@ -52,6 +53,11 @@ private:
 	UG_TEXTBOX m_Textbox7;
 	UG_TEXTBOX m_Textbox8;
 	UG_TEXTBOX m_Textbox9;
+	UG_TEXTBOX m_Textbox10;
+	UG_TEXTBOX m_Textbox11;
+	UG_TEXTBOX m_Textbox12;
+	UG_TEXTBOX m_Textbox13;
+	UG_TEXTBOX m_Textbox14;
 
 	UG_BUTTON m_Button1;
 	UG_BUTTON m_Button2;
@@ -65,16 +71,23 @@ private:
 	UG_BUTTON m_Button10;
 	UG_BUTTON m_Button11;
 	UG_BUTTON m_Button12;
+	UG_BUTTON m_Button13;
 
 	CGUIParameter m_LFOVCOWaveform;				// contains 3 objects each
 	CGUIParameter m_LFOVCOFrequency;
-	CGUIParameter m_LFOVCOPulseWidth;
 	CGUIParameter m_VCOWaveform;
-	CGUIParameter m_VCOPulseWidth;
-	CGUIParameter m_VCOModulationFrequency;
+	CGUIParameter m_VCOModulationVolume;
+	CGUIParameter m_LFOVCFWaveform;
+	CGUIParameter m_LFOVCFFrequency;
+	CGUIParameter m_VCFCutoffFrequency;
+	CGUIParameter m_VCFResonance;
+	CGUIParameter m_EGVCFAttack;
+	CGUIParameter m_EGVCFDecay;
+	CGUIParameter m_EGVCFSustain;
+	CGUIParameter m_EGVCFRelease;
+	CGUIParameter m_VCFModulationVolume;
 	CGUIParameter m_LFOVCAWaveform;
 	CGUIParameter m_LFOVCAFrequency;
-	CGUIParameter m_LFOVCAPulseWidth;
 	CGUIParameter m_EGVCAAttack;
 	CGUIParameter m_EGVCADecay;
 	CGUIParameter m_EGVCASustain;
@@ -82,11 +95,12 @@ private:
 	CGUIParameter m_VCAModulationVolume;
 	CGUIParameter m_SynthVolume;
 
-	static const unsigned s_ObjectCount = 9+12+15*3;	// must match the number of objects above
+	static const unsigned s_ObjectCount = 14+13+21*3;	// must match the number of objects above
 	UG_OBJECT m_ObjectList[s_ObjectCount];
 
 	CPatch *m_pActivePatch;
 
+	boolean m_bShowHelp;
 	UG_COLOR m_ButtonBackColor;
 
 	static CMainWindow *s_pThis;

@@ -8,7 +8,7 @@ MiniSynth Pi
 Overview
 --------
 
-MiniSynth Pi is a virtual analogue polyphonic (8 voices) audio synthesizer, running bare metal on the Raspberry Pi. It is currently under development (including this documentation). The filter module is currently not available yet.
+MiniSynth Pi is a virtual analog polyphonic (8 voices) audio synthesizer, running bare metal on the Raspberry Pi. It is currently under development (including this documentation).
 
 You have to attach an USB PC keyboard to your Raspberry Pi to play on it. USB MIDI class support is planned. The audio signal is available on the 3.5mm headphones jack. Thus Raspberry Pi models without headphones jack (e.g. Raspberry Pi Zero) are not supported. The graphical user interface (GUI) of MiniSynth Pi can be controlled using a standard USB mouse or the official Raspberry Pi touch screen.
 
@@ -22,27 +22,27 @@ Before powering on your Raspberry Pi, the following devices have to be attached:
 * Standard USB mouse (if official touch screen is not used)
 * Headphones or amplifier (to the 3.5mm jack)
 
-The USB devices must not be removed or switched off while MiniSynth Pi is running. USB hot-plugging is not supported.
+The USB devices must not be removed or powered off while MiniSynth Pi is running. USB hot-plugging is not supported.
 
 MiniSynth Pi starts in about four seconds. It is controlled using the following GUI:
 
 	+-----------------------------------------------------------+
-	|  OSCILLATOR      FILTER        AMPLIFIER       PATCHES    |
-	| <  Square  >                 MASTER VOLUME        0       |
-	| <   50 %   >                  <   50 %   >        1       |
-	|                                                   2       |
-	|     LFO                           LFO             3       |
-	| <   Sine   >                  <   Sine   >        4       |
-	| <   50 %   >                  <   50 %   >        5       |
-	| <   20 Hz  >                  <   5 Hz   >        6       |
-	| <   0 Hz   >                  <   0 %    >        7       |
+	|  OSCILLATOR       FILTER       AMPLIFIER       PATCHES    |
+	|     VCO            VCF       MASTER VOLUME        0       |
+	| <   Wave   >   <  Cutoff  >   <  Volume  >        1       |
+	|                < Resonance>                       2       |
+	|                                                   3       |
+	|     LFO            LFO            LFO             4       |
+	| <   Wave   >   <   Wave   >   <   Wave   >        5       |
+	| <   Rate   >   <   Rate   >   <   Rate   >        6       |
+	| <  Volume  >   <  Volume  >   <  Volume  >        7       |
 	|                                                   8       |
-	|                                 ENVELOPE          9       |
-	|                               <  100 ms  >                |
-	|                               < 4000 ms  >       LOAD     |
-	|                               <  100 %   >       SAVE     |
-	|                               <  100 ms  >                |
-	|                                              MiniSynth Pi |
+	|                  ENVELOPE       ENVELOPE          9       |
+	|     HELP       <  Attack  >   <  Attack  >                |
+	|                <   Decay  >   <   Decay  >       LOAD     |
+	|                <  Sustain >   <  Sustain >       SAVE     |
+	|                <  Release >   <  Release >                |
+	| MiniSynth Pi                   VIRTUAL ANALOG SYNTHESIZER |
 	+-----------------------------------------------------------+
 
 The GUI allows to select ten different sound configurations (patches 0-9). There is always one (highlighted) active patch, which can be edited using the different parameter controls. The parameters of the active patch can be saved to a configuration file on the SD card (*patchX.txt* where X is the number of the patch). On start-up the configuration of all patches are loaded from these files (if available) or initialized to a default preset.
@@ -63,7 +63,7 @@ The USB PC keyboard allows playing two octaves (keys C3-C5). Its mapping is as f
 	|Key Note|
 	+--------+
 
-Please note that some keys may be different on some keyboards. The physical position of the piano keys is the same on all keyboards. Using this schema you should be able to found them.
+The inscription of the keyboard may vary, but the physical position of the piano keys is the same on all keyboards. Using this scheme you should be able to find them.
 
 MiniSynth Pi can be powered off at any time when the green activity LED is not on.
 

@@ -76,8 +76,7 @@ COscillator::COscillator (CSynthModule *pModulator)
 :	m_pModulator (pModulator),
 	m_Waveform (WaveformSine),
 	m_fFrequency (20.0),
-	m_fPulseWidth (0.5),
-	m_fModulationFrequency (0.0),
+	m_fModulationVolume (0.0),
 	m_nSampleCount (0),
 	m_fOutputLevel (0.0)
 {
@@ -100,16 +99,10 @@ void COscillator::SetFrequency (float fFrequency)
 	m_fFrequency = fFrequency;
 }
 
-void COscillator::SetPulseWidth (float fRatio)
+void COscillator::SetModulationVolume (float fVolume)
 {
-	assert (0.0 <= fRatio && fRatio <= 1.0);
-	m_fPulseWidth = fRatio;
-}
-
-void COscillator::SetModulationFrequency (float fFrequency)
-{
-	assert (fFrequency >= 0.0);
-	m_fModulationFrequency = fFrequency;
+	assert (0.0 <= fVolume && fVolume <= 1.0);
+	m_fModulationVolume = fVolume;
 }
 
 void COscillator::NextSample (void)
@@ -117,7 +110,7 @@ void COscillator::NextSample (void)
 	float fFrequency = m_fFrequency;
 	if (m_pModulator != 0)
 	{
-		fFrequency += m_pModulator->GetOutputLevel () * m_fModulationFrequency;
+		fFrequency += m_pModulator->GetOutputLevel () * m_fModulationVolume * 20.0;
 		if (fFrequency <= 0.0)
 		{
 			return;
@@ -150,9 +143,11 @@ void COscillator::NextSample (void)
 				 : 1.0 - (2.0 * (m_nSampleCount*2-nPeriod)) / nPeriod;
 		break;
 
-	case WaveformPulse:
-		m_fOutputLevel = m_nSampleCount < nPeriod*m_fPulseWidth ? 1.0 : -1.0;
-		break;
+	case WaveformPulse12:
+	case WaveformPulse25: {
+		float fPulseWidth = m_Waveform == WaveformPulse12 ? 0.125 : 0.25;
+		m_fOutputLevel = m_nSampleCount < nPeriod*fPulseWidth ? 1.0 : -1.0;
+		} break;
 
 	default:
 		assert (0);
