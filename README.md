@@ -10,7 +10,7 @@ Overview
 
 MiniSynth Pi is a virtual analog polyphonic (8 voices) audio synthesizer, running bare metal on the Raspberry Pi. It is currently under development (including this documentation).
 
-You have to attach an USB PC keyboard to your Raspberry Pi to play on it. USB MIDI class support is planned. The audio signal is available on the 3.5mm headphones jack. Thus Raspberry Pi models without headphones jack (e.g. Raspberry Pi Zero) are not supported. The graphical user interface (GUI) of MiniSynth Pi can be controlled using a standard USB mouse or the official Raspberry Pi touch screen.
+You have to attach an USB MIDI keyboard (which supports the USB Audio Class MIDI specification) or an USB PC keyboard to your Raspberry Pi to play on it. The audio signal is available on the 3.5mm headphones jack. Thus Raspberry Pi models without headphones jack (e.g. Raspberry Pi Zero) are not supported. The graphical user interface (GUI) of MiniSynth Pi can be controlled using a standard USB mouse or the official Raspberry Pi touch screen.
 
 Using
 -----
@@ -18,9 +18,9 @@ Using
 Before powering on your Raspberry Pi, the following devices have to be attached:
 
 * HDMI display (must support 800x600 pixels mode)
-* USB PC keyboard
+* USB MIDI keyboard or USB PC keyboard
 * Standard USB mouse (if official touch screen is not used)
-* Headphones or amplifier (to the 3.5mm jack)
+* Headphones or amplifier (on the 3.5mm jack)
 
 The USB devices must not be removed or powered off while MiniSynth Pi is running. USB hot-plugging is not supported.
 
@@ -47,16 +47,16 @@ MiniSynth Pi starts in about four seconds. It is controlled using the following 
 
 The GUI allows to select ten different sound configurations (patches 0-9). There is always one (highlighted) active patch, which can be edited using the different parameter controls. The parameters of the active patch can be saved to a configuration file on the SD card (*patchX.txt* where X is the number of the patch). On start-up the configuration of all patches are loaded from these files (if available) or initialized to a default preset.
 
-The USB PC keyboard allows playing two octaves (keys C3-C5). Its mapping is as follows:
+The USB PC keyboard allows playing two octaves (keys C2-C4). Its mapping is as follows:
 
 	   +-----+-----+     +-----+-----+-----+
-	   |2 C#3|3 D#3|     |5 F#3|6 G#3|7 A#3|
+	   |2 C#2|3 D#2|     |5 F#2|6 G#2|7 A#3|
 	+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
-	|Q C3 |W D3 |E E3 |R F3 |T G3 |Y A3 |U B3 |
+	|Q C2 |W D2 |E E2 |R F2 |T G2 |Y A3 |U B3 |
 	+-----+--+--+--+--+--+--+--+--+--+--+--+--+--+
-	         |S C#4|D D#4|     |G F#4|H G#4|J A#4|
+	         |S C#3|D D#3|     |G F#3|H G#3|J A#4|
 	      +--+--+--+--+--+--+--+--+--+--+--+--+--+--+-----+
-	      |Z C4 |X D4 |C E4 |V F4 |B G4 |N A4 |M B4 |, C5 |
+	      |Z C3 |X D3 |C E3 |V F3 |B G3 |N A4 |M B4 |, C4 |
 	      +-----+-----+-----+-----+-----+-----+-----+-----+
 
 	+--------+

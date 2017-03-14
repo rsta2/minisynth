@@ -9,7 +9,7 @@ CIRCLEHOME ?= ../../circle
 CPPFLAGS += -Wno-write-strings
 
 OBJS	= main.o kernel.o minisynth.o \
-	  pckeyboard.o \
+	  midikeyboard.o pckeyboard.o \
 	  voice.o oscillator.o filter.o amplifier.o envelopegenerator.o \
 	  synthconfig.o patch.o parameter.o \
 	  mainwindow.o guiparameter.o \

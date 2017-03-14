@@ -24,7 +24,8 @@
 static const char FromMiniSynth[] = "synth";
 
 CMiniSynthesizer::CMiniSynthesizer (CInterruptSystem *pInterrupt)
-:	CPWMSoundDevice2 (pInterrupt, SAMPLE_RATE),
+:	CPWMSoundBaseDevice (pInterrupt, SAMPLE_RATE),
+	m_MIDIKeyboard (this),
 	m_Keyboard (this),
 	m_nNullLevel ((GetRange ()-1) / 2),
 	m_nVolumeLevel (0.0)
@@ -47,12 +48,19 @@ CMiniSynthesizer::~CMiniSynthesizer (void)
 
 boolean CMiniSynthesizer::Initialize (void)
 {
-	if (!m_Keyboard.Initialize ())
+	if (m_MIDIKeyboard.Initialize ())
 	{
-		CLogger::Get ()->Write (FromMiniSynth, LogWarning, "PC Keyboard not found");
+		return TRUE;
 	}
 
-	return TRUE;
+	if (m_Keyboard.Initialize ())
+	{
+		return TRUE;
+	}
+
+	CLogger::Get ()->Write (FromMiniSynth, LogWarning, "Keyboard not found");
+
+	return FALSE;
 }
 
 

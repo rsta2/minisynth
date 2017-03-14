@@ -1,5 +1,5 @@
 //
-// minisynth.h
+// midikeyboard.h
 //
 // MiniSynth Pi - A virtual analogue synthesizer for Raspberry Pi
 // Copyright (C) 2017  R. Stange <rsta2@o2online.de>
@@ -17,41 +17,28 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
-#ifndef _minisynth_h
-#define _minisynth_h
+#ifndef _midikeyboard_h
+#define _midikeyboard_h
 
-#include <circle/pwmsoundbasedevice.h>
-#include <circle/interrupt.h>
 #include <circle/types.h>
-#include "patch.h"
-#include "midikeyboard.h"
-#include "pckeyboard.h"
-#include "voice.h"
-#include "config.h"
 
-class CMiniSynthesizer : public CPWMSoundBaseDevice
+class CMiniSynthesizer;
+
+class CMIDIKeyboard
 {
 public:
-	CMiniSynthesizer (CInterruptSystem *pInterrupt);
-	~CMiniSynthesizer (void);
+	CMIDIKeyboard (CMiniSynthesizer *pSynthesizer);
+	~CMIDIKeyboard (void);
 
 	boolean Initialize (void);
 
-	void SetPatch (CPatch *pPatch);
-
-	void NoteOn (u8 ucKeyNumber, u8 ucVelocity = VELOCITY_DEFAULT);	// MIDI key number and velocity
-	void NoteOff (u8 ucKeyNumber);
-
-	unsigned GetChunk (u32 *pBuffer, unsigned nChunkSize);
+private:
+	static void MIDIPacketHandler (unsigned nCable, u8 *pPacket, unsigned nLength);
 
 private:
-	CMIDIKeyboard m_MIDIKeyboard;
-	CPCKeyboard   m_Keyboard;
+	CMiniSynthesizer *m_pSynthesizer;
 
-	CVoice *m_pVoice[VOICES];
-
-	unsigned m_nNullLevel;
-	unsigned m_nVolumeLevel;
+	static CMIDIKeyboard *s_pThis;
 };
 
 #endif
