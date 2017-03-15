@@ -11,7 +11,7 @@ CPPFLAGS += -Wno-write-strings
 OBJS	= main.o kernel.o minisynth.o \
 	  midikeyboard.o pckeyboard.o \
 	  voice.o oscillator.o filter.o amplifier.o envelopegenerator.o \
-	  synthconfig.o patch.o parameter.o \
+	  synthconfig.o patch.o parameter.o velocitycurve.o \
 	  mainwindow.o guiparameter.o \
 	  math.o
 

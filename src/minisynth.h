@@ -23,6 +23,7 @@
 #include <circle/pwmsoundbasedevice.h>
 #include <circle/interrupt.h>
 #include <circle/types.h>
+#include "synthconfig.h"
 #include "patch.h"
 #include "midikeyboard.h"
 #include "pckeyboard.h"
@@ -32,7 +33,7 @@
 class CMiniSynthesizer : public CPWMSoundBaseDevice
 {
 public:
-	CMiniSynthesizer (CInterruptSystem *pInterrupt);
+	CMiniSynthesizer (CSynthConfig *pConfig, CInterruptSystem *pInterrupt);
 	~CMiniSynthesizer (void);
 
 	boolean Initialize (void);
@@ -45,11 +46,14 @@ public:
 	unsigned GetChunk (u32 *pBuffer, unsigned nChunkSize);
 
 private:
+	CSynthConfig *m_pConfig;
+
 	CMIDIKeyboard m_MIDIKeyboard;
 	CPCKeyboard   m_Keyboard;
 
 	CVoice *m_pVoice[VOICES];
 
+	unsigned m_nMaxLevel;
 	unsigned m_nNullLevel;
 	unsigned m_nVolumeLevel;
 };

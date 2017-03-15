@@ -18,17 +18,20 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 #include "minisynth.h"
+#include "math.h"
 #include <circle/logger.h>
 #include <assert.h>
 
 static const char FromMiniSynth[] = "synth";
 
-CMiniSynthesizer::CMiniSynthesizer (CInterruptSystem *pInterrupt)
+CMiniSynthesizer::CMiniSynthesizer (CSynthConfig *pConfig, CInterruptSystem *pInterrupt)
 :	CPWMSoundBaseDevice (pInterrupt, SAMPLE_RATE),
+	m_pConfig (pConfig),
 	m_MIDIKeyboard (this),
 	m_Keyboard (this),
-	m_nNullLevel ((GetRange ()-1) / 2),
-	m_nVolumeLevel (0.0)
+	m_nMaxLevel (GetRange ()-1),
+	m_nNullLevel (m_nMaxLevel / 2),
+	m_nVolumeLevel (0)
 {
 	for (unsigned i = 0; i < VOICES; i++)
 	{
@@ -63,7 +66,6 @@ boolean CMiniSynthesizer::Initialize (void)
 	return FALSE;
 }
 
-
 void CMiniSynthesizer::SetPatch (CPatch *pPatch)
 {
 	assert (pPatch != 0);
@@ -74,11 +76,16 @@ void CMiniSynthesizer::SetPatch (CPatch *pPatch)
 		m_pVoice[i]->SetPatch (pPatch);
 	}
 
-	m_nVolumeLevel = (GetRange ()-1) / 2 * pPatch->GetParameter (SynthVolume) / 100;
+	m_nVolumeLevel =   m_nMaxLevel/2
+			 * powf (pPatch->GetParameter (SynthVolume) / 100.0, 3.3f); // apply some curve
 }
 
 void CMiniSynthesizer::NoteOn (u8 ucKeyNumber, u8 ucVelocity)
 {
+	// apply velocity curve
+	assert (m_pConfig != 0);
+	ucVelocity = m_pConfig->MapVelocity (ucVelocity);
+
 	// find an unused voice or a releasing voice otherwise
 	CVoice *pReleaseVoice = 0;
 	unsigned i;
@@ -148,22 +155,20 @@ unsigned CMiniSynthesizer::GetChunk (u32 *pBuffer, unsigned nChunkSize)
 			}
 		}
 
-		fLevel /= VOICES;
+		int nLevel = (int) (fLevel*m_nVolumeLevel + m_nNullLevel);
 
-		if (fLevel > 1.0)
+		if (nLevel > (int) m_nMaxLevel)
 		{
-			fLevel = 1.0;
+			nLevel = m_nMaxLevel;
 		}
-		else if (fLevel < -1.0)
+		else if (nLevel < 0)
 		{
-			fLevel = -1.0;
+			nLevel = 0;
 		}
-
-		unsigned nLevel = (unsigned) (fLevel*m_nVolumeLevel + m_nNullLevel + 0.5);
 
 		// for 2 stereo channels
-		*pBuffer++ = nLevel;
-		*pBuffer++ = nLevel;
+		*pBuffer++ = (unsigned) nLevel;
+		*pBuffer++ = (unsigned) nLevel;
 	}
 
 	return nResult;

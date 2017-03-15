@@ -1,5 +1,5 @@
 //
-// config.h
+// velocitycurve.h
 //
 // MiniSynth Pi - A virtual analogue synthesizer for Raspberry Pi
 // Copyright (C) 2017  R. Stange <rsta2@o2online.de>
@@ -17,17 +17,30 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
-#ifndef _config_h
-#define _config_h
+#ifndef _velocitycurve_h
+#define _velocitycurve_h
 
-#define SAMPLE_RATE		48000		// overall system clock
+#include <circle/fs/fat/fatfs.h>
+#include <circle/types.h>
+#include <Properties/propertiesfile.h>
 
-#define VOICES			8		// polyphonic voices
+#define VELOCITY_MIN	1
+#define VELOCITY_MAX	127
 
-#define VELOCITY_DEFAULT	80		// for PC keyboard (max. 127)
+class CVelocityCurve
+{
+public:
+	CVelocityCurve (CFATFileSystem *pFileSystem);
+	~CVelocityCurve (void);
 
-#define PATCHES			10		// number of configurable patches, don't change
+	boolean Load (void);
 
-#define PARTITION		"emmc1-1"	// SD card partition to use
+	u8 MapVelocity (u8 ucVelocity) const;
+
+private:
+	CPropertiesFile m_Properties;
+
+	u8 m_ucVelocity[VELOCITY_MAX+1];
+};
 
 #endif

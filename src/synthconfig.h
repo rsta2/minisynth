@@ -1,7 +1,7 @@
 //
 // synthconfig.h
 //
-// Container for all patches
+// Container for global configuration and all patches
 //
 // MiniSynth Pi - A virtual analogue synthesizer for Raspberry Pi
 // Copyright (C) 2017  R. Stange <rsta2@o2online.de>
@@ -24,6 +24,7 @@
 
 #include <circle/fs/fat/fatfs.h>
 #include "patch.h"
+#include "velocitycurve.h"
 #include "config.h"
 
 class CSynthConfig
@@ -32,6 +33,9 @@ public:
 	CSynthConfig (CFATFileSystem *pFileSystem);
 	~CSynthConfig (void);
 
+	// loads global configuration only, not the patches
+	boolean Load (void);
+
 	// the patch which is currently active
 	unsigned GetActivePatchNumber (void) const;
 	void SetActivePatchNumber (unsigned nPatch);
@@ -39,10 +43,13 @@ public:
 	// get the active patch
 	CPatch *GetActivePatch (void);
 
+	u8 MapVelocity (u8 ucVelocity) const;
+
 private:
 	CPatch *m_pPatch[PATCHES];
-
 	unsigned m_nActivePatch;
+
+	CVelocityCurve m_VelocityCurve;
 };
 
 #endif

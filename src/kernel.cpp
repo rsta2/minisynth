@@ -32,7 +32,7 @@ CKernel::CKernel (void)
 	m_EMMC (&m_Interrupt, &m_Timer, &m_ActLED),
 	m_GUI (&m_Screen),
 	m_Config (&m_FileSystem),
-	m_Synthesizer (&m_Interrupt)
+	m_Synthesizer (&m_Config, &m_Interrupt)
 {
 }
 
@@ -115,6 +115,9 @@ TShutdownMode CKernel::Run (void)
 	{
 		m_Logger.Write (FromKernel, LogPanic, "Cannot mount partition: %s", PARTITION);
 	}
+
+	// Load global configuration
+	m_Config.Load ();
 
 	// Load all patches
 	for (unsigned i = 0; i < PATCHES; i++)

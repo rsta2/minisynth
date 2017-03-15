@@ -10,7 +10,7 @@ Overview
 
 MiniSynth Pi is a virtual analog polyphonic (8 voices) audio synthesizer, running bare metal on the Raspberry Pi. It is currently under development (including this documentation).
 
-You have to attach an USB MIDI keyboard (which supports the USB Audio Class MIDI specification) or an USB PC keyboard to your Raspberry Pi to play on it. The audio signal is available on the 3.5mm headphones jack. Thus Raspberry Pi models without headphones jack (e.g. Raspberry Pi Zero) are not supported. The graphical user interface (GUI) of MiniSynth Pi can be controlled using a standard USB mouse or the official Raspberry Pi touch screen.
+You have to attach an USB MIDI keyboard controller (which supports the USB Audio Class MIDI specification) or an USB PC keyboard to your Raspberry Pi to play on it. The audio signal is available on the 3.5mm headphones jack. Thus Raspberry Pi models without headphones jack (e.g. Raspberry Pi Zero) are not supported. The graphical user interface (GUI) of MiniSynth Pi can be controlled using a standard USB mouse or the official Raspberry Pi touch screen.
 
 Using
 -----
@@ -18,7 +18,7 @@ Using
 Before powering on your Raspberry Pi, the following devices have to be attached:
 
 * HDMI display (must support 800x600 pixels mode)
-* USB MIDI keyboard or USB PC keyboard
+* USB MIDI keyboard controller or USB PC keyboard
 * Standard USB mouse (if official touch screen is not used)
 * Headphones or amplifier (on the 3.5mm jack)
 

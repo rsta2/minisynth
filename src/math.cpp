@@ -122,6 +122,11 @@ float logf (float x)
 
 float powf (float x, float e)
 {
+	if (x == 0.0)
+	{
+		return 0.0;
+	}
+
 	return expf (e * logf (x));
 }
 

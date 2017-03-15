@@ -22,7 +22,8 @@
 #include <assert.h>
 
 CSynthConfig::CSynthConfig (CFATFileSystem *pFileSystem)
-:	m_nActivePatch (0)
+:	m_nActivePatch (0),
+	m_VelocityCurve (pFileSystem)
 {
 	assert (pFileSystem != 0);
 
@@ -45,6 +46,11 @@ CSynthConfig::~CSynthConfig (void)
 	}
 }
 
+boolean CSynthConfig::Load (void)
+{
+	return m_VelocityCurve.Load ();
+}
+
 unsigned CSynthConfig::GetActivePatchNumber (void) const
 {
 	return m_nActivePatch;
@@ -61,4 +67,9 @@ CPatch *CSynthConfig::GetActivePatch (void)
 	assert (m_nActivePatch < PATCHES);
 	assert (m_pPatch[m_nActivePatch] != 0);
 	return m_pPatch[m_nActivePatch];
+}
+
+u8 CSynthConfig::MapVelocity (u8 ucVelocity) const
+{
+	return m_VelocityCurve.MapVelocity (ucVelocity);
 }
