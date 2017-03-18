@@ -86,22 +86,27 @@ void CMiniSynthesizer::NoteOn (u8 ucKeyNumber, u8 ucVelocity)
 	assert (m_pConfig != 0);
 	ucVelocity = m_pConfig->MapVelocity (ucVelocity);
 
-	// find an unused voice or a releasing voice otherwise
-	CVoice *pReleaseVoice = 0;
+	// find the voice which is currently playing this key
 	unsigned i;
 	for (i = 0; i < VOICES; i++)
 	{
 		assert (m_pVoice[i] != 0);
-		TVoiceState State = m_pVoice[i]->GetState ();
-		if (State == VoiceStateIdle)
+		if (m_pVoice[i]->GetKeyNumber () == ucKeyNumber)
 		{
 			break;
 		}
+	}
 
-		if (   State == VoiceStateRelease
-		    && pReleaseVoice == 0)
+	if (i >= VOICES)
+	{
+		// otherwise find a free voice
+		for (i = 0; i < VOICES; i++)
 		{
-			pReleaseVoice = m_pVoice[i];
+			assert (m_pVoice[i] != 0);
+			if (m_pVoice[i]->GetState () == VoiceStateIdle)
+			{
+				break;
+			}
 		}
 	}
 
@@ -109,10 +114,6 @@ void CMiniSynthesizer::NoteOn (u8 ucKeyNumber, u8 ucVelocity)
 	{
 		assert (m_pVoice[i] != 0);
 		m_pVoice[i]->NoteOn (ucKeyNumber, ucVelocity);
-	}
-	else if (pReleaseVoice != 0)
-	{
-		pReleaseVoice->NoteOn (ucKeyNumber, ucVelocity);
 	}
 }
 

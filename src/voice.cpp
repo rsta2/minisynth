@@ -92,8 +92,6 @@ void CVoice::NoteOn (u8 ucKeyNumber, u8 ucVelocity)
 	// key number 0 is ignored
 	if (0 < ucKeyNumber && ucKeyNumber < sizeof KeyFrequency / sizeof KeyFrequency[0])
 	{
-		assert (   m_ucKeyNumber == 0
-		        || m_ucKeyNumber == ucKeyNumber);
 		m_ucKeyNumber = ucKeyNumber;
 		m_VCO.SetFrequency (KeyFrequency[m_ucKeyNumber]);
 
@@ -108,8 +106,6 @@ void CVoice::NoteOff (void)
 {
 	m_EG_VCF.NoteOff ();
 	m_EG_VCA.NoteOff ();
-
-	m_ucKeyNumber = 0;
 }
 
 TVoiceState CVoice::GetState (void) const
@@ -135,7 +131,7 @@ TVoiceState CVoice::GetState (void) const
 
 u8 CVoice::GetKeyNumber (void) const
 {
-	return m_ucKeyNumber;
+	return m_EG_VCA.GetState () != EnvelopeStateIdle ? m_ucKeyNumber : 0;
 }
 
 void CVoice::NextSample (void)

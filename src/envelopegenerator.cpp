@@ -61,8 +61,6 @@ void CEnvelopeGenerator::SetRelease (unsigned nMilliSeconds)
 
 void CEnvelopeGenerator::NoteOn (float fVelocityLevel)
 {
-	assert (   m_State == EnvelopeStateIdle
-		|| m_State == EnvelopeStateRelease);
 	m_State = EnvelopeStateAttack;
 
 	assert (0.0 < fVelocityLevel && fVelocityLevel <= 1.0);
