@@ -18,6 +18,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 #include "mainwindow.h"
+#include "config.h"
 #include <assert.h>
 
 enum
@@ -171,6 +172,7 @@ CMainWindow::CMainWindow (CMiniSynthesizer *pSynthesizer, CSynthConfig *pConfig)
 	UG_WindowCreate (&m_Window, m_ObjectList, s_ObjectCount, CallbackStub);
 	UG_WindowSetStyle (&m_Window, WND_STYLE_2D | WND_STYLE_HIDE_TITLE);
 	UG_WindowResize (&m_Window, 0, 0, 799, 479);
+	UG_WindowSetBackColor (&m_Window, BACK_COLOR);
 
 	// create controls
 	UG_TextboxCreate (&m_Window, &m_Textbox1, TXB_TITLE, 5, 450, 194, 474);
@@ -231,114 +233,124 @@ CMainWindow::CMainWindow (CMiniSynthesizer *pSynthesizer, CSynthConfig *pConfig)
 	// Title
 	UG_TextboxSetFont (&m_Window, TXB_TITLE, &FONT_10X16);
 	UG_TextboxSetText (&m_Window, TXB_TITLE, "MiniSynth Pi");
-	UG_TextboxSetBackColor (&m_Window, TXB_TITLE, C_LIGHT_GRAY);
-	UG_TextboxSetForeColor (&m_Window, TXB_TITLE, C_BLACK);
+	UG_TextboxSetBackColor (&m_Window, TXB_TITLE, TITLE_BACK_COLOR);
+	UG_TextboxSetForeColor (&m_Window, TXB_TITLE, TITLE_FORE_COLOR);
 	UG_TextboxSetAlignment (&m_Window, TXB_TITLE, ALIGN_CENTER);
 
 	UG_TextboxSetFont (&m_Window, TXB_SUBTITLE, &FONT_8X14);
 	UG_TextboxSetText (&m_Window, TXB_SUBTITLE, "VIRTUAL ANALOG SYNTHESIZER");
-	UG_TextboxSetForeColor (&m_Window, TXB_SUBTITLE, C_BLACK);
+	UG_TextboxSetForeColor (&m_Window, TXB_SUBTITLE, FORE_COLOR);
 	UG_TextboxSetAlignment (&m_Window, TXB_SUBTITLE, ALIGN_CENTER_RIGHT);
 
 	// "Oscillator" section
 	UG_TextboxSetFont (&m_Window, TXB_OSCILLATOR, &FONT_8X14);
 	UG_TextboxSetText (&m_Window, TXB_OSCILLATOR, "OSCILLATOR");
-	UG_TextboxSetBackColor (&m_Window, TXB_OSCILLATOR, C_MEDIUM_AQUA_MARINE);
-	UG_TextboxSetForeColor (&m_Window, TXB_OSCILLATOR, C_WHITE);
+	UG_TextboxSetBackColor (&m_Window, TXB_OSCILLATOR, HEADER_BACK_COLOR);
+	UG_TextboxSetForeColor (&m_Window, TXB_OSCILLATOR, HEADER_FORE_COLOR);
 	UG_TextboxSetAlignment (&m_Window, TXB_OSCILLATOR, ALIGN_CENTER);
 
 	UG_TextboxSetFont (&m_Window, TXB_VCO, &FONT_8X14);
 	UG_TextboxSetText (&m_Window, TXB_VCO, "VCO");
-	UG_TextboxSetForeColor (&m_Window, TXB_VCO, C_BLACK);
+	UG_TextboxSetForeColor (&m_Window, TXB_VCO, FORE_COLOR);
 	UG_TextboxSetAlignment (&m_Window, TXB_VCO, ALIGN_CENTER);
 
 	UG_TextboxSetFont (&m_Window, TXB_LFO_VCO, &FONT_8X14);
 	UG_TextboxSetText (&m_Window, TXB_LFO_VCO, "LFO");
-	UG_TextboxSetForeColor (&m_Window, TXB_LFO_VCO, C_BLACK);
+	UG_TextboxSetForeColor (&m_Window, TXB_LFO_VCO, FORE_COLOR);
 	UG_TextboxSetAlignment (&m_Window, TXB_LFO_VCO, ALIGN_CENTER);
 
 	// "Filter" section
-	UG_TextboxSetFont (&m_Window, TXB_VCF, &FONT_8X14);
-	UG_TextboxSetText (&m_Window, TXB_VCF, "VCF");
-	UG_TextboxSetForeColor (&m_Window, TXB_VCF, C_BLACK);
-	UG_TextboxSetAlignment (&m_Window, TXB_VCF, ALIGN_CENTER);
-
 	UG_TextboxSetFont (&m_Window, TXB_FILTER, &FONT_8X14);
 	UG_TextboxSetText (&m_Window, TXB_FILTER, "FILTER");
-	UG_TextboxSetBackColor (&m_Window, TXB_FILTER, C_MEDIUM_AQUA_MARINE);
-	UG_TextboxSetForeColor (&m_Window, TXB_FILTER, C_WHITE);
+	UG_TextboxSetBackColor (&m_Window, TXB_FILTER, HEADER_BACK_COLOR);
+	UG_TextboxSetForeColor (&m_Window, TXB_FILTER, HEADER_FORE_COLOR);
 	UG_TextboxSetAlignment (&m_Window, TXB_FILTER, ALIGN_CENTER);
+
+	UG_TextboxSetFont (&m_Window, TXB_VCF, &FONT_8X14);
+	UG_TextboxSetText (&m_Window, TXB_VCF, "VCF");
+	UG_TextboxSetForeColor (&m_Window, TXB_VCF, FORE_COLOR);
+	UG_TextboxSetAlignment (&m_Window, TXB_VCF, ALIGN_CENTER);
 
 	UG_TextboxSetFont (&m_Window, TXB_LFO_VCF, &FONT_8X14);
 	UG_TextboxSetText (&m_Window, TXB_LFO_VCF, "LFO");
-	UG_TextboxSetForeColor (&m_Window, TXB_LFO_VCF, C_BLACK);
+	UG_TextboxSetForeColor (&m_Window, TXB_LFO_VCF, FORE_COLOR);
 	UG_TextboxSetAlignment (&m_Window, TXB_LFO_VCF, ALIGN_CENTER);
 
 	UG_TextboxSetFont (&m_Window, TXB_EG_VCF, &FONT_8X14);
 	UG_TextboxSetText (&m_Window, TXB_EG_VCF, "ENVELOPE");
-	UG_TextboxSetForeColor (&m_Window, TXB_EG_VCF, C_BLACK);
+	UG_TextboxSetForeColor (&m_Window, TXB_EG_VCF, FORE_COLOR);
 	UG_TextboxSetAlignment (&m_Window, TXB_EG_VCF, ALIGN_CENTER);
 
 	// "Amplifier" section
 	UG_TextboxSetFont (&m_Window, TXB_AMPLIFIER, &FONT_8X14);
 	UG_TextboxSetText (&m_Window, TXB_AMPLIFIER, "AMPLIFIER");
-	UG_TextboxSetBackColor (&m_Window, TXB_AMPLIFIER, C_MEDIUM_AQUA_MARINE);
-	UG_TextboxSetForeColor (&m_Window, TXB_AMPLIFIER, C_WHITE);
+	UG_TextboxSetBackColor (&m_Window, TXB_AMPLIFIER, HEADER_BACK_COLOR);
+	UG_TextboxSetForeColor (&m_Window, TXB_AMPLIFIER, HEADER_FORE_COLOR);
 	UG_TextboxSetAlignment (&m_Window, TXB_AMPLIFIER, ALIGN_CENTER);
 
 	UG_TextboxSetFont (&m_Window, TXB_MASTER_VOLUME, &FONT_8X14);
 	UG_TextboxSetText (&m_Window, TXB_MASTER_VOLUME, "MASTER VOLUME");
-	UG_TextboxSetForeColor (&m_Window, TXB_MASTER_VOLUME, C_BLACK);
+	UG_TextboxSetForeColor (&m_Window, TXB_MASTER_VOLUME, FORE_COLOR);
 	UG_TextboxSetAlignment (&m_Window, TXB_MASTER_VOLUME, ALIGN_CENTER);
 
 	UG_TextboxSetFont (&m_Window, TXB_LFO_VCA, &FONT_8X14);
 	UG_TextboxSetText (&m_Window, TXB_LFO_VCA, "LFO");
-	UG_TextboxSetForeColor (&m_Window, TXB_LFO_VCA, C_BLACK);
+	UG_TextboxSetForeColor (&m_Window, TXB_LFO_VCA, FORE_COLOR);
 	UG_TextboxSetAlignment (&m_Window, TXB_LFO_VCA, ALIGN_CENTER);
 
 	UG_TextboxSetFont (&m_Window, TXB_EG_VCA, &FONT_8X14);
 	UG_TextboxSetText (&m_Window, TXB_EG_VCA, "ENVELOPE");
-	UG_TextboxSetForeColor (&m_Window, TXB_EG_VCA, C_BLACK);
+	UG_TextboxSetForeColor (&m_Window, TXB_EG_VCA, FORE_COLOR);
 	UG_TextboxSetAlignment (&m_Window, TXB_EG_VCA, ALIGN_CENTER);
 
 	// "PATCHES" section
 	UG_TextboxSetFont (&m_Window, TXB_PATCHES, &FONT_8X14);
 	UG_TextboxSetText (&m_Window, TXB_PATCHES, "PATCHES");
-	UG_TextboxSetBackColor (&m_Window, TXB_PATCHES, C_MEDIUM_AQUA_MARINE);
-	UG_TextboxSetForeColor (&m_Window, TXB_PATCHES, C_WHITE);
+	UG_TextboxSetBackColor (&m_Window, TXB_PATCHES, HEADER_BACK_COLOR);
+	UG_TextboxSetForeColor (&m_Window, TXB_PATCHES, HEADER_FORE_COLOR);
 	UG_TextboxSetAlignment (&m_Window, TXB_PATCHES, ALIGN_CENTER);
 
 	UG_ButtonSetFont (&m_Window, BTN_PATCH_0, &FONT_8X14);
 	UG_ButtonSetText (&m_Window, BTN_PATCH_0, "0");
-	m_ButtonBackColor = UG_ButtonGetBackColor (&m_Window, BTN_PATCH_0);
-	UG_ButtonSetBackColor (&m_Window, BTN_PATCH_0, C_MEDIUM_AQUA_MARINE);
-
+	UG_ButtonSetBackColor (&m_Window, BTN_PATCH_0, BUTTON_HIGH_COLOR);
 	UG_ButtonSetFont (&m_Window, BTN_PATCH_1, &FONT_8X14);
 	UG_ButtonSetText (&m_Window, BTN_PATCH_1, "1");
+	UG_ButtonSetBackColor (&m_Window, BTN_PATCH_1, BUTTON_BACK_COLOR);
 	UG_ButtonSetFont (&m_Window, BTN_PATCH_2, &FONT_8X14);
 	UG_ButtonSetText (&m_Window, BTN_PATCH_2, "2");
+	UG_ButtonSetBackColor (&m_Window, BTN_PATCH_2, BUTTON_BACK_COLOR);
 	UG_ButtonSetFont (&m_Window, BTN_PATCH_3, &FONT_8X14);
 	UG_ButtonSetText (&m_Window, BTN_PATCH_3, "3");
+	UG_ButtonSetBackColor (&m_Window, BTN_PATCH_3, BUTTON_BACK_COLOR);
 	UG_ButtonSetFont (&m_Window, BTN_PATCH_4, &FONT_8X14);
 	UG_ButtonSetText (&m_Window, BTN_PATCH_4, "4");
+	UG_ButtonSetBackColor (&m_Window, BTN_PATCH_4, BUTTON_BACK_COLOR);
 	UG_ButtonSetFont (&m_Window, BTN_PATCH_5, &FONT_8X14);
 	UG_ButtonSetText (&m_Window, BTN_PATCH_5, "5");
+	UG_ButtonSetBackColor (&m_Window, BTN_PATCH_5, BUTTON_BACK_COLOR);
 	UG_ButtonSetFont (&m_Window, BTN_PATCH_6, &FONT_8X14);
 	UG_ButtonSetText (&m_Window, BTN_PATCH_6, "6");
+	UG_ButtonSetBackColor (&m_Window, BTN_PATCH_6, BUTTON_BACK_COLOR);
 	UG_ButtonSetFont (&m_Window, BTN_PATCH_7, &FONT_8X14);
 	UG_ButtonSetText (&m_Window, BTN_PATCH_7, "7");
+	UG_ButtonSetBackColor (&m_Window, BTN_PATCH_7, BUTTON_BACK_COLOR);
 	UG_ButtonSetFont (&m_Window, BTN_PATCH_8, &FONT_8X14);
 	UG_ButtonSetText (&m_Window, BTN_PATCH_8, "8");
+	UG_ButtonSetBackColor (&m_Window, BTN_PATCH_8, BUTTON_BACK_COLOR);
 	UG_ButtonSetFont (&m_Window, BTN_PATCH_9, &FONT_8X14);
 	UG_ButtonSetText (&m_Window, BTN_PATCH_9, "9");
+	UG_ButtonSetBackColor (&m_Window, BTN_PATCH_9, BUTTON_BACK_COLOR);
 	UG_ButtonSetFont (&m_Window, BTN_LOAD, &FONT_8X14);
 	UG_ButtonSetText (&m_Window, BTN_LOAD, "LOAD");
+	UG_ButtonSetBackColor (&m_Window, BTN_LOAD, BUTTON_BACK_COLOR);
 	UG_ButtonSetFont (&m_Window, BTN_SAVE, &FONT_8X14);
 	UG_ButtonSetText (&m_Window, BTN_SAVE, "SAVE");
+	UG_ButtonSetBackColor (&m_Window, BTN_SAVE, BUTTON_BACK_COLOR);
 
 	// "Help"
 	UG_ButtonSetFont (&m_Window, BTN_HELP, &FONT_8X14);
 	UG_ButtonSetText (&m_Window, BTN_HELP, "HELP");
+	UG_ButtonSetBackColor (&m_Window, BTN_HELP, BUTTON_BACK_COLOR);
 	UpdateAllParameters ();
 
 	UG_WindowShow (&m_Window);
@@ -452,8 +464,8 @@ void CMainWindow::Callback (UG_MESSAGE *pMsg)
 		case BTN_PATCH_9:
 			UG_ButtonSetBackColor (&m_Window,
 					       BTN_PATCH_0+m_pConfig->GetActivePatchNumber (),
-					       m_ButtonBackColor);
-			UG_ButtonSetBackColor (&m_Window, nButtonID, C_MEDIUM_AQUA_MARINE);
+					       BUTTON_BACK_COLOR);
+			UG_ButtonSetBackColor (&m_Window, nButtonID, BUTTON_HIGH_COLOR);
 
 			m_pConfig->SetActivePatchNumber (nButtonID-BTN_PATCH_0);
 			m_pActivePatch = m_pConfig->GetActivePatch ();
@@ -475,7 +487,7 @@ void CMainWindow::Callback (UG_MESSAGE *pMsg)
 		case BTN_HELP:
 			m_bShowHelp = !m_bShowHelp;
 			UG_ButtonSetBackColor (&m_Window, BTN_HELP,
-					       m_bShowHelp ? C_MEDIUM_AQUA_MARINE : m_ButtonBackColor);
+					       m_bShowHelp ? BUTTON_HIGH_COLOR : BUTTON_BACK_COLOR);
 			UpdateAllParameters ();
 			break;
 

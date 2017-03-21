@@ -22,12 +22,41 @@
 
 #define SAMPLE_RATE		48000		// overall system clock
 
-#define VOICES			8		// polyphonic voices
+#if RASPPI >= 2
+	#define VOICES		6		// polyphonic voices
+#else
+	#define VOICES		4		// polyphonic voices
+#endif
 
 #define VELOCITY_DEFAULT	80		// for PC keyboard (max. 127)
 
 #define PATCHES			10		// number of configurable patches, don't change
 
 #define PARTITION		"emmc1-1"	// SD card partition to use
+
+// color scheme
+#if 1
+	#define BACK_COLOR		0xEF7D
+	#define FORE_COLOR		C_BLACK
+	#define TITLE_BACK_COLOR	C_LIGHT_GRAY
+	#define TITLE_FORE_COLOR	C_BLACK
+	#define HEADER_BACK_COLOR	C_MEDIUM_AQUA_MARINE
+	#define HEADER_FORE_COLOR	C_WHITE
+	#define BUTTON_BACK_COLOR	0xEF7D
+	#define BUTTON_HIGH_COLOR	C_MEDIUM_AQUA_MARINE
+	#define VALUE_BACK_COLOR	C_LIGHT_GRAY
+	#define VALUE_FORE_COLOR	C_BLACK
+#else
+	#define BACK_COLOR		C_BLACK
+	#define FORE_COLOR		C_WHITE
+	#define TITLE_BACK_COLOR	C_LIGHT_GRAY
+	#define TITLE_FORE_COLOR	C_BLACK
+	#define HEADER_BACK_COLOR	C_LIGHT_GRAY
+	#define HEADER_FORE_COLOR	C_BLACK
+	#define BUTTON_BACK_COLOR	C_LIGHT_GRAY
+	#define BUTTON_HIGH_COLOR	C_GRAY
+	#define VALUE_BACK_COLOR	C_LIGHT_GRAY
+	#define VALUE_FORE_COLOR	C_BLACK
+#endif
 
 #endif

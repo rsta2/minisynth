@@ -42,7 +42,7 @@ CVoice::CVoice (void)
 :	m_VCO (&m_LFO_VCO),
 	m_VCF (&m_VCO, &m_LFO_VCF, &m_EG_VCF),
 	m_VCA (&m_VCF, &m_LFO_VCA, &m_EG_VCA),
-	m_ucKeyNumber (0)
+	m_ucKeyNumber (KEY_NUMBER_NONE)
 {
 }
 
@@ -89,8 +89,7 @@ void CVoice::SetPatch (CPatch *pPatch)
 
 void CVoice::NoteOn (u8 ucKeyNumber, u8 ucVelocity)
 {
-	// key number 0 is ignored
-	if (0 < ucKeyNumber && ucKeyNumber < sizeof KeyFrequency / sizeof KeyFrequency[0])
+	if (ucKeyNumber < sizeof KeyFrequency / sizeof KeyFrequency[0])
 	{
 		m_ucKeyNumber = ucKeyNumber;
 		m_VCO.SetFrequency (KeyFrequency[m_ucKeyNumber]);
@@ -131,7 +130,7 @@ TVoiceState CVoice::GetState (void) const
 
 u8 CVoice::GetKeyNumber (void) const
 {
-	return m_EG_VCA.GetState () != EnvelopeStateIdle ? m_ucKeyNumber : 0;
+	return m_EG_VCA.GetState () != EnvelopeStateIdle ? m_ucKeyNumber : KEY_NUMBER_NONE;
 }
 
 void CVoice::NextSample (void)

@@ -55,6 +55,8 @@ float sqrtf (float x)
 	return y;
 }
 
+#if 0
+
 float expf (float x)
 {
 	int s = 0;
@@ -86,6 +88,8 @@ float expf (float x)
 
 	return y;
 }
+
+#endif
 
 float logf (float x)
 {

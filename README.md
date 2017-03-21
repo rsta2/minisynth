@@ -8,7 +8,7 @@ MiniSynth Pi
 Overview
 --------
 
-MiniSynth Pi is a virtual analog polyphonic (8 voices) audio synthesizer, running bare metal on the Raspberry Pi. It is currently under development (including this documentation).
+MiniSynth Pi is a virtual analog polyphonic (6 voices, 4 on Raspberry Pi 1) audio synthesizer, running bare metal on the Raspberry Pi. It is currently under development (including this documentation).
 
 You have to attach an USB MIDI keyboard controller (which supports the USB Audio Class MIDI specification) or an USB PC keyboard to your Raspberry Pi to play on it. The audio signal is available on the 3.5mm headphones jack. Thus Raspberry Pi models without headphones jack (e.g. Raspberry Pi Zero) are not supported. The graphical user interface (GUI) of MiniSynth Pi can be controlled using a standard USB mouse or the official Raspberry Pi touch screen.
 
@@ -75,3 +75,4 @@ MiniSynth Pi uses the following source modules:
 * [Circle C++ bare metal environment for the Raspberry Pi](https://github.com/rsta2/circle/)
 * [uGUI library](http://www.embeddedlightning.com/ugui/) by Achim Doebler
 * [EMMC SD card driver (part of rpi-boot)](https://github.com/jncronin/rpi-boot/blob/master/emmc.c) by John Cronin
+* Optimized expf() function from the [GNU C Library](https://www.gnu.org/software/libc/), Copyright (C) 1997-2017 Free Software Foundation, Inc.

@@ -13,7 +13,7 @@ OBJS	= main.o kernel.o minisynth.o \
 	  voice.o oscillator.o filter.o amplifier.o envelopegenerator.o \
 	  synthconfig.o patch.o parameter.o velocitycurve.o \
 	  mainwindow.o guiparameter.o \
-	  math.o
+	  math.o math_expf.o
 
 LIBS	= $(CIRCLEHOME)/addon/ugui/libugui.a \
 	  $(CIRCLEHOME)/addon/Properties/libproperties.a \

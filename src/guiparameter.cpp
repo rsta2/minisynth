@@ -18,6 +18,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 #include "guiparameter.h"
+#include "config.h"
 #include <assert.h>
 
 CGUIParameter::CGUIParameter (UG_WINDOW *pWindow, TSynthParameter Parameter, CSynthConfig *pConfig)
@@ -55,14 +56,16 @@ void CGUIParameter::Create (unsigned nTextboxID, unsigned nButtonDownID, unsigne
 
 	Update (FALSE);
 
-	UG_TextboxSetBackColor (m_pWindow, m_nTextboxID, C_LIGHT_GRAY);
-	UG_TextboxSetForeColor (m_pWindow, m_nTextboxID, C_BLACK);
+	UG_TextboxSetBackColor (m_pWindow, m_nTextboxID, VALUE_BACK_COLOR);
+	UG_TextboxSetForeColor (m_pWindow, m_nTextboxID, VALUE_FORE_COLOR);
 	UG_TextboxSetAlignment (m_pWindow, m_nTextboxID, ALIGN_CENTER);
 
 	UG_ButtonSetFont (m_pWindow, m_nButtonDownID, &FONT_8X14);
 	UG_ButtonSetText (m_pWindow, m_nButtonDownID, "<");
+	UG_ButtonSetBackColor (m_pWindow, m_nButtonDownID, BUTTON_BACK_COLOR);
 	UG_ButtonSetFont (m_pWindow, m_nButtonUpID, &FONT_8X14);
 	UG_ButtonSetText (m_pWindow, m_nButtonUpID, ">");
+	UG_ButtonSetBackColor (m_pWindow, m_nButtonUpID, BUTTON_BACK_COLOR);
 }
 
 void CGUIParameter::Update (boolean bShowHelp)

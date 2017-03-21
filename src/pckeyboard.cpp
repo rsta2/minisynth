@@ -126,7 +126,7 @@ void CPCKeyboard::KeyStatusHandlerRaw (unsigned char ucModifiers, const unsigned
 		}
 	}
 
-	memcpy (s_pThis->m_LastKeys, RawKeys, sizeof RawKeys);
+	memcpy (s_pThis->m_LastKeys, RawKeys, sizeof s_pThis->m_LastKeys);
 }
 
 u8 CPCKeyboard::GetKeyNumber (u8 ucKeyCode)

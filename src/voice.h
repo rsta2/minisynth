@@ -49,7 +49,8 @@ public:
 	void NoteOff (void);
 
 	TVoiceState GetState (void) const;
-	u8 GetKeyNumber (void) const;			// returns 0 if voice is unused
+	u8 GetKeyNumber (void) const;			// returns KEY_NUMBER_NONE if voice is unused
+#define KEY_NUMBER_NONE		255
 
 	void NextSample (void);
 	float GetOutputLevel (void) const;
@@ -69,7 +70,7 @@ private:
 	CEnvelopeGenerator m_EG_VCA;
 	CAmplifier m_VCA;
 
-	u8 m_ucKeyNumber;		// 0 if voice is unused
+	u8 m_ucKeyNumber;
 };
 
 #endif

@@ -101,7 +101,6 @@ private:
 	CPatch *m_pActivePatch;
 
 	boolean m_bShowHelp;
-	UG_COLOR m_ButtonBackColor;
 
 	static CMainWindow *s_pThis;
 };
