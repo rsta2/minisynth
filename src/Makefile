@@ -4,7 +4,7 @@
 
 -include ../Config.mk
 
-CIRCLEHOME ?= ../../circle
+CIRCLEHOME ?= ../circle
 
 CPPFLAGS += -Wno-write-strings
 

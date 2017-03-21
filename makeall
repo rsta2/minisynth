@@ -1,0 +1,26 @@
+#!/bin/sh
+
+cd circle
+./makeall $1 $2 || exit
+
+cd addon
+
+cd SDCard
+make $1 $2 || exit
+cd ..
+
+cd Properties
+make $1 $2 || exit
+cd ..
+
+cd ugui
+make $1 $2 || exit
+cd ..
+
+cd ..
+
+cd ..
+
+cd src
+make $1 $2 || exit
+cd ..
