@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 cd circle
 ./makeall $1 $2 || exit
