@@ -1,0 +1,36 @@
+#!/bin/sh
+
+if [[ $# != 1 && $# != 2 ]] ; then
+	echo "Usage: $0 rasppi [ prefix ]"
+	echo
+	echo "rasppi  Major revision number of the Raspberry Pi to build for (1, 2 or 3)"
+	echo "prefix  Path and prefix of the toolchain commands (e.g. /path/arm-none-eabi-)"
+
+	exit
+fi
+
+if [[ $1 != "1" && $1 != "2" && $1 != "3"  ]] ; then
+	echo "Invalid revision number ($1)"
+
+	exit
+fi
+
+prefix=
+if [[ $# == 2 ]] ; then
+	prefix=$2
+fi
+
+$prefix"gcc" --version > /dev/null 2> /dev/null
+if [[ $? != 0 ]] ; then
+	echo "Invalid toolchain prefix ($prefix)"
+
+	exit
+fi
+
+cd circle || exit
+
+echo "RASPPI = $1" > Config.mk
+echo "PREFIX = $prefix" >> Config.mk
+
+echo "circle/Config.mk successfully created:"
+cat Config.mk

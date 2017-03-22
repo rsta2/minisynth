@@ -45,7 +45,7 @@ ParameterList[] =		// must match TSynthParameter
 	{"LFOVCFFrequency", ParameterFrequency, 1, 35, 1, 20, "Rate"},
 
 	{"VCFCutoffFrequency", ParameterPercent, 10, 100, 2, 80, "Cutoff"},
-	{"VCFCutoffResonance", ParameterPercent, 0, 100, 2, 50, "Resonance"},
+	{"VCFResonance", ParameterPercent, 0, 100, 2, 50, "Resonance"},
 
 	{"EGVCFAttack", ParameterTime, 0, 2000, 50, 0, "Attack"},
 	{"EGVCFDecay", ParameterTime, 100, 10000, 100, 4000, "Decay"},
