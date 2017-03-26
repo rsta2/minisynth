@@ -24,41 +24,33 @@
 
 static const char FromMiniSynth[] = "synth";
 
-CMiniSynthesizer::CMiniSynthesizer (CSynthConfig *pConfig, CInterruptSystem *pInterrupt)
+CMiniSynthesizer::CMiniSynthesizer (CSynthConfig *pConfig,
+				    CInterruptSystem *pInterrupt, CMemorySystem *pMemorySystem)
 :	CPWMSoundBaseDevice (pInterrupt, SAMPLE_RATE),
 	m_pConfig (pConfig),
 	m_MIDIKeyboard (this),
 	m_Keyboard (this),
+	m_VoiceManager (pMemorySystem),
 	m_nMaxLevel (GetRange ()-1),
 	m_nNullLevel (m_nMaxLevel / 2),
 	m_nVolumeLevel (0)
 {
-	for (unsigned i = 0; i < VOICES; i++)
-	{
-		m_pVoice[i] = new CVoice ();
-		assert (m_pVoice[i] != 0);
-	}
 }
 
 CMiniSynthesizer::~CMiniSynthesizer (void)
 {
-	for (unsigned i = 0; i < VOICES; i++)
-	{
-		delete m_pVoice[i];
-		m_pVoice[i] = 0;
-	}
 }
 
 boolean CMiniSynthesizer::Initialize (void)
 {
 	if (m_MIDIKeyboard.Initialize ())
 	{
-		return TRUE;
+		return m_VoiceManager.Initialize ();
 	}
 
 	if (m_Keyboard.Initialize ())
 	{
-		return TRUE;
+		return m_VoiceManager.Initialize ();
 	}
 
 	CLogger::Get ()->Write (FromMiniSynth, LogWarning, "Keyboard not found");
@@ -70,11 +62,7 @@ void CMiniSynthesizer::SetPatch (CPatch *pPatch)
 {
 	assert (pPatch != 0);
 
-	for (unsigned i = 0; i < VOICES; i++)
-	{
-		assert (m_pVoice[i] != 0);
-		m_pVoice[i]->SetPatch (pPatch);
-	}
+	m_VoiceManager.SetPatch (pPatch);
 
 	m_nVolumeLevel =   m_nMaxLevel/2
 			 * powf (pPatch->GetParameter (SynthVolume) / 100.0, 3.3f); // apply some curve
@@ -86,55 +74,12 @@ void CMiniSynthesizer::NoteOn (u8 ucKeyNumber, u8 ucVelocity)
 	assert (m_pConfig != 0);
 	ucVelocity = m_pConfig->MapVelocity (ucVelocity);
 
-	// find the voice which is currently playing this key
-	unsigned i;
-	for (i = 0; i < VOICES; i++)
-	{
-		assert (m_pVoice[i] != 0);
-		if (m_pVoice[i]->GetKeyNumber () == ucKeyNumber)
-		{
-			break;
-		}
-	}
-
-	if (i >= VOICES)
-	{
-		// otherwise find a free voice
-		for (i = 0; i < VOICES; i++)
-		{
-			assert (m_pVoice[i] != 0);
-			if (m_pVoice[i]->GetState () == VoiceStateIdle)
-			{
-				break;
-			}
-		}
-	}
-
-	if (i < VOICES)
-	{
-		assert (m_pVoice[i] != 0);
-		m_pVoice[i]->NoteOn (ucKeyNumber, ucVelocity);
-	}
+	m_VoiceManager.NoteOn (ucKeyNumber, ucVelocity);
 }
 
 void CMiniSynthesizer::NoteOff (u8 ucKeyNumber)
 {
-	// find the voice used for this key
-	unsigned i;
-	for (i = 0; i < VOICES; i++)
-	{
-		assert (m_pVoice[i] != 0);
-		if (m_pVoice[i]->GetKeyNumber () == ucKeyNumber)
-		{
-			break;
-		}
-	}
-
-	if (i < VOICES)
-	{
-		assert (m_pVoice[i] != 0);
-		m_pVoice[i]->NoteOff ();
-	}
+	m_VoiceManager.NoteOff (ucKeyNumber);
 }
 
 unsigned CMiniSynthesizer::GetChunk (u32 *pBuffer, unsigned nChunkSize)
@@ -143,18 +88,8 @@ unsigned CMiniSynthesizer::GetChunk (u32 *pBuffer, unsigned nChunkSize)
 
 	for (; nChunkSize > 0; nChunkSize -= 2)		// fill the whole buffer
 	{
-		float fLevel = 0.0;
-
-		for (unsigned i = 0; i < VOICES; i++)
-		{
-			assert (m_pVoice[i] != 0);
-			if (m_pVoice[i]->GetState () != VoiceStateIdle)
-			{
-				m_pVoice[i]->NextSample ();
-
-				fLevel += m_pVoice[i]->GetOutputLevel ();
-			}
-		}
+		m_VoiceManager.NextSample ();
+		float fLevel = m_VoiceManager.GetOutputLevel ();
 
 		int nLevel = (int) (fLevel*m_nVolumeLevel + m_nNullLevel);
 

@@ -32,7 +32,7 @@ CKernel::CKernel (void)
 	m_EMMC (&m_Interrupt, &m_Timer, &m_ActLED),
 	m_GUI (&m_Screen),
 	m_Config (&m_FileSystem),
-	m_Synthesizer (&m_Config, &m_Interrupt)
+	m_Synthesizer (&m_Config, &m_Interrupt, &m_Memory)
 {
 }
 

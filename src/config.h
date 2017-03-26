@@ -23,9 +23,9 @@
 #define SAMPLE_RATE		48000		// overall system clock
 
 #if RASPPI >= 2
-	#define VOICES		6		// polyphonic voices
+	#define VOICES_PER_CORE	6		// polyphonic voices per CPU core
 #else
-	#define VOICES		4		// polyphonic voices
+	#define VOICES_PER_CORE	4		// polyphonic voices (1 core only)
 #endif
 
 #define VELOCITY_DEFAULT	80		// for PC keyboard (max. 127)

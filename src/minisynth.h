@@ -22,18 +22,27 @@
 
 #include <circle/pwmsoundbasedevice.h>
 #include <circle/interrupt.h>
+#include <circle/memory.h>
 #include <circle/types.h>
 #include "synthconfig.h"
 #include "patch.h"
 #include "midikeyboard.h"
 #include "pckeyboard.h"
-#include "voice.h"
+#include "voicemanager.h"
 #include "config.h"
+
+// That all runs on core 0. SetPatch() gets called from the GUI and may be
+// interrupted by the other routines. NoteOn/Off() is IRQ-triggered by the USB IRQ
+// handler. GetChunk() is IRQ-triggered by the PWM DMA IRQ handler. IRQ handlers
+// cannot be interrupted again. Thus the execution of these routines (except
+// SetPatch()) is mutual-exclusive. There is no need for explicit synchronization,
+// but setting a single parameter in SetPatch() must be atomic.
 
 class CMiniSynthesizer : public CPWMSoundBaseDevice
 {
 public:
-	CMiniSynthesizer (CSynthConfig *pConfig, CInterruptSystem *pInterrupt);
+	CMiniSynthesizer (CSynthConfig *pConfig,
+			  CInterruptSystem *pInterrupt, CMemorySystem *pMemorySystem);
 	~CMiniSynthesizer (void);
 
 	boolean Initialize (void);
@@ -51,7 +60,7 @@ private:
 	CMIDIKeyboard m_MIDIKeyboard;
 	CPCKeyboard   m_Keyboard;
 
-	CVoice *m_pVoice[VOICES];
+	CVoiceManager m_VoiceManager;
 
 	unsigned m_nMaxLevel;
 	unsigned m_nNullLevel;

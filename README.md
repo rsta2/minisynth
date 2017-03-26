@@ -8,7 +8,7 @@ MiniSynth Pi
 Overview
 --------
 
-MiniSynth Pi is a virtual analog polyphonic (6 voices, 4 on Raspberry Pi 1) audio synthesizer, running bare metal (without separate operating system) on the Raspberry Pi.
+MiniSynth Pi is a polyphonic virtual analog audio synthesizer, running bare metal (without separate operating system) on the Raspberry Pi. On the Raspberry Pi 2 and 3 it allows to play up to 24 polyphonic voices at a time, on the Raspberry Pi 1 only 4 voices.
 
 You have to attach an USB MIDI keyboard controller (which supports the USB Audio Class MIDI specification) or an USB PC keyboard to your Raspberry Pi to play on it. The audio signal is available on the 3.5mm headphones jack. Thus Raspberry Pi models without headphones jack (e.g. Raspberry Pi Zero) are not supported. The graphical user interface (GUI) of MiniSynth Pi can be controlled using a standard USB mouse or the official Raspberry Pi touch screen.
 
@@ -34,7 +34,7 @@ When the toolchain is installed on your computer you can build MiniSynth Pi usin
 	./makeall clean
 	./makeall
 
-The `configure` command writes a *Config.mk* file for Circle. "2" is the major revision number of your Raspberry Pi (1, 2 or 3). The second (optional) parameter is the prefix of the commands of your toolchain and can be preceded with a path. Do not forget the dash at the end of the prefix!
+The `configure` command writes a *Config.mk* file for Circle and patches Circle, so that it allows to use multiple CPU cores. "2" is the major revision number of your Raspberry Pi (1, 2 or 3). The second (optional) parameter is the prefix of the commands of your toolchain and can be preceded with a path. Do not forget the dash at the end of the prefix!
 
 If the build was successful, you find the executable image file of MiniSynth Pi in the *src/* subdirectory with the name *kernel.img* (Raspberry Pi 1), *kernel7.img* (Raspberry Pi 2) or *kernel8-32.img* (Raspberry Pi 3).
 
