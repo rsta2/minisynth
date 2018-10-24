@@ -2,7 +2,7 @@
 // minisynth.h
 //
 // MiniSynth Pi - A virtual analogue synthesizer for Raspberry Pi
-// Copyright (C) 2017  R. Stange <rsta2@o2online.de>
+// Copyright (C) 2017-2018  R. Stange <rsta2@o2online.de>
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -20,7 +20,6 @@
 #ifndef _minisynth_h
 #define _minisynth_h
 
-#include <circle/pwmsoundbasedevice.h>
 #include <circle/interrupt.h>
 #include <circle/memory.h>
 #include <circle/types.h>
@@ -31,6 +30,12 @@
 #include "voicemanager.h"
 #include "config.h"
 
+#ifdef USE_I2S
+	#include <circle/i2ssoundbasedevice.h>
+#else
+	#include <circle/pwmsoundbasedevice.h>
+#endif
+
 // That all runs on core 0. SetPatch() gets called from the GUI and may be
 // interrupted by the other routines. NoteOn/Off() is IRQ-triggered by the USB IRQ
 // handler. GetChunk() is IRQ-triggered by the PWM DMA IRQ handler. IRQ handlers
@@ -38,7 +43,12 @@
 // SetPatch()) is mutual-exclusive. There is no need for explicit synchronization,
 // but setting a single parameter in SetPatch() must be atomic.
 
-class CMiniSynthesizer : public CPWMSoundBaseDevice
+class CMiniSynthesizer
+#ifdef USE_I2S
+	: public CI2SSoundBaseDevice
+#else
+	: public CPWMSoundBaseDevice
+#endif
 {
 public:
 	CMiniSynthesizer (CSynthConfig *pConfig,
@@ -62,9 +72,16 @@ private:
 
 	CVoiceManager m_VoiceManager;
 
+#ifdef USE_I2S
+	int m_nMinLevel;
+	int m_nMaxLevel;
+	int m_nNullLevel;
+	int m_nVolumeLevel;
+#else
 	unsigned m_nMaxLevel;
 	unsigned m_nNullLevel;
 	unsigned m_nVolumeLevel;
+#endif
 };
 
 #endif

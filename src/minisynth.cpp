@@ -2,7 +2,7 @@
 // minisynth.cpp
 //
 // MiniSynth Pi - A virtual analogue synthesizer for Raspberry Pi
-// Copyright (C) 2017  R. Stange <rsta2@o2online.de>
+// Copyright (C) 2017-2018  R. Stange <rsta2@o2online.de>
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -26,13 +26,23 @@ static const char FromMiniSynth[] = "synth";
 
 CMiniSynthesizer::CMiniSynthesizer (CSynthConfig *pConfig,
 				    CInterruptSystem *pInterrupt, CMemorySystem *pMemorySystem)
+#ifdef USE_I2S
+:	CI2SSoundBaseDevice (pInterrupt, SAMPLE_RATE, 2048),
+#else
 :	CPWMSoundBaseDevice (pInterrupt, SAMPLE_RATE),
+#endif
 	m_pConfig (pConfig),
 	m_MIDIKeyboard (this),
 	m_Keyboard (this),
 	m_VoiceManager (pMemorySystem),
+#ifdef USE_I2S
+	m_nMinLevel (GetRangeMin ()+1),
+	m_nMaxLevel (GetRangeMax ()-1),
+	m_nNullLevel (0),
+#else
 	m_nMaxLevel (GetRange ()-1),
 	m_nNullLevel (m_nMaxLevel / 2),
+#endif
 	m_nVolumeLevel (0)
 {
 }
@@ -64,7 +74,12 @@ void CMiniSynthesizer::SetPatch (CPatch *pPatch)
 
 	m_VoiceManager.SetPatch (pPatch);
 
-	m_nVolumeLevel =   m_nMaxLevel/2
+	m_nVolumeLevel =
+#ifdef USE_I2S
+			   m_nMaxLevel
+#else
+			   m_nMaxLevel/2
+#endif
 			 * powf (pPatch->GetParameter (SynthVolume) / 100.0, 3.3f); // apply some curve
 }
 
@@ -97,10 +112,17 @@ unsigned CMiniSynthesizer::GetChunk (u32 *pBuffer, unsigned nChunkSize)
 		{
 			nLevel = m_nMaxLevel;
 		}
+#ifdef USE_I2S
+		else if (nLevel < m_nMinLevel)
+		{
+			nLevel = m_nMinLevel;
+		}
+#else
 		else if (nLevel < 0)
 		{
 			nLevel = 0;
 		}
+#endif
 
 		// for 2 stereo channels
 		*pBuffer++ = (unsigned) nLevel;
