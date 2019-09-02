@@ -1,7 +1,7 @@
 #!/bin/bash
 
 cd circle
-./makeall $1 $2 || exit
+./makeall --nosample $1 $2 || exit
 
 cd addon
 
