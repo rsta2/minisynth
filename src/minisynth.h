@@ -2,7 +2,7 @@
 // minisynth.h
 //
 // MiniSynth Pi - A virtual analogue synthesizer for Raspberry Pi
-// Copyright (C) 2017-2018  R. Stange <rsta2@o2online.de>
+// Copyright (C) 2017-2019  R. Stange <rsta2@o2online.de>
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -27,6 +27,7 @@
 #include "patch.h"
 #include "midikeyboard.h"
 #include "pckeyboard.h"
+#include "serialmididevice.h"
 #include "voicemanager.h"
 #include "config.h"
 
@@ -57,6 +58,8 @@ public:
 
 	boolean Initialize (void);
 
+	void Process (void);
+
 	void SetPatch (CPatch *pPatch);
 
 	void NoteOn (u8 ucKeyNumber, u8 ucVelocity = VELOCITY_DEFAULT);	// MIDI key number and velocity
@@ -69,6 +72,9 @@ private:
 
 	CMIDIKeyboard m_MIDIKeyboard;
 	CPCKeyboard   m_Keyboard;
+
+	CSerialMIDIDevice m_SerialMIDI;
+	boolean m_bUseSerial;
 
 	CVoiceManager m_VoiceManager;
 

@@ -2,7 +2,7 @@
 // minisynth.cpp
 //
 // MiniSynth Pi - A virtual analogue synthesizer for Raspberry Pi
-// Copyright (C) 2017-2018  R. Stange <rsta2@o2online.de>
+// Copyright (C) 2017-2019  R. Stange <rsta2@o2online.de>
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -34,6 +34,8 @@ CMiniSynthesizer::CMiniSynthesizer (CSynthConfig *pConfig,
 	m_pConfig (pConfig),
 	m_MIDIKeyboard (this),
 	m_Keyboard (this),
+	m_SerialMIDI (this, pInterrupt),
+	m_bUseSerial (FALSE),
 	m_VoiceManager (pMemorySystem),
 #ifdef USE_I2S
 	m_nMinLevel (GetRangeMin ()+1),
@@ -63,9 +65,26 @@ boolean CMiniSynthesizer::Initialize (void)
 		return m_VoiceManager.Initialize ();
 	}
 
+	if (m_SerialMIDI.Initialize ())
+	{
+		CLogger::Get ()->Write (FromMiniSynth, LogNotice, "Using serial MIDI interface");
+
+		m_bUseSerial = TRUE;
+
+		return m_VoiceManager.Initialize ();
+	}
+
 	CLogger::Get ()->Write (FromMiniSynth, LogWarning, "Keyboard not found");
 
 	return FALSE;
+}
+
+void CMiniSynthesizer::Process (void)
+{
+	if (m_bUseSerial)
+	{
+		m_SerialMIDI.Process ();
+	}
 }
 
 void CMiniSynthesizer::SetPatch (CPatch *pPatch)

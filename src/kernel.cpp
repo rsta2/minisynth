@@ -49,10 +49,12 @@ boolean CKernel::Initialize (void)
 		bOK = m_Screen.Initialize ();
 	}
 
+#if 0
 	if (bOK)
 	{
 		bOK = m_Serial.Initialize (115200);
 	}
+#endif
 
 	if (bOK)
 	{
@@ -140,6 +142,8 @@ TShutdownMode CKernel::Run (void)
 
 	while (m_Synthesizer.IsActive ())
 	{
+		m_Synthesizer.Process ();
+
 		m_GUI.Update ();
 	}
 
