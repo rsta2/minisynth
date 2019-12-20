@@ -65,7 +65,7 @@ Using
 
 Before powering on your Raspberry Pi, the following devices have to be attached:
 
-* HDMI display (must support 800x600 pixels mode)
+* HDMI display (must support 800x480 pixels mode)
 * USB MIDI keyboard controller or USB PC keyboard
 * Standard USB mouse (if official touch screen is not used)
 * Headphones or amplifier (on the 3.5mm jack or via external I2S interface)
