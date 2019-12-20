@@ -12,8 +12,7 @@ OBJS	= main.o kernel.o minisynth.o \
 	  midikeyboard.o pckeyboard.o serialmididevice.o voicemanager.o \
 	  voice.o oscillator.o filter.o amplifier.o envelopegenerator.o \
 	  synthconfig.o patch.o parameter.o velocitycurve.o \
-	  mainwindow.o guiparameter.o \
-	  math.o math_expf.o
+	  mainwindow.o guiparameter.o
 
 LIBS	= $(CIRCLEHOME)/addon/ugui/libugui.a \
 	  $(CIRCLEHOME)/addon/Properties/libproperties.a \
