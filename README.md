@@ -8,9 +8,11 @@ MiniSynth Pi
 Overview
 --------
 
-MiniSynth Pi is a polyphonic virtual analog audio synthesizer, running bare metal (without separate operating system) on the Raspberry Pi. On the Raspberry Pi 2 and 3 it allows to play up to 24 polyphonic voices at a time, on the Raspberry Pi 1 only 4 voices.
+MiniSynth Pi is a polyphonic virtual analog audio synthesizer, running bare metal (without separate operating system) on the Raspberry Pi. On the Raspberry Pi 2, 3 and 4 it allows to play up to 24 polyphonic voices at a time, on the Raspberry Pi 1 only 4 voices.
 
-You have to attach an USB MIDI keyboard controller (which supports the USB Audio Class MIDI specification) or an USB PC keyboard to your Raspberry Pi to play on it. The audio signal is normally available on the 3.5mm headphones jack (I2S usage see below). Thus Raspberry Pi models without headphones jack (e.g. Raspberry Pi Zero) are not supported. The graphical user interface (GUI) of MiniSynth Pi can be controlled using a standard USB mouse or the official Raspberry Pi touch screen.
+You have to attach an USB MIDI keyboard controller (which supports the USB Audio Class MIDI specification) or an USB PC keyboard to your Raspberry Pi to play on it. Alternatively you can feed serial MIDI data (at 31250 Bps) into GPIO15 (Broadcom numbering), if no USB keyboard is attached. Normally you will need some external circuit to be able to attach a device with serial MIDI interface.
+
+The audio signal is normally available on the 3.5mm headphones jack (I2S usage see below). Thus Raspberry Pi models without headphones jack (e.g. Raspberry Pi Zero) are not supported. The graphical user interface (GUI) of MiniSynth Pi can be controlled using a standard USB mouse or the official Raspberry Pi touch screen.
 
 This version of MiniSynth Pi can be built so that it can be used with an external I2S interface. The audio signal is then available via this interface. Please note that only I2S interfaces are supported, which do not need additional device initialization (e.g. via I2C). MiniSynth Pi has been tested with the [pHAT DAC](https://shop.pimoroni.com/products/phat-dac) I2S interface, which is based on the PCM5102A DAC chip.
 
@@ -32,17 +34,19 @@ MiniSynth Pi uses the Circle bare metal build environment for the Raspberry Pi. 
 
 When the toolchain is installed on your computer you can build MiniSynth Pi using the following commands:
 
-	./configure 2 arm-none-eabi-
+	./configure 3 arm-eabi-
 	./makeall clean
 	./makeall
 
-The `configure` command writes a *Config.mk* file for Circle and patches Circle, so that it allows to use multiple CPU cores. "2" is the major revision number of your Raspberry Pi (1, 2 or 3). The second (optional) parameter is the prefix of the commands of your toolchain and can be preceded with a path. Do not forget the dash at the end of the prefix!
+The `configure` command writes a *Config.mk* file for Circle and patches Circle, so that it allows to use multiple CPU cores. "3" is the major revision number of your Raspberry Pi (1, 2, 3 or 4). The second (optional) parameter is the prefix of the commands of your toolchain and can be preceded with a path. Do not forget the dash at the end of the prefix!
+
+An optional third parameter can be appended to specify the bit size of the ARM architecture to be used as build target. It can be "32" (default) or "64" (for Raspberry Pi 3 and 4 only).
 
 If you want to build MiniSynth Pi for I2S interface usage, you have to define "USE_I2S" manually before build in the file *src/config.h* like that:
 
 	#define USE_I2S
 
-If the build was successful, you find the executable image file of MiniSynth Pi in the *src/* subdirectory with the name *kernel.img* (Raspberry Pi 1), *kernel7.img* (Raspberry Pi 2) or *kernel8-32.img* (Raspberry Pi 3).
+If the build was successful, you find the executable image file of MiniSynth Pi in the *src/* subdirectory with the name *kernel.img* (Raspberry Pi 1), *kernel7.img* (Raspberry Pi 2), *kernel8-32.img* (Raspberry Pi 3) or *kernel7l.img* (Raspberry Pi 4).
 
 Installation
 ------------
@@ -54,7 +58,7 @@ Furthermore you need the Raspberry Pi firmware. You can get it as follows:
 	cd circle/boot
 	make
 
-You have to copy the three files *bootcode.bin*, *start.elf* and *fixup.dat* from the *circle/boot/* subdirectory to the FAT partition on the SD card.
+You have to copy the three files *bootcode.bin*, *start.elf* and *fixup.dat* from the *circle/boot/* subdirectory to the FAT partition on the SD card. The Raspberry Pi 4 requires different firmware files. Please read the file *circle/boot/README* for details!
 
 Finally you may copy the configuration files *patch0.txt* (example patch) and *velocity-???.txt* (keyboard velocity curve) from the *config/* subdirectory to the SD card. The appropriate velocity curve file has to be renamed to *velocity.txt* to be used.
 
@@ -66,7 +70,7 @@ Using
 Before powering on your Raspberry Pi, the following devices have to be attached:
 
 * HDMI display (must support 800x480 pixels mode)
-* USB MIDI keyboard controller or USB PC keyboard
+* USB MIDI keyboard controller, USB PC keyboard or device with serial MIDI interface (at GPIO15, requires external circuit)
 * Standard USB mouse (if official touch screen is not used)
 * Headphones or amplifier (on the 3.5mm jack or via external I2S interface)
 
@@ -158,7 +162,6 @@ MiniSynth Pi uses the following source modules:
 * [Circle C++ bare metal environment for the Raspberry Pi](https://github.com/rsta2/circle/) (includes USB MIDI driver by Joshua Otto)
 * [uGUI library](http://www.embeddedlightning.com/ugui/) by Achim Doebler
 * [EMMC SD card driver (part of rpi-boot)](https://github.com/jncronin/rpi-boot/blob/master/emmc.c) by John Cronin
-* Optimized expf() function from the [GNU C Library](https://www.gnu.org/software/libc/), Copyright (C) 1997-2017 Free Software Foundation, Inc.
 
 Additional information has been obtained from:
 
