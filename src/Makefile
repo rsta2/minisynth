@@ -24,3 +24,5 @@ LIBS	= $(CIRCLEHOME)/addon/ugui/libugui.a \
 	  $(CIRCLEHOME)/lib/libcircle.a
 
 include $(CIRCLEHOME)/app/Rules.mk
+
+-include $(DEPS)

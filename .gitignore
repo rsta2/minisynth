@@ -1,11 +1,13 @@
 *.o
 *.a
+*.d
 *.elf
 *.lst
 *.img
 *.map
 *.bin
 *.com
+*.hex
 *~
 Config.mk
 .directory
