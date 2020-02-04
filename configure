@@ -46,19 +46,7 @@ cd circle || exit
 echo "RASPPI = $1" > Config.mk
 echo "PREFIX = $prefix" >> Config.mk
 echo "AARCH = $aarch" >> Config.mk
+echo "DEFINE += -DARM_ALLOW_MULTI_CORE -DSAVE_VFP_REGS_ON_IRQ" >> Config.mk
 
 echo "circle/Config.mk successfully created:"
 cat Config.mk
-
-# Edit circle/include/circle/sysconfig.h to enable ARM_ALLOW_MULTI_CORE
-cd include/circle || exit
-
-if [[ -w sysconfig.h ]] ; then
-	pattern="#define ARM_ALLOW_MULTI_CORE"
-	sed -i -e "s/\/\/$pattern/$pattern/" sysconfig.h
-	echo "$pattern enabled"
-
-	pattern="#define SAVE_VFP_REGS_ON_IRQ"
-	sed -i -e "s/\/\/$pattern/$pattern/" sysconfig.h
-	echo "$pattern enabled"
-fi
