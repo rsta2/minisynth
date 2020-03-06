@@ -44,7 +44,11 @@ fi
 cd circle || exit
 
 echo "RASPPI = $1" > Config.mk
-echo "PREFIX = $prefix" >> Config.mk
+if [[ $aarch == "32" ]] ; then
+	echo "PREFIX = $prefix" >> Config.mk
+else
+	echo "PREFIX64 = $prefix" >> Config.mk
+fi
 echo "AARCH = $aarch" >> Config.mk
 echo "DEFINE += -DSAVE_VFP_REGS_ON_IRQ" >> Config.mk
 if [[ $1 != "1" ]] ; then
