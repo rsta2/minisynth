@@ -2,7 +2,7 @@
 // voice.cpp
 //
 // MiniSynth Pi - A virtual analogue synthesizer for Raspberry Pi
-// Copyright (C) 2017  R. Stange <rsta2@o2online.de>
+// Copyright (C) 2017-2020  R. Stange <rsta2@o2online.de>
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -63,7 +63,7 @@ void CVoice::SetPatch (CPatch *pPatch)
 
 	// VCF
 	m_LFO_VCF.SetWaveform ((TWaveform) pPatch->GetParameter (LFOVCFWaveform));
-	m_LFO_VCF.SetFrequency (pPatch->GetParameter (LFOVCFFrequency));
+	m_LFO_VCF.SetFrequency (pPatch->GetParameter (LFOVCFFrequency) / 10.0);
 
 	m_VCF.SetCutoffFrequency (pPatch->GetParameter (VCFCutoffFrequency));
 	m_VCF.SetResonance (pPatch->GetParameter (VCFResonance));
@@ -77,7 +77,7 @@ void CVoice::SetPatch (CPatch *pPatch)
 
 	// VCA
 	m_LFO_VCA.SetWaveform ((TWaveform) pPatch->GetParameter (LFOVCAWaveform));
-	m_LFO_VCA.SetFrequency (pPatch->GetParameter (LFOVCAFrequency));
+	m_LFO_VCA.SetFrequency (pPatch->GetParameter (LFOVCAFrequency) / 10.0);
 
 	m_EG_VCA.SetAttack (pPatch->GetParameter (EGVCAAttack));
 	m_EG_VCA.SetDecay (pPatch->GetParameter (EGVCADecay));

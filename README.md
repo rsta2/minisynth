@@ -135,16 +135,16 @@ One patch of MiniSynth Pi has the following parameters:
 | FILTER     | VCF      | Cutoff    | %    | 10-100    | 80      | Cutoff frequency     |
 | FILTER     | VCF      | Resonance | %    | 0-100     | 50      | Resonance parameter  |
 | FILTER     | LFO      | Wave      |      |           | Sine    | Waveform (*)         |
-| FILTER     | LFO      | Rate      | Hz   | 1-35      | 20      | Modulation frequency |
-| FILTER     | LFO      | Volume    | %    | 0-90      | 0       | Modulation volume    |
+| FILTER     | LFO      | Rate      | Hz   | 0.5-5.0   | 2.0     | Modulation frequency |
+| FILTER     | LFO      | Volume    | %    | 0-100     | 0       | Modulation volume    |
 | FILTER     | ENVELOPE | Attack    | ms   | 0-2000    | 0       | Attack delay         |
 | FILTER     | ENVELOPE | Decay     | ms   | 100-10000 | 4000    | Decay delay          |
 | FILTER     | ENVELOPE | Sustain   | %    | 0-100     | 100     | Sustain level        |
 | FILTER     | ENVELOPE | Release   | ms   | 0-5000    | 1000    | Release delay        |
 | AMPLIFIER  |          | Volume    | %    | 0-100     | 50      | Master volume        |
 | AMPLIFIER  | LFO      | Wave      |      |           | Sine    | Waveform (*)         |
-| AMPLIFIER  | LFO      | Rate      | Hz   | 1-35      | 5       | Modulation frequency |
-| AMPLIFIER  | LFO      | Volume    | %    | 0-90      | 0       | Modulation volume    |
+| AMPLIFIER  | LFO      | Rate      | Hz   | 0.5-5.0   | 2.0     | Modulation frequency |
+| AMPLIFIER  | LFO      | Volume    | %    | 0-100     | 0       | Modulation volume    |
 | AMPLIFIER  | ENVELOPE | Attack    | ms   | 0-2000    | 100     | Attack delay         |
 | AMPLIFIER  | ENVELOPE | Decay     | ms   | 100-10000 | 4000    | Decay delay          |
 | AMPLIFIER  | ENVELOPE | Sustain   | %    | 0-100     | 100     | Sustain level        |

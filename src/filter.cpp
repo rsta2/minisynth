@@ -9,7 +9,7 @@
 //		https://github.com/risgk/digital-synth-wra32/blob/master/vcf.js
 //
 // MiniSynth Pi - A virtual analogue synthesizer for Raspberry Pi
-// Copyright (C) 2017  R. Stange <rsta2@o2online.de>
+// Copyright (C) 2017-2020  R. Stange <rsta2@o2online.de>
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -78,9 +78,10 @@ void CFilter::SetModulationVolume (float fVolume)
 
 void CFilter::NextSample (void)
 {
+	float fCutoffFrequency = m_fCutoffFrequency;
+
 	assert (m_pModulator != 0);
-	float fCutoffFrequency =   m_fCutoffFrequency * (1.0-m_fModulationVolume)
-				 + m_pModulator->GetOutputLevel () * m_fModulationVolume;
+	fCutoffFrequency *= 1.0 + m_pModulator->GetOutputLevel ()*m_fModulationVolume;
 
 	assert (m_pEnvelope != 0);
 	fCutoffFrequency *= m_pEnvelope->GetOutputLevel ();

@@ -2,7 +2,7 @@
 // amplifier.cpp
 //
 // MiniSynth Pi - A virtual analogue synthesizer for Raspberry Pi
-// Copyright (C) 2017  R. Stange <rsta2@o2online.de>
+// Copyright (C) 2017-2020  R. Stange <rsta2@o2online.de>
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -48,10 +48,9 @@ void CAmplifier::NextSample (void)
 	assert (m_pModulator != 0);
 	assert (m_pEnvelope != 0);
 
-	m_fOutputLevel =   m_pInput->GetOutputLevel () * (1.0-m_fModulationVolume)
-			 + m_pModulator->GetOutputLevel () * m_fModulationVolume;
-
-	m_fOutputLevel *=  m_pEnvelope->GetOutputLevel ();
+	m_fOutputLevel  = m_pInput->GetOutputLevel ();
+	m_fOutputLevel *= 1.0 + m_pModulator->GetOutputLevel ()*m_fModulationVolume;
+	m_fOutputLevel *= m_pEnvelope->GetOutputLevel ();
 }
 
 float CAmplifier::GetOutputLevel (void) const

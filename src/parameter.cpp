@@ -2,7 +2,7 @@
 // parameter.cpp
 //
 // MiniSynth Pi - A virtual analogue synthesizer for Raspberry Pi
-// Copyright (C) 2017  R. Stange <rsta2@o2online.de>
+// Copyright (C) 2017-2020  R. Stange <rsta2@o2online.de>
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -117,6 +117,10 @@ const char *CParameter::GetString (void)
 
 	case ParameterFrequency:
 		m_String.Format ("%u Hz", m_nValue);
+		return m_String;
+
+	case ParameterFrequencyTenth:
+		m_String.Format ("%.1f Hz", m_nValue / 10.0);
 		return m_String;
 
 	case ParameterTime:

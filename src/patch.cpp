@@ -2,7 +2,7 @@
 // patch.cpp
 //
 // MiniSynth Pi - A virtual analogue synthesizer for Raspberry Pi
-// Copyright (C) 2017  R. Stange <rsta2@o2online.de>
+// Copyright (C) 2017-2020  R. Stange <rsta2@o2online.de>
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -42,7 +42,7 @@ ParameterList[] =		// must match TSynthParameter
 
 	// VCF
 	{"LFOVCFWaveform", ParameterWaveform, WaveformSine, WaveformUnknown-1, 1, WaveformSine, "Wave"},
-	{"LFOVCFFrequency", ParameterFrequency, 1, 35, 1, 20, "Rate"},
+	{"LFOVCFFrequency", ParameterFrequencyTenth, 5, 50, 5, 20, "Rate"},
 
 	{"VCFCutoffFrequency", ParameterPercent, 10, 100, 2, 80, "Cutoff"},
 	{"VCFResonance", ParameterPercent, 0, 100, 2, 50, "Resonance"},
@@ -52,18 +52,18 @@ ParameterList[] =		// must match TSynthParameter
 	{"EGVCFSustain", ParameterPercent, 0, 100, 10, 100, "Sustain"},
 	{"EGVCFRelease", ParameterTime, 0, 5000, 100, 1000, "Release"},
 
-	{"VCFModulationVolume", ParameterPercent, 0, 90, 5, 0, "Volume"},
+	{"VCFModulationVolume", ParameterPercent, 0, 100, 5, 0, "Volume"},
 
 	// VCA
 	{"LFOVCAWaveform", ParameterWaveform, WaveformSine, WaveformUnknown-1, 1, WaveformSine, "Wave"},
-	{"LFOVCAFrequency", ParameterFrequency, 1, 35, 1, 5, "Rate"},
+	{"LFOVCAFrequency", ParameterFrequencyTenth, 5, 50, 5, 20, "Rate"},
 
 	{"EGVCAAttack", ParameterTime, 0, 2000, 50, 100, "Attack"},
 	{"EGVCADecay", ParameterTime, 100, 10000, 100, 4000, "Decay"},
 	{"EGVCASustain", ParameterPercent, 0, 100, 10, 100, "Sustain"},
 	{"EGVCARelease", ParameterTime, 0, 5000, 100, 100, "Release"},
 
-	{"VCAModulationVolume", ParameterPercent, 0, 90, 10, 0, "Volume"},
+	{"VCAModulationVolume", ParameterPercent, 0, 100, 10, 0, "Volume"},
 
 	// Synth
 	{"SynthVolume", ParameterPercent, 0, 100, 10, 50, "Volume"}
@@ -109,12 +109,31 @@ boolean CPatch::Load (void)
 							      m_pParameter[i]->GetDefault ()));
 	}
 
+	if (m_Properties.GetNumber ("Version", 1) == 1)		// correct v1 parameters
+	{
+		// decrease VCF cutoff frequency, because v1 VCF LFO depth had this influence
+		m_pParameter[VCFCutoffFrequency]->Set (  m_pParameter[VCFCutoffFrequency]->Get ()
+						       - m_pParameter[VCFModulationVolume]->Get ());
+		// reset VCF LFO frequency and depth
+		m_pParameter[LFOVCFFrequency]->Set (ParameterList[LFOVCFFrequency].nDefault);
+		m_pParameter[VCFModulationVolume]->Set (ParameterList[VCFModulationVolume].nDefault);
+
+		// decrease master volume, because v1 VCA LFO depth had this influence
+		m_pParameter[SynthVolume]->Set (  m_pParameter[SynthVolume]->Get ()
+						- m_pParameter[VCAModulationVolume]->Get ());
+		// reset VCA LFO frequency and depth
+		m_pParameter[LFOVCAFrequency]->Set (ParameterList[LFOVCAFrequency].nDefault);
+		m_pParameter[VCAModulationVolume]->Set (ParameterList[VCAModulationVolume].nDefault);
+	}
+
 	return bResult;
 }
 
 boolean CPatch::Save (void)
 {
 	m_Properties.RemoveAll ();
+
+	m_Properties.SetNumber ("Version", 2);
 
 	for (unsigned i = 0; i < SynthParameterUnknown; i++)
 	{
