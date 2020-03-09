@@ -2,7 +2,7 @@
 // voicemanager.cpp
 //
 // MiniSynth Pi - A virtual analogue synthesizer for Raspberry Pi
-// Copyright (C) 2017  R. Stange <rsta2@o2online.de>
+// Copyright (C) 2017-2020  R. Stange <rsta2@o2online.de>
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -21,9 +21,11 @@
 #include <assert.h>
 
 CVoiceManager::CVoiceManager (CMemorySystem *pMemorySystem)
+:
 #ifdef ARM_ALLOW_MULTI_CORE
-:	CMultiCoreSupport (pMemorySystem)
+	CMultiCoreSupport (pMemorySystem),
 #endif
+	m_nLastNoteOnVoice (VOICES)
 {
 	for (unsigned i = 0; i < VOICES; i++)
 	{
@@ -159,7 +161,17 @@ void CVoiceManager::NoteOn (u8 ucKeyNumber, u8 ucVelocity)
 	{
 		assert (m_pVoice[i] != 0);
 		m_pVoice[i]->NoteOn (ucKeyNumber, ucVelocity);
+
+		m_nLastNoteOnVoice = i;
 	}
+#ifdef LAST_NOTE_PRIORITY
+	else
+	{
+		assert (m_nLastNoteOnVoice < VOICES);
+		assert (m_pVoice[m_nLastNoteOnVoice] != 0);
+		m_pVoice[m_nLastNoteOnVoice]->NoteOn (ucKeyNumber, ucVelocity);
+	}
+#endif
 }
 
 void CVoiceManager::NoteOff (u8 ucKeyNumber)

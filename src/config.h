@@ -2,7 +2,7 @@
 // config.h
 //
 // MiniSynth Pi - A virtual analogue synthesizer for Raspberry Pi
-// Copyright (C) 2017-2018  R. Stange <rsta2@o2online.de>
+// Copyright (C) 2017-2020  R. Stange <rsta2@o2online.de>
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -35,6 +35,9 @@
 #define PATCHES			10		// number of configurable patches, don't change
 
 #define PARTITION		"emmc1-1"	// SD card partition to use
+
+// configurable options
+#define LAST_NOTE_PRIORITY			// last note priority polyphony
 
 // color scheme
 #if 1
