@@ -2,7 +2,7 @@
 // kernel.h
 //
 // MiniSynth Pi - A virtual analogue synthesizer for Raspberry Pi
-// Copyright (C) 2017-2019  R. Stange <rsta2@o2online.de>
+// Copyright (C) 2017-2020  R. Stange <rsta2@o2online.de>
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -32,9 +32,9 @@
 #include <circle/logger.h>
 #include <circle/usb/usbhcidevice.h>
 #include <SDCard/emmc.h>
-#include <circle/fs/fat/fatfs.h>
 #include <circle/input/touchscreen.h>
 #include <ugui/uguicpp.h>
+#include <fatfs/ff.h>
 #include <circle/types.h>
 #include "synthconfig.h"
 #include "minisynth.h"
@@ -70,10 +70,10 @@ private:
 	CLogger			m_Logger;
 	CUSBHCIDevice		m_USBHCI;
 	CEMMCDevice		m_EMMC;
-	CFATFileSystem		m_FileSystem;
 	CTouchScreenDevice	m_TouchScreen;
 	CUGUI			m_GUI;
 
+	FATFS			m_FileSystem;
 	CSynthConfig		m_Config;
 	CMiniSynthesizer	m_Synthesizer;
 };

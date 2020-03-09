@@ -16,10 +16,10 @@ OBJS	= main.o kernel.o minisynth.o \
 
 LIBS	= $(CIRCLEHOME)/addon/ugui/libugui.a \
 	  $(CIRCLEHOME)/addon/Properties/libproperties.a \
+	  $(CIRCLEHOME)/addon/fatfs/libfatfs.a \
 	  $(CIRCLEHOME)/addon/SDCard/libsdcard.a \
 	  $(CIRCLEHOME)/lib/usb/libusb.a \
 	  $(CIRCLEHOME)/lib/input/libinput.a \
-	  $(CIRCLEHOME)/lib/fs/fat/libfatfs.a \
 	  $(CIRCLEHOME)/lib/fs/libfs.a \
 	  $(CIRCLEHOME)/lib/libcircle.a
 

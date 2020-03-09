@@ -2,7 +2,7 @@
 // kernel.cpp
 //
 // MiniSynth Pi - A virtual analogue synthesizer for Raspberry Pi
-// Copyright (C) 2017-2019  R. Stange <rsta2@o2online.de>
+// Copyright (C) 2017-2020  R. Stange <rsta2@o2online.de>
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -107,15 +107,9 @@ TShutdownMode CKernel::Run (void)
 	m_Logger.Write (FromKernel, LogNotice, "Compile time: " __DATE__ " " __TIME__);
 
 	// Mount file system
-	CDevice *pPartition = m_DeviceNameService.GetDevice (PARTITION, TRUE);
-	if (pPartition == 0)
+	if (f_mount (&m_FileSystem, DRIVE, 1) != FR_OK)
 	{
-		m_Logger.Write (FromKernel, LogPanic, "Partition not found: %s", PARTITION);
-	}
-
-	if (!m_FileSystem.Mount (pPartition))
-	{
-		m_Logger.Write (FromKernel, LogPanic, "Cannot mount partition: %s", PARTITION);
+		m_Logger.Write (FromKernel, LogPanic, "Cannot mount drive: %s", DRIVE);
 	}
 
 	// Load global configuration

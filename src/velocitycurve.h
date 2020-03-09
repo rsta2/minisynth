@@ -2,7 +2,7 @@
 // velocitycurve.h
 //
 // MiniSynth Pi - A virtual analogue synthesizer for Raspberry Pi
-// Copyright (C) 2017  R. Stange <rsta2@o2online.de>
+// Copyright (C) 2017-2020  R. Stange <rsta2@o2online.de>
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -20,9 +20,9 @@
 #ifndef _velocitycurve_h
 #define _velocitycurve_h
 
-#include <circle/fs/fat/fatfs.h>
+#include <fatfs/ff.h>
 #include <circle/types.h>
-#include <Properties/propertiesfile.h>
+#include <Properties/propertiesfatfsfile.h>
 
 #define VELOCITY_MIN	1
 #define VELOCITY_MAX	127
@@ -30,7 +30,7 @@
 class CVelocityCurve
 {
 public:
-	CVelocityCurve (CFATFileSystem *pFileSystem);
+	CVelocityCurve (FATFS *pFileSystem);
 	~CVelocityCurve (void);
 
 	boolean Load (void);
@@ -38,7 +38,7 @@ public:
 	u8 MapVelocity (u8 ucVelocity) const;
 
 private:
-	CPropertiesFile m_Properties;
+	CPropertiesFatFsFile m_Properties;
 
 	u8 m_ucVelocity[VELOCITY_MAX+1];
 };

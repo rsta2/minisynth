@@ -4,7 +4,7 @@
 // Container for global configuration and all patches
 //
 // MiniSynth Pi - A virtual analogue synthesizer for Raspberry Pi
-// Copyright (C) 2017  R. Stange <rsta2@o2online.de>
+// Copyright (C) 2017-2020  R. Stange <rsta2@o2online.de>
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -22,7 +22,7 @@
 #ifndef _synthconfig_h
 #define _synthconfig_h
 
-#include <circle/fs/fat/fatfs.h>
+#include <fatfs/ff.h>
 #include "patch.h"
 #include "velocitycurve.h"
 #include "config.h"
@@ -30,7 +30,7 @@
 class CSynthConfig
 {
 public:
-	CSynthConfig (CFATFileSystem *pFileSystem);
+	CSynthConfig (FATFS *pFileSystem);
 	~CSynthConfig (void);
 
 	// loads global configuration only, not the patches

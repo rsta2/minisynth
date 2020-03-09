@@ -69,7 +69,7 @@ ParameterList[] =		// must match TSynthParameter
 	{"SynthVolume", ParameterPercent, 0, 100, 10, 50, "Volume"}
 };
 
-CPatch::CPatch (const char *pFileName, CFATFileSystem *pFileSystem)
+CPatch::CPatch (const char *pFileName, FATFS *pFileSystem)
 :	m_Properties (pFileName, pFileSystem)
 {
 	for (unsigned i = 0; i < SynthParameterUnknown; i++)

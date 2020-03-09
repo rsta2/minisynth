@@ -9,6 +9,10 @@ cd SDCard
 make $1 $2 || exit
 cd ..
 
+cd fatfs
+make $1 $2 || exit
+cd ..
+
 cd Properties
 make $1 $2 || exit
 cd ..

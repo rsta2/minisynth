@@ -4,7 +4,7 @@
 // Container for patch settings, loadable from properties file
 //
 // MiniSynth Pi - A virtual analogue synthesizer for Raspberry Pi
-// Copyright (C) 2017  R. Stange <rsta2@o2online.de>
+// Copyright (C) 2017-2020  R. Stange <rsta2@o2online.de>
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -24,7 +24,8 @@
 
 #include "parameter.h"
 #include <circle/types.h>
-#include <Properties/propertiesfile.h>
+#include <Properties/propertiesfatfsfile.h>
+#include <fatfs/ff.h>
 
 enum TSynthParameter			// the parameters of a patch
 {
@@ -69,7 +70,7 @@ enum TSynthParameter			// the parameters of a patch
 class CPatch
 {
 public:
-	CPatch (const char *pFileName, CFATFileSystem *pFileSystem);
+	CPatch (const char *pFileName, FATFS *pFileSystem);
 	~CPatch (void);
 
 	boolean Load (void);
@@ -85,7 +86,7 @@ public:
 	const char *GetParameterString (TSynthParameter Parameter);
 
 private:
-	CPropertiesFile m_Properties;
+	CPropertiesFatFsFile m_Properties;
 
 	CParameter *m_pParameter[SynthParameterUnknown];
 };

@@ -2,7 +2,7 @@
 // velocitycurve.cpp
 //
 // MiniSynth Pi - A virtual analogue synthesizer for Raspberry Pi
-// Copyright (C) 2017  R. Stange <rsta2@o2online.de>
+// Copyright (C) 2017-2020  R. Stange <rsta2@o2online.de>
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -18,11 +18,12 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 #include "velocitycurve.h"
+#include "config.h"
 #include <circle/string.h>
 #include <assert.h>
 
-CVelocityCurve::CVelocityCurve (CFATFileSystem *pFileSystem)
-:	m_Properties ("velocity.txt", pFileSystem)
+CVelocityCurve::CVelocityCurve (FATFS *pFileSystem)
+:	m_Properties (DRIVE "/velocity.txt", pFileSystem)
 {
 	// defaults to linear curve
 	for (unsigned i = VELOCITY_MIN; i <= VELOCITY_MAX; i++)

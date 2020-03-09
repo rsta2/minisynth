@@ -2,7 +2,7 @@
 // synthconfig.cpp
 //
 // MiniSynth Pi - A virtual analogue synthesizer for Raspberry Pi
-// Copyright (C) 2017  R. Stange <rsta2@o2online.de>
+// Copyright (C) 2017-2020  R. Stange <rsta2@o2online.de>
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -18,10 +18,11 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 #include "synthconfig.h"
+#include "config.h"
 #include <circle/string.h>
 #include <assert.h>
 
-CSynthConfig::CSynthConfig (CFATFileSystem *pFileSystem)
+CSynthConfig::CSynthConfig (FATFS *pFileSystem)
 :	m_nActivePatch (0),
 	m_VelocityCurve (pFileSystem)
 {
@@ -30,7 +31,7 @@ CSynthConfig::CSynthConfig (CFATFileSystem *pFileSystem)
 	for (unsigned i = 0; i < PATCHES; i++)
 	{
 		CString FileName;
-		FileName.Format ("patch%u.txt", i);
+		FileName.Format (DRIVE "/patch%u.txt", i);
 
 		m_pPatch[i] = new CPatch (FileName, pFileSystem);
 		assert (m_pPatch[i] != 0);
