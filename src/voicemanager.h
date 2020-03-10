@@ -27,6 +27,7 @@
 #include <circle/types.h>
 #include "patch.h"
 #include "voice.h"
+#include "reverbmodule.h"
 #include "config.h"
 
 #ifdef ARM_ALLOW_MULTI_CORE
@@ -79,7 +80,8 @@ public:
 	void NoteOff (u8 ucKeyNumber);
 
 	void NextSample (void);
-	float GetOutputLevel (void) const;
+	float GetOutputLevelLeft (void) const;
+	float GetOutputLevelRight (void) const;
 
 private:
 	float ProcessVoices (unsigned nFirst, unsigned nLast);
@@ -93,9 +95,9 @@ private:
 	volatile TCoreStatus m_CoreStatus[CORES];
 
 	volatile float m_fOutputLevel[CORES];
-#else
-	float m_fOutputLevel;
 #endif
+
+	CReverbModule m_ReverbModule;
 };
 
 #endif

@@ -2,7 +2,7 @@
 // mainwindow.h
 //
 // MiniSynth Pi - A virtual analogue synthesizer for Raspberry Pi
-// Copyright (C) 2017  R. Stange <rsta2@o2online.de>
+// Copyright (C) 2017-2020  R. Stange <rsta2@o2online.de>
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -58,6 +58,7 @@ private:
 	UG_TEXTBOX m_Textbox12;
 	UG_TEXTBOX m_Textbox13;
 	UG_TEXTBOX m_Textbox14;
+	UG_TEXTBOX m_Textbox15;
 
 	UG_BUTTON m_Button1;
 	UG_BUTTON m_Button2;
@@ -94,8 +95,10 @@ private:
 	CGUIParameter m_EGVCARelease;
 	CGUIParameter m_VCAModulationVolume;
 	CGUIParameter m_SynthVolume;
+	CGUIParameter m_ReverbDecay;
+	CGUIParameter m_ReverbVolume;
 
-	static const unsigned s_ObjectCount = 14+13+21*3;	// must match the number of objects above
+	static const unsigned s_ObjectCount = 15+13+23*3;	// must match the number of objects above
 	UG_OBJECT m_ObjectList[s_ObjectCount];
 
 	CPatch *m_pActivePatch;

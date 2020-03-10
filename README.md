@@ -89,11 +89,11 @@ MiniSynth Pi starts in about four seconds. It is controlled using the following 
 	| <   Rate   >   <   Rate   >   <   Rate   >        6       |
 	| <  Volume  >   <  Volume  >   <  Volume  >        7       |
 	|                                                   8       |
-	|                  ENVELOPE       ENVELOPE          9       |
-	|     HELP       <  Attack  >   <  Attack  >                |
-	|                <   Decay  >   <   Decay  >       LOAD     |
+	|    REVERB        ENVELOPE       ENVELOPE          9       |
+	| <   Decay  >   <  Attack  >   <  Attack  >                |
+	| <  Volume  >   <   Decay  >   <   Decay  >       LOAD     |
 	|                <  Sustain >   <  Sustain >       SAVE     |
-	|                <  Release >   <  Release >                |
+	|     HELP       <  Release >   <  Release >                |
 	| MiniSynth Pi                   VIRTUAL ANALOG SYNTHESIZER |
 	+-----------------------------------------------------------+
 
@@ -149,6 +149,8 @@ One patch of MiniSynth Pi has the following parameters:
 | AMPLIFIER  | ENVELOPE | Decay     | ms   | 100-10000 | 4000    | Decay delay          |
 | AMPLIFIER  | ENVELOPE | Sustain   | %    | 0-100     | 100     | Sustain level        |
 | AMPLIFIER  | ENVELOPE | Release   | ms   | 0-5000    | 100     | Release delay        |
+| EFFECTS    | REVERB   | Decay     | %    | 0-50      | 20      | Rate of decay        |
+| EFFECTS    | REVERB   | Volume    | %    | 0-100     | 0       | Wet/dry ratio        |
 
 (*) Waveform can be: Sine, Square, Sawtooth, Triangle, Pulse 12.5% or Pulse 25%
 

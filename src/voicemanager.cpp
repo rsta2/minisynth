@@ -40,8 +40,6 @@ CVoiceManager::CVoiceManager (CMemorySystem *pMemorySystem)
 
 		m_fOutputLevel[nCore] = 0.0;
 	}
-#else
-	m_fOutputLevel = 0.0;
 #endif
 }
 
@@ -129,6 +127,8 @@ void CVoiceManager::SetPatch (CPatch *pPatch)
 		m_pVoice[i]->SetPatch (pPatch);
 	}
 
+	m_ReverbModule.SetDecay (pPatch->GetParameter (ReverbDecay) / 100.0f);
+	m_ReverbModule.SetWetDryRatio (pPatch->GetParameter (ReverbVolume) / 100.0f);
 }
 
 void CVoiceManager::NoteOn (u8 ucKeyNumber, u8 ucVelocity)
@@ -214,24 +214,27 @@ void CVoiceManager::NextSample (void)		// runs on core 0
 			// just wait
 		}
 	}
-#else
-	m_fOutputLevel = ProcessVoices (0, VOICES-1);
-#endif
-}
 
-float CVoiceManager::GetOutputLevel (void) const
-{
-#ifdef ARM_ALLOW_MULTI_CORE
 	float fLevel = 0.0;
 	for (unsigned nCore = 0; nCore < CORES; nCore++)
 	{
 		fLevel += m_fOutputLevel[nCore];
 	}
 
-	return fLevel;
+	m_ReverbModule.NextSample (fLevel);
 #else
-	return m_fOutputLevel;
+	m_ReverbModule.NextSample (ProcessVoices (0, VOICES-1));
 #endif
+}
+
+float CVoiceManager::GetOutputLevelLeft (void) const
+{
+	return m_ReverbModule.GetOutputLevelLeft ();
+}
+
+float CVoiceManager::GetOutputLevelRight (void) const
+{
+	return m_ReverbModule.GetOutputLevelRight ();
 }
 
 float CVoiceManager::ProcessVoices (unsigned nFirst, unsigned nLast)
