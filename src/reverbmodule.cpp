@@ -199,13 +199,14 @@ void CReverbModule::NextSample (float fInputLevel)
 	m_DelayL33_39.NextSample (m_Delay39.GetOutputLevel ());
 
 	float fAccu;
-	fAccu  = 0.6f * m_DelayL48_54_1.GetOutputLevel ();
-	fAccu += 0.6f * m_DelayL48_54_2.GetOutputLevel ();
-	fAccu -= 0.6f * m_DelayL55_59.GetOutputLevel ();
-	fAccu += 0.6f * m_DelayL59_63.GetOutputLevel ();
-	fAccu -= 0.6f * m_DelayL24_30.GetOutputLevel ();
-	fAccu -= 0.6f * m_DelayL31_33.GetOutputLevel ();
-	fAccu -= 0.6f * m_DelayL33_39.GetOutputLevel ();
+	fAccu  = m_DelayL48_54_1.GetOutputLevel ();
+	fAccu += m_DelayL48_54_2.GetOutputLevel ();
+	fAccu -= m_DelayL55_59.GetOutputLevel ();
+	fAccu += m_DelayL59_63.GetOutputLevel ();
+	fAccu -= m_DelayL24_30.GetOutputLevel ();
+	fAccu -= m_DelayL31_33.GetOutputLevel ();
+	fAccu -= m_DelayL33_39.GetOutputLevel ();
+	fAccu *= 0.6f;
 	m_fOutputLevelLeft = fInputLevel*(1.0f-m_fWetDryRatio) + fAccu*m_fWetDryRatio;
 
 	m_DelayR24_30_1.NextSample (m_DecayDiffuser23_24.GetOutputLevel ());
@@ -216,12 +217,13 @@ void CReverbModule::NextSample (float fInputLevel)
 	m_DelayR55_59.NextSample (m_DecayDiffuser55_59.GetOutputLevel ());
 	m_DelayR59_63.NextSample (m_Delay63.GetOutputLevel ());
 
-	fAccu  = 0.6f * m_DelayR24_30_1.GetOutputLevel ();
-	fAccu += 0.6f * m_DelayR24_30_2.GetOutputLevel ();
-	fAccu -= 0.6f * m_DelayR31_33.GetOutputLevel ();
-	fAccu += 0.6f * m_DelayR33_39.GetOutputLevel ();
-	fAccu -= 0.6f * m_DelayR48_54.GetOutputLevel ();
-	fAccu -= 0.6f * m_DelayR55_59.GetOutputLevel ();
-	fAccu -= 0.6f * m_DelayR59_63.GetOutputLevel ();
+	fAccu  = m_DelayR24_30_1.GetOutputLevel ();
+	fAccu += m_DelayR24_30_2.GetOutputLevel ();
+	fAccu -= m_DelayR31_33.GetOutputLevel ();
+	fAccu += m_DelayR33_39.GetOutputLevel ();
+	fAccu -= m_DelayR48_54.GetOutputLevel ();
+	fAccu -= m_DelayR55_59.GetOutputLevel ();
+	fAccu -= m_DelayR59_63.GetOutputLevel ();
+	fAccu *= 0.6f;
 	m_fOutputLevelRight = fInputLevel*(1.0f-m_fWetDryRatio) + fAccu*m_fWetDryRatio;
 }
