@@ -113,13 +113,13 @@ CReverbModule::CReverbModule (void)
 	m_InputDiffuser15_16 (InputDiffusion2, 379),
 	m_InputDiffuser21_22 (InputDiffusion2, 277),
 
-	m_DecayDiffuser23_24 (DecayDiffusion1, 672, &m_LFO23_24, Excursion),
+	m_DecayDiffuser23_24 (-DecayDiffusion1, 672, &m_LFO23_24, Excursion),
 	m_Delay30 (4453),
 	m_Attenuator30 (Damping),
 	m_DecayDiffuser31_33 (m_fDecayDiffusion2, 1800),
 	m_Delay39 (3720),
 
-	m_DecayDiffuser46_48 (DecayDiffusion1, 908, &m_LFO46_48, Excursion),
+	m_DecayDiffuser46_48 (-DecayDiffusion1, 908, &m_LFO46_48, Excursion),
 	m_Delay54 (4217),
 	m_Attenuator54 (Damping),
 	m_DecayDiffuser55_59 (m_fDecayDiffusion2, 2656),
