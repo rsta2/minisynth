@@ -2,7 +2,7 @@
 // serialmididevice.h
 //
 // MiniSynth Pi - A virtual analogue synthesizer for Raspberry Pi
-// Copyright (C) 2017-2019  R. Stange <rsta2@o2online.de>
+// Copyright (C) 2017-2020  R. Stange <rsta2@o2online.de>
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -20,13 +20,14 @@
 #ifndef _serialmididevice_h
 #define _serialmididevice_h
 
+#include "mididevice.h"
 #include <circle/interrupt.h>
 #include <circle/serial.h>
 #include <circle/types.h>
 
 class CMiniSynthesizer;
 
-class CSerialMIDIDevice
+class CSerialMIDIDevice : public CMIDIDevice
 {
 public:
 	CSerialMIDIDevice (CMiniSynthesizer *pSynthesizer, CInterruptSystem *pInterrupt);
@@ -37,11 +38,6 @@ public:
 	void Process (void);
 
 private:
-	void MIDIPacketHandler (unsigned nCable, u8 *pPacket, unsigned nLength);
-
-private:
-	CMiniSynthesizer *m_pSynthesizer;
-
 	CSerialDevice m_Serial;
 	unsigned m_nSerialState;
 	u8 m_SerialMessage[3];

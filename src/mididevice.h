@@ -1,5 +1,5 @@
 //
-// midikeyboard.h
+// mididevice.h
 //
 // MiniSynth Pi - A virtual analogue synthesizer for Raspberry Pi
 // Copyright (C) 2017-2020  R. Stange <rsta2@o2online.de>
@@ -17,27 +17,24 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
-#ifndef _midikeyboard_h
-#define _midikeyboard_h
+#ifndef _mididevice_h
+#define _mididevice_h
 
-#include "mididevice.h"
 #include <circle/types.h>
 
 class CMiniSynthesizer;
 
-class CMIDIKeyboard : public CMIDIDevice
+class CMIDIDevice
 {
 public:
-	CMIDIKeyboard (CMiniSynthesizer *pSynthesizer);
-	~CMIDIKeyboard (void);
+	CMIDIDevice (CMiniSynthesizer *pSynthesizer);
+	~CMIDIDevice (void);
 
-	boolean Initialize (void);
-
-private:
-	static void MIDIPacketHandler (unsigned nCable, u8 *pPacket, unsigned nLength);
+protected:
+	void MIDIMessageHandler (const u8 *pMessage, size_t nLength);
 
 private:
-	static CMIDIKeyboard *s_pThis;
+	CMiniSynthesizer *m_pSynthesizer;
 };
 
 #endif
