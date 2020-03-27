@@ -156,6 +156,29 @@ void CPatch::SetParameter (TSynthParameter Parameter, unsigned nValue)
 	m_pParameter[Parameter]->Set (nValue);
 }
 
+void CPatch::SetMIDIParameter (TSynthParameter Parameter, u8 ucValue)
+{
+	assert (Parameter < SynthParameterUnknown);
+	assert (ParameterList[Parameter].Type == ParameterPercent);
+
+	unsigned nValue = (ucValue*100 + 63) / 127;
+	nValue =   (nValue + ParameterList[Parameter].nStep/2)
+		 / ParameterList[Parameter].nStep
+		 * ParameterList[Parameter].nStep;
+
+	if (nValue < ParameterList[Parameter].nMinimum)
+	{
+		nValue = ParameterList[Parameter].nMinimum;
+	}
+	else if (nValue > ParameterList[Parameter].nMaximum)
+	{
+		nValue = ParameterList[Parameter].nMaximum;
+	}
+
+	assert (m_pParameter[Parameter] != 0);
+	m_pParameter[Parameter]->Set (nValue);
+}
+
 boolean CPatch::ParameterDown (TSynthParameter Parameter)
 {
 	assert (m_pParameter[Parameter] != 0);

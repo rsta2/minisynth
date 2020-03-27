@@ -57,7 +57,8 @@ void CSerialMIDIDevice::Process (void)
 		{
 		case 0:
 		MIDIRestart:
-			if ((uchData & 0xE0) == 0x80)		// Note on or off, all channels
+			if (   (uchData & 0x80) == 0x80		// status byte, all channels
+			    && (uchData & 0xF0) != 0xF0)	// ignore system messages
 			{
 				m_SerialMessage[m_nSerialState++] = uchData;
 			}
@@ -74,9 +75,10 @@ void CSerialMIDIDevice::Process (void)
 
 			m_SerialMessage[m_nSerialState++] = uchData;
 
-			if (m_nSerialState == 3)		// message is complete
+			if (   (m_SerialMessage[0] & 0xE0) == 0xC0
+			    || m_nSerialState == 3)		// message is complete
 			{
-				MIDIMessageHandler (m_SerialMessage, sizeof m_SerialMessage);
+				MIDIMessageHandler (m_SerialMessage, m_nSerialState);
 
 				m_nSerialState = 0;
 			}

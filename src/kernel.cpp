@@ -138,6 +138,11 @@ TShutdownMode CKernel::Run (void)
 	{
 		m_Synthesizer.Process ();
 
+		if (m_Synthesizer.ConfigUpdated ())
+		{
+			MainWindow.UpdateAllParameters (TRUE);
+		}
+
 		m_GUI.Update ();
 	}
 

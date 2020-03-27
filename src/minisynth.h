@@ -2,7 +2,7 @@
 // minisynth.h
 //
 // MiniSynth Pi - A virtual analogue synthesizer for Raspberry Pi
-// Copyright (C) 2017-2019  R. Stange <rsta2@o2online.de>
+// Copyright (C) 2017-2020  R. Stange <rsta2@o2online.de>
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -65,6 +65,10 @@ public:
 	void NoteOn (u8 ucKeyNumber, u8 ucVelocity = VELOCITY_DEFAULT);	// MIDI key number and velocity
 	void NoteOff (u8 ucKeyNumber);
 
+	boolean ConfigUpdated (void);
+	void ControlChange (u8 ucFunction, u8 ucValue);
+	void ProgramChange (u8 ucProgram);
+
 	unsigned GetChunk (u32 *pBuffer, unsigned nChunkSize);
 
 private:
@@ -77,6 +81,9 @@ private:
 	boolean m_bUseSerial;
 
 	CVoiceManager m_VoiceManager;
+
+	unsigned m_nConfigRevisionWrite;
+	unsigned m_nConfigRevisionRead;
 
 #ifdef USE_I2S
 	int m_nMinLevel;

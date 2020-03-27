@@ -79,6 +79,8 @@ public:
 	unsigned GetParameter (TSynthParameter Parameter) const;
 	void SetParameter (TSynthParameter Parameter, unsigned nValue);
 
+	void SetMIDIParameter (TSynthParameter Parameter, u8 ucValue);
+
 	boolean ParameterDown (TSynthParameter Parameter);	// returns TRUE if value has changed
 	boolean ParameterUp (TSynthParameter Parameter);	// returns TRUE if value has changed
 

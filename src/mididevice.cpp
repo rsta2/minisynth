@@ -21,8 +21,10 @@
 #include "minisynth.h"
 #include <assert.h>
 
-#define MIDI_NOTE_OFF	0b1000
-#define MIDI_NOTE_ON	0b1001
+#define MIDI_NOTE_OFF		0b1000
+#define MIDI_NOTE_ON		0b1001
+#define MIDI_CONTROL_CHANGE	0b1011
+#define MIDI_PROGRAM_CHANGE	0b1100
 
 CMIDIDevice::CMIDIDevice (CMiniSynthesizer *pSynthesizer)
 :	m_pSynthesizer (pSynthesizer)
@@ -41,7 +43,7 @@ void CMIDIDevice::MIDIMessageHandler (const u8 *pMessage, size_t nLength)
 	// The packet contents are just normal MIDI data - see
 	// https://www.midi.org/specifications/item/table-1-summary-of-midi-message
 
-	if (nLength < 3)
+	if (nLength < 2)
 	{
 		return;
 	}
@@ -52,8 +54,14 @@ void CMIDIDevice::MIDIMessageHandler (const u8 *pMessage, size_t nLength)
 	u8 ucKeyNumber = pMessage[1];
 	u8 ucVelocity  = pMessage[2];
 
-	if (ucType == MIDI_NOTE_ON)
+	switch (ucType)
 	{
+	case MIDI_NOTE_ON:
+		if (nLength < 3)
+		{
+			break;
+		}
+
 		if (ucVelocity > 0)
 		{
 			if (ucVelocity <= 127)
@@ -65,9 +73,26 @@ void CMIDIDevice::MIDIMessageHandler (const u8 *pMessage, size_t nLength)
 		{
 			m_pSynthesizer->NoteOff (ucKeyNumber);
 		}
-	}
-	else if (ucType == MIDI_NOTE_OFF)
-	{
+		break;
+
+	case MIDI_NOTE_OFF:
+		if (nLength < 3)
+		{
+			break;
+		}
+
 		m_pSynthesizer->NoteOff (ucKeyNumber);
+		break;
+
+	case MIDI_CONTROL_CHANGE:
+		m_pSynthesizer->ControlChange (pMessage[1], pMessage[2]);
+		break;
+
+	case MIDI_PROGRAM_CHANGE:
+		m_pSynthesizer->ProgramChange (pMessage[1]);
+		break;
+
+	default:
+		break;
 	}
 }

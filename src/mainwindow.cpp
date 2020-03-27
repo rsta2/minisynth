@@ -2,7 +2,7 @@
 // mainwindow.cpp
 //
 // MiniSynth Pi - A virtual analogue synthesizer for Raspberry Pi
-// Copyright (C) 2017  R. Stange <rsta2@o2online.de>
+// Copyright (C) 2017-2020  R. Stange <rsta2@o2online.de>
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -504,7 +504,7 @@ void CMainWindow::CallbackStub (UG_MESSAGE *pMsg)
 	s_pThis->Callback (pMsg);
 }
 
-void CMainWindow::UpdateAllParameters (void)
+void CMainWindow::UpdateAllParameters (boolean bUpdatePatch)
 {
 	// oscillator
 	m_LFOVCOWaveform.Update (m_bShowHelp);
@@ -532,4 +532,18 @@ void CMainWindow::UpdateAllParameters (void)
 	m_EGVCADecay.Update (m_bShowHelp);
 	m_EGVCASustain.Update (m_bShowHelp);
 	m_EGVCARelease.Update (m_bShowHelp);
+
+	// patch
+	if (bUpdatePatch)
+	{
+		assert (m_pConfig != 0);
+		unsigned nActivePatch = m_pConfig->GetActivePatchNumber ();
+
+		for (unsigned i = 0; i < PATCHES; i++)
+		{
+			UG_ButtonSetBackColor (&m_Window, BTN_PATCH_0+i,   i == nActivePatch
+									 ? BUTTON_HIGH_COLOR
+									 : BUTTON_BACK_COLOR);
+		}
+	}
 }

@@ -2,7 +2,7 @@
 // minisynth.cpp
 //
 // MiniSynth Pi - A virtual analogue synthesizer for Raspberry Pi
-// Copyright (C) 2017-2019  R. Stange <rsta2@o2online.de>
+// Copyright (C) 2017-2020  R. Stange <rsta2@o2online.de>
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -19,6 +19,7 @@
 //
 #include "minisynth.h"
 #include "math.h"
+#include "config.h"
 #include <circle/logger.h>
 #include <assert.h>
 
@@ -37,6 +38,8 @@ CMiniSynthesizer::CMiniSynthesizer (CSynthConfig *pConfig,
 	m_SerialMIDI (this, pInterrupt),
 	m_bUseSerial (FALSE),
 	m_VoiceManager (pMemorySystem),
+	m_nConfigRevisionWrite (0),
+	m_nConfigRevisionRead (0),
 #ifdef USE_I2S
 	m_nMinLevel (GetRangeMin ()+1),
 	m_nMaxLevel (GetRangeMax ()-1),
@@ -114,6 +117,56 @@ void CMiniSynthesizer::NoteOn (u8 ucKeyNumber, u8 ucVelocity)
 void CMiniSynthesizer::NoteOff (u8 ucKeyNumber)
 {
 	m_VoiceManager.NoteOff (ucKeyNumber);
+}
+
+boolean CMiniSynthesizer::ConfigUpdated (void)
+{
+	unsigned nConfigRevisionWrite = m_nConfigRevisionWrite;
+	if (nConfigRevisionWrite != m_nConfigRevisionRead)
+	{
+		m_nConfigRevisionRead = nConfigRevisionWrite;
+
+		return TRUE;
+	}
+
+	return FALSE;
+}
+
+void CMiniSynthesizer::ControlChange (u8 ucFunction, u8 ucValue)
+{
+	assert (m_pConfig != 0);
+	CPatch *pPatch = m_pConfig->GetActivePatch ();
+	assert (pPatch != 0);
+
+	switch (ucFunction)
+	{
+	case 0x47:
+		pPatch->SetMIDIParameter (VCFResonance, ucValue);
+		SetPatch (pPatch);
+		m_nConfigRevisionWrite++;
+		break;
+
+	case 0x4A:
+		pPatch->SetMIDIParameter (VCFCutoffFrequency, ucValue);
+		SetPatch (pPatch);
+		m_nConfigRevisionWrite++;
+		break;
+
+	default:
+		break;
+	}
+}
+
+void CMiniSynthesizer::ProgramChange (u8 ucProgram)
+{
+	assert (m_pConfig != 0);
+
+	if (ucProgram < PATCHES)
+	{
+		m_pConfig->SetActivePatchNumber (ucProgram);
+		SetPatch (m_pConfig->GetActivePatch ());
+		m_nConfigRevisionWrite++;
+	}
 }
 
 unsigned CMiniSynthesizer::GetChunk (u32 *pBuffer, unsigned nChunkSize)
