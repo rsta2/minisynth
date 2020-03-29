@@ -134,27 +134,26 @@ boolean CMiniSynthesizer::ConfigUpdated (void)
 
 void CMiniSynthesizer::ControlChange (u8 ucFunction, u8 ucValue)
 {
+	TSynthParameter Parameter;
+
+	switch (ucFunction)
+	{
+	case 7:		Parameter = SynthVolume;		break;
+	case 71:	Parameter = VCFResonance;		break;
+	case 74:	Parameter = VCFCutoffFrequency;		break;
+
+	default:
+		return;
+	}
+
 	assert (m_pConfig != 0);
 	CPatch *pPatch = m_pConfig->GetActivePatch ();
 	assert (pPatch != 0);
 
-	switch (ucFunction)
-	{
-	case 0x47:
-		pPatch->SetMIDIParameter (VCFResonance, ucValue);
-		SetPatch (pPatch);
-		m_nConfigRevisionWrite++;
-		break;
+	pPatch->SetMIDIParameter (Parameter, ucValue);
+	SetPatch (pPatch);
 
-	case 0x4A:
-		pPatch->SetMIDIParameter (VCFCutoffFrequency, ucValue);
-		SetPatch (pPatch);
-		m_nConfigRevisionWrite++;
-		break;
-
-	default:
-		break;
-	}
+	m_nConfigRevisionWrite++;
 }
 
 void CMiniSynthesizer::ProgramChange (u8 ucProgram)
