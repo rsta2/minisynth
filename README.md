@@ -19,6 +19,8 @@ This version of MiniSynth Pi can be built so that it can be used with an externa
 Getting
 -------
 
+Binaries of the latest release of MiniSynth Pi can be downloaded [here](https://github.com/rsta2/minisynth/releases). Just download the *MiniSynthNN.zip* file and follow the instructions in the *INSTALL.md* file, which is included in the archive.
+
 Normally you need a *Git* client to get the MiniSynth Pi source code. Go to the directory where you want to place MiniSynth Pi on your hard disk and enter:
 
 	git clone https://github.com/rsta2/minisynth.git minisynth
@@ -60,7 +62,7 @@ Furthermore you need the Raspberry Pi firmware. You can get it as follows:
 
 You have to copy the three files *bootcode.bin*, *start.elf* and *fixup.dat* from the *circle/boot/* subdirectory to the FAT partition on the SD card. The Raspberry Pi 4 requires different firmware files. Please read the file *circle/boot/README* for details!
 
-Finally you may copy the configuration files *patch0.txt* (example patch) and *velocity-???.txt* (keyboard velocity curve) from the *config/* subdirectory to the SD card. The appropriate velocity curve file has to be renamed to *velocity.txt* to be used.
+Finally you may copy the configuration files *cmdline.txt*, *patchN.txt* (example patches) and *velocity-???.txt* (keyboard velocity curve) from the *config/* subdirectory to the SD card. The appropriate velocity curve file has to be renamed to *velocity.txt* to be used.
 
 Put the SD card into the card reader of your Raspberry Pi.
 
@@ -126,33 +128,40 @@ Parameters
 
 One patch of MiniSynth Pi has the following parameters:
 
-| Section    | Module   | Parameter | Unit | Range     | Default | Description          |
-| ---------- | -------- | --------- | ---- | --------- | ------- | -------------------- |
-| OSCILLATOR | VCO      | Wave      |      |           | Square  | Waveform (*)         |
-| OSCILLATOR | LFO      | Wave      |      |           | Sine    | Waveform (*)         |
-| OSCILLATOR | LFO      | Rate      | Hz   | 1-35      | 20      | Modulation frequency |
-| OSCILLATOR | LFO      | Volume    | %    | 0-100     | 0       | Modulation volume    |
-| FILTER     | VCF      | Cutoff    | %    | 10-100    | 80      | Cutoff frequency     |
-| FILTER     | VCF      | Resonance | %    | 0-100     | 50      | Resonance parameter  |
-| FILTER     | LFO      | Wave      |      |           | Sine    | Waveform (*)         |
-| FILTER     | LFO      | Rate      | Hz   | 0.5-5.0   | 2.0     | Modulation frequency |
-| FILTER     | LFO      | Volume    | %    | 0-100     | 0       | Modulation volume    |
-| FILTER     | ENVELOPE | Attack    | ms   | 0-2000    | 0       | Attack delay         |
-| FILTER     | ENVELOPE | Decay     | ms   | 100-10000 | 4000    | Decay delay          |
-| FILTER     | ENVELOPE | Sustain   | %    | 0-100     | 100     | Sustain level        |
-| FILTER     | ENVELOPE | Release   | ms   | 0-5000    | 1000    | Release delay        |
-| AMPLIFIER  |          | Volume    | %    | 0-100     | 50      | Master volume        |
-| AMPLIFIER  | LFO      | Wave      |      |           | Sine    | Waveform (*)         |
-| AMPLIFIER  | LFO      | Rate      | Hz   | 0.5-5.0   | 2.0     | Modulation frequency |
-| AMPLIFIER  | LFO      | Volume    | %    | 0-100     | 0       | Modulation volume    |
-| AMPLIFIER  | ENVELOPE | Attack    | ms   | 0-2000    | 100     | Attack delay         |
-| AMPLIFIER  | ENVELOPE | Decay     | ms   | 100-10000 | 4000    | Decay delay          |
-| AMPLIFIER  | ENVELOPE | Sustain   | %    | 0-100     | 100     | Sustain level        |
-| AMPLIFIER  | ENVELOPE | Release   | ms   | 0-5000    | 100     | Release delay        |
+| Section    | Module   | Parameter | Unit | Range     | Default | Description          | MIDI CC |
+| ---------- | -------- | --------- | ---- | --------- | ------- | -------------------- | ------- |
+| OSCILLATOR | VCO      | Wave      |      |           | Square  | Waveform (*)         |         |
+| OSCILLATOR | LFO      | Wave      |      |           | Sine    | Waveform (*)         |         |
+| OSCILLATOR | LFO      | Rate      | Hz   | 1-35      | 20      | Modulation frequency |         |
+| OSCILLATOR | LFO      | Volume    | %    | 0-100     | 0       | Modulation volume    |         |
+| FILTER     | VCF      | Cutoff    | %    | 10-100    | 80      | Cutoff frequency     | 74      |
+| FILTER     | VCF      | Resonance | %    | 0-100     | 50      | Resonance parameter  | 71      |
+| FILTER     | LFO      | Wave      |      |           | Sine    | Waveform (*)         |         |
+| FILTER     | LFO      | Rate      | Hz   | 0.5-5.0   | 2.0     | Modulation frequency |         |
+| FILTER     | LFO      | Volume    | %    | 0-100     | 0       | Modulation volume    |         |
+| FILTER     | ENVELOPE | Attack    | ms   | 0-2000    | 0       | Attack delay         |         |
+| FILTER     | ENVELOPE | Decay     | ms   | 100-10000 | 4000    | Decay delay          |         |
+| FILTER     | ENVELOPE | Sustain   | %    | 0-100     | 100     | Sustain level        |         |
+| FILTER     | ENVELOPE | Release   | ms   | 0-5000    | 1000    | Release delay        |         |
+| AMPLIFIER  |          | Volume    | %    | 0-100     | 50      | Master volume        | 7       |
+| AMPLIFIER  | LFO      | Wave      |      |           | Sine    | Waveform (*)         |         |
+| AMPLIFIER  | LFO      | Rate      | Hz   | 0.5-5.0   | 2.0     | Modulation frequency |         |
+| AMPLIFIER  | LFO      | Volume    | %    | 0-100     | 0       | Modulation volume    |         |
+| AMPLIFIER  | ENVELOPE | Attack    | ms   | 0-2000    | 100     | Attack delay         |         |
+| AMPLIFIER  | ENVELOPE | Decay     | ms   | 100-10000 | 4000    | Decay delay          |         |
+| AMPLIFIER  | ENVELOPE | Sustain   | %    | 0-100     | 100     | Sustain level        |         |
+| AMPLIFIER  | ENVELOPE | Release   | ms   | 0-5000    | 100     | Release delay        |         |
 
 (*) Waveform can be: Sine, Square, Sawtooth, Triangle, Pulse 12.5% or Pulse 25%
 
 MiniSynth Pi allows to use a specific keyboard velocity curve, which fits best to your keyboard and your playing style. It has to be provided in the file *velocity.txt* on the SD card. The default velocity curve is linear. Have a look into the example files in the *config/* subdirectory. If you want to use one of these files, it has to be renamed to *velocity.txt* on the SD card. It should be easy to modify one example file to adjust the velocity curve to your own needs.
+
+Troubleshooting
+---------------
+
+Some USB MIDI keyboard controllers have been reported to lose "Note on" and/or "Note off" events, if used with MiniSynth Pi. As a workaround you can modify the file *cmdline.txt* on the SD card as follows:
+
+	logdev=null usbspeed=full
 
 Credits
 -------
