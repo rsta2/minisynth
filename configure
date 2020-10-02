@@ -54,7 +54,7 @@ echo "DEFINE += -DSAVE_VFP_REGS_ON_IRQ" >> Config.mk
 if [[ $1 != "1" ]] ; then
 	echo "DEFINE += -DARM_ALLOW_MULTI_CORE" >> Config.mk
 fi
-echo "DEFINE += -DNO_SDHOST" >> Config.mk
+echo "DEFINE += -DREALTIME" >> Config.mk
 
 echo "circle/Config.mk successfully created:"
 cat Config.mk
