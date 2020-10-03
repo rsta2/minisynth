@@ -152,7 +152,7 @@ One patch of MiniSynth Pi has the following parameters:
 | AMPLIFIER  | ENVELOPE | Sustain   | %    | 0-100     | 100     | Sustain level        |         |
 | AMPLIFIER  | ENVELOPE | Release   | ms   | 0-5000    | 100     | Release delay        |         |
 | EFFECTS    | REVERB   | Decay     | %    | 0-50      | 20      | Rate of decay        |         |
-| EFFECTS    | REVERB   | Volume    | %    | 0-100     | 0       | Wet/dry ratio        |         |
+| EFFECTS    | REVERB   | Volume    | %    | 0-30      | 0       | Wet/dry ratio        |         |
 
 (*) Waveform can be: Sine, Square, Sawtooth, Triangle, Pulse 12.5% or Pulse 25%
 
