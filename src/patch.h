@@ -61,6 +61,10 @@ enum TSynthParameter			// the parameters of a patch
 
 	VCAModulationVolume,
 
+	// Effects
+	ReverbDecay,
+	ReverbVolume,
+
 	// Synth
 	SynthVolume,
 

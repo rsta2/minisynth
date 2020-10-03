@@ -65,7 +65,12 @@ enum
 	TXB_EG_VCA_ATTACK,
 	TXB_EG_VCA_DECAY,
 	TXB_EG_VCA_SUSTAIN,
-	TXB_EG_VCA_RELEASE
+	TXB_EG_VCA_RELEASE,
+
+	// reverb
+	TXB_REVERB,
+	TXB_REVERB_DECAY,
+	TXB_REVERB_VOLUME
 };
 
 enum
@@ -118,6 +123,12 @@ enum
 	BTN_EG_VCA_RELEASE_DOWN,
 	BTN_EG_VCA_RELEASE_UP,
 
+	// reverb
+	BTN_REVERB_DECAY_DOWN,
+	BTN_REVERB_DECAY_UP,
+	BTN_REVERB_VOLUME_DOWN,
+	BTN_REVERB_VOLUME_UP,
+
 	// patches
 	BTN_PATCH_0,
 	BTN_PATCH_1,
@@ -162,6 +173,8 @@ CMainWindow::CMainWindow (CMiniSynthesizer *pSynthesizer, CSynthConfig *pConfig)
 	m_EGVCARelease (&m_Window, EGVCARelease, pConfig),
 	m_VCAModulationVolume (&m_Window, VCAModulationVolume, pConfig),
 	m_SynthVolume (&m_Window, SynthVolume, pConfig),
+	m_ReverbDecay (&m_Window, ReverbDecay, pConfig),
+	m_ReverbVolume (&m_Window, ReverbVolume, pConfig),
 	m_pActivePatch (m_pConfig->GetActivePatch ()),
 	m_bShowHelp (FALSE)
 {
@@ -214,6 +227,10 @@ CMainWindow::CMainWindow (CMiniSynthesizer *pSynthesizer, CSynthConfig *pConfig)
 	m_EGVCADecay.Create (TXB_EG_VCA_DECAY, BTN_EG_VCA_DECAY_DOWN, BTN_EG_VCA_DECAY_UP, 410, 360);
 	m_EGVCASustain.Create (TXB_EG_VCA_SUSTAIN, BTN_EG_VCA_SUSTAIN_DOWN, BTN_EG_VCA_SUSTAIN_UP, 410, 390);
 	m_EGVCARelease.Create (TXB_EG_VCA_RELEASE, BTN_EG_VCA_RELEASE_DOWN, BTN_EG_VCA_RELEASE_UP, 410, 420);
+	// reverb
+	UG_TextboxCreate (&m_Window, &m_Textbox15, TXB_REVERB, 5, 300, 194, 325);
+	m_ReverbDecay.Create (TXB_REVERB_DECAY, BTN_REVERB_DECAY_DOWN, BTN_REVERB_DECAY_UP, 10, 330);
+	m_ReverbVolume.Create (TXB_REVERB_VOLUME, BTN_REVERB_VOLUME_DOWN, BTN_REVERB_VOLUME_UP, 10, 360);
 	// patches
 	UG_ButtonCreate (&m_Window, &m_Button1, BTN_PATCH_0, 630, 30, 769, 55);
 	UG_ButtonCreate (&m_Window, &m_Button2, BTN_PATCH_1, 630, 60, 769, 85);
@@ -228,7 +245,7 @@ CMainWindow::CMainWindow (CMiniSynthesizer *pSynthesizer, CSynthConfig *pConfig)
 	UG_ButtonCreate (&m_Window, &m_Button11, BTN_LOAD, 630, 360, 769, 385);
 	UG_ButtonCreate (&m_Window, &m_Button12, BTN_SAVE, 630, 390, 769, 415);
 	// help
-	UG_ButtonCreate (&m_Window, &m_Button13, BTN_HELP, 30, 330, 169, 355);
+	UG_ButtonCreate (&m_Window, &m_Button13, BTN_HELP, 30, 420, 169, 445);
 
 	// Title
 	UG_TextboxSetFont (&m_Window, TXB_TITLE, &FONT_10X16);
@@ -302,6 +319,12 @@ CMainWindow::CMainWindow (CMiniSynthesizer *pSynthesizer, CSynthConfig *pConfig)
 	UG_TextboxSetText (&m_Window, TXB_EG_VCA, "ENVELOPE");
 	UG_TextboxSetForeColor (&m_Window, TXB_EG_VCA, FORE_COLOR);
 	UG_TextboxSetAlignment (&m_Window, TXB_EG_VCA, ALIGN_CENTER);
+
+	// "Reverb"
+	UG_TextboxSetFont (&m_Window, TXB_REVERB, &FONT_8X14);
+	UG_TextboxSetText (&m_Window, TXB_REVERB, "REVERB");
+	UG_TextboxSetForeColor (&m_Window, TXB_REVERB, FORE_COLOR);
+	UG_TextboxSetAlignment (&m_Window, TXB_REVERB, ALIGN_CENTER);
 
 	// "PATCHES" section
 	UG_TextboxSetFont (&m_Window, TXB_PATCHES, &FONT_8X14);
@@ -423,6 +446,11 @@ void CMainWindow::Callback (UG_MESSAGE *pMsg)
 		case BTN_EG_VCA_SUSTAIN_UP:
 		case BTN_EG_VCA_RELEASE_DOWN:
 		case BTN_EG_VCA_RELEASE_UP:
+		// reverb
+		case BTN_REVERB_DECAY_DOWN:
+		case BTN_REVERB_DECAY_UP:
+		case BTN_REVERB_VOLUME_DOWN:
+		case BTN_REVERB_VOLUME_UP:
 			if (   // oscillator
 			       m_LFOVCOWaveform.ButtonPressed (nButtonID, m_bShowHelp)
 			    || m_LFOVCOFrequency.ButtonPressed (nButtonID, m_bShowHelp)
@@ -446,7 +474,10 @@ void CMainWindow::Callback (UG_MESSAGE *pMsg)
 			    || m_EGVCAAttack.ButtonPressed (nButtonID, m_bShowHelp)
 			    || m_EGVCADecay.ButtonPressed (nButtonID, m_bShowHelp)
 			    || m_EGVCASustain.ButtonPressed (nButtonID, m_bShowHelp)
-			    || m_EGVCARelease.ButtonPressed (nButtonID, m_bShowHelp))
+			    || m_EGVCARelease.ButtonPressed (nButtonID, m_bShowHelp)
+				// reverb
+			    || m_ReverbDecay.ButtonPressed (nButtonID, m_bShowHelp)
+			    || m_ReverbVolume.ButtonPressed (nButtonID, m_bShowHelp))
 			{
 				m_pSynthesizer->SetPatch (m_pActivePatch);
 			}
@@ -532,6 +563,10 @@ void CMainWindow::UpdateAllParameters (boolean bUpdatePatch)
 	m_EGVCADecay.Update (m_bShowHelp);
 	m_EGVCASustain.Update (m_bShowHelp);
 	m_EGVCARelease.Update (m_bShowHelp);
+
+	// reverb
+	m_ReverbDecay.Update (m_bShowHelp);
+	m_ReverbVolume.Update (m_bShowHelp);
 
 	// patch
 	if (bUpdatePatch)

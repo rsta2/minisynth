@@ -65,6 +65,10 @@ ParameterList[] =		// must match TSynthParameter
 
 	{"VCAModulationVolume", ParameterPercent, 0, 100, 10, 0, "Volume"},
 
+	// Effects
+	{"ReverbDecay", ParameterPercent, 0, 50, 5, 20, "Decay"},
+	{"ReverbVolume", ParameterPercent, 0, 100, 10, 0, "Volume"},
+
 	// Synth
 	{"SynthVolume", ParameterPercent, 0, 100, 10, 50, "Volume"}
 };

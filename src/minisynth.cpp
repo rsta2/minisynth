@@ -48,7 +48,8 @@ CMiniSynthesizer::CMiniSynthesizer (CSynthConfig *pConfig,
 	m_nMaxLevel (GetRange ()-1),
 	m_nNullLevel (m_nMaxLevel / 2),
 #endif
-	m_nVolumeLevel (0)
+	m_nVolumeLevel (0),
+	m_bChannelsSwapped (AreChannelsSwapped ())
 {
 }
 
@@ -175,29 +176,54 @@ unsigned CMiniSynthesizer::GetChunk (u32 *pBuffer, unsigned nChunkSize)
 	for (; nChunkSize > 0; nChunkSize -= 2)		// fill the whole buffer
 	{
 		m_VoiceManager.NextSample ();
-		float fLevel = m_VoiceManager.GetOutputLevel ();
 
-		int nLevel = (int) (fLevel*m_nVolumeLevel + m_nNullLevel);
-
-		if (nLevel > (int) m_nMaxLevel)
+		float fLevelLeft = m_VoiceManager.GetOutputLevelLeft ();
+		int nLevelLeft = (int) (fLevelLeft*m_nVolumeLevel + m_nNullLevel);
+		if (nLevelLeft > (int) m_nMaxLevel)
 		{
-			nLevel = m_nMaxLevel;
+			nLevelLeft = m_nMaxLevel;
 		}
 #ifdef USE_I2S
-		else if (nLevel < m_nMinLevel)
+		else if (nLevelLeft < m_nMinLevel)
 		{
-			nLevel = m_nMinLevel;
+			nLevelLeft = m_nMinLevel;
 		}
 #else
-		else if (nLevel < 0)
+		else if (nLevelLeft < 0)
 		{
-			nLevel = 0;
+			nLevelLeft = 0;
+		}
+#endif
+
+		float fLevelRight = m_VoiceManager.GetOutputLevelRight ();
+		int nLevelRight = (int) (fLevelRight*m_nVolumeLevel + m_nNullLevel);
+		if (nLevelRight > (int) m_nMaxLevel)
+		{
+			nLevelRight = m_nMaxLevel;
+		}
+#ifdef USE_I2S
+		else if (nLevelRight < m_nMinLevel)
+		{
+			nLevelRight = m_nMinLevel;
+		}
+#else
+		else if (nLevelRight < 0)
+		{
+			nLevelRight = 0;
 		}
 #endif
 
 		// for 2 stereo channels
-		*pBuffer++ = (unsigned) nLevel;
-		*pBuffer++ = (unsigned) nLevel;
+		if (!m_bChannelsSwapped)
+		{
+			*pBuffer++ = (u32) nLevelLeft;
+			*pBuffer++ = (u32) nLevelRight;
+		}
+		else
+		{
+			*pBuffer++ = (u32) nLevelRight;
+			*pBuffer++ = (u32) nLevelLeft;
+		}
 	}
 
 	return nResult;

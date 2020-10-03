@@ -95,6 +95,7 @@ private:
 	unsigned m_nNullLevel;
 	unsigned m_nVolumeLevel;
 #endif
+	boolean m_bChannelsSwapped;
 };
 
 #endif
