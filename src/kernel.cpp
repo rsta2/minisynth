@@ -28,7 +28,7 @@ CKernel::CKernel (void)
 :	m_Screen (800, 480),
 	m_Timer (&m_Interrupt),
 	m_Logger (m_Options.GetLogLevel (), &m_Timer),
-	m_USBHCI (&m_Interrupt, &m_Timer),
+	m_USBHCI (&m_Interrupt, &m_Timer, TRUE),
 	m_EMMC (&m_Interrupt, &m_Timer, &m_ActLED),
 	m_GUI (&m_Screen),
 	m_Config (&m_FileSystem),
@@ -136,14 +136,16 @@ TShutdownMode CKernel::Run (void)
 
 	while (m_Synthesizer.IsActive ())
 	{
-		m_Synthesizer.Process ();
+		boolean bUpdated = m_USBHCI.UpdatePlugAndPlay ();
+
+		m_Synthesizer.Process (bUpdated);
 
 		if (m_Synthesizer.ConfigUpdated ())
 		{
 			MainWindow.UpdateAllParameters (TRUE);
 		}
 
-		m_GUI.Update ();
+		m_GUI.Update (bUpdated);
 	}
 
 	return ShutdownHalt;

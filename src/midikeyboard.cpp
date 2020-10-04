@@ -19,13 +19,13 @@
 //
 #include "midikeyboard.h"
 #include <circle/devicenameservice.h>
-#include <circle/usb/usbmidi.h>
 #include <assert.h>
 
 CMIDIKeyboard *CMIDIKeyboard::s_pThis = 0;
 
 CMIDIKeyboard::CMIDIKeyboard (CMiniSynthesizer *pSynthesizer)
-:	CMIDIDevice (pSynthesizer)
+:	CMIDIDevice (pSynthesizer),
+	m_pMIDIDevice (0)
 {
 	s_pThis = this;
 }
@@ -35,22 +35,34 @@ CMIDIKeyboard::~CMIDIKeyboard (void)
 	s_pThis = 0;
 }
 
-boolean CMIDIKeyboard::Initialize (void)
+void CMIDIKeyboard::Process (boolean bPlugAndPlayUpdated)
 {
-	CUSBMIDIDevice *pMIDIDevice =
-		(CUSBMIDIDevice *) CDeviceNameService::Get ()->GetDevice ("umidi1", FALSE);
-	if (pMIDIDevice == 0)
+	if (!bPlugAndPlayUpdated)
 	{
-		return FALSE;
+		return;
 	}
 
-	pMIDIDevice->RegisterPacketHandler (MIDIPacketHandler);
+	if (m_pMIDIDevice == 0)
+	{
+		m_pMIDIDevice =
+			(CUSBMIDIDevice *) CDeviceNameService::Get ()->GetDevice ("umidi1", FALSE);
+		if (m_pMIDIDevice != 0)
+		{
+			m_pMIDIDevice->RegisterPacketHandler (MIDIPacketHandler);
 
-	return TRUE;
+			m_pMIDIDevice->RegisterRemovedHandler (DeviceRemovedHandler);
+		}
+	}
 }
 
 void CMIDIKeyboard::MIDIPacketHandler (unsigned nCable, u8 *pPacket, unsigned nLength)
 {
 	assert (s_pThis != 0);
 	s_pThis->MIDIMessageHandler (pPacket, nLength);
+}
+
+void CMIDIKeyboard::DeviceRemovedHandler (CDevice *pDevice, void *pContext)
+{
+	assert (s_pThis != 0);
+	s_pThis->m_pMIDIDevice = 0;
 }

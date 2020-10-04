@@ -21,6 +21,8 @@
 #define _midikeyboard_h
 
 #include "mididevice.h"
+#include <circle/usb/usbmidi.h>
+#include <circle/device.h>
 #include <circle/types.h>
 
 class CMiniSynthesizer;
@@ -31,12 +33,16 @@ public:
 	CMIDIKeyboard (CMiniSynthesizer *pSynthesizer);
 	~CMIDIKeyboard (void);
 
-	boolean Initialize (void);
+	void Process (boolean bPlugAndPlayUpdated);
 
 private:
 	static void MIDIPacketHandler (unsigned nCable, u8 *pPacket, unsigned nLength);
 
+	static void DeviceRemovedHandler (CDevice *pDevice, void *pContext);
+
 private:
+	CUSBMIDIDevice * volatile m_pMIDIDevice;
+
 	static CMIDIKeyboard *s_pThis;
 };
 

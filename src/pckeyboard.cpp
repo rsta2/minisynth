@@ -2,7 +2,7 @@
 // pckeyboard.cpp
 //
 // MiniSynth Pi - A virtual analogue synthesizer for Raspberry Pi
-// Copyright (C) 2017  R. Stange <rsta2@o2online.de>
+// Copyright (C) 2017-2020  R. Stange <rsta2@o2online.de>
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -20,7 +20,6 @@
 #include "pckeyboard.h"
 #include "minisynth.h"
 #include <circle/devicenameservice.h>
-#include <circle/usb/usbkeyboard.h>
 #include <circle/util.h>
 #include <assert.h>
 
@@ -63,7 +62,8 @@ static TKeyInfo KeyTable[] =
 CPCKeyboard *CPCKeyboard::s_pThis = 0;
 
 CPCKeyboard::CPCKeyboard (CMiniSynthesizer *pSynthesizer)
-:	m_pSynthesizer (pSynthesizer)
+:	m_pSynthesizer (pSynthesizer),
+	m_pKeyboard (0)
 {
 	s_pThis = this;
 
@@ -77,18 +77,24 @@ CPCKeyboard::~CPCKeyboard (void)
 	s_pThis = 0;
 }
 
-boolean CPCKeyboard::Initialize (void)
+void CPCKeyboard::Process (boolean bPlugAndPlayUpdated)
 {
-	CUSBKeyboardDevice *pKeyboard =
-		(CUSBKeyboardDevice *) CDeviceNameService::Get ()->GetDevice ("ukbd1", FALSE);
-	if (pKeyboard == 0)
+	if (!bPlugAndPlayUpdated)
 	{
-		return FALSE;
+		return;
 	}
 
-	pKeyboard->RegisterKeyStatusHandlerRaw (KeyStatusHandlerRaw);
+	if (m_pKeyboard == 0)
+	{
+		m_pKeyboard =
+			(CUSBKeyboardDevice *) CDeviceNameService::Get ()->GetDevice ("ukbd1", FALSE);
+		if (m_pKeyboard != 0)
+		{
+			m_pKeyboard->RegisterKeyStatusHandlerRaw (KeyStatusHandlerRaw);
 
-	return TRUE;
+			m_pKeyboard->RegisterRemovedHandler (DeviceRemovedHandler);
+		}
+	}
 }
 
 void CPCKeyboard::KeyStatusHandlerRaw (unsigned char ucModifiers, const unsigned char RawKeys[6])
@@ -171,4 +177,10 @@ boolean CPCKeyboard::FindByte (const u8 *pBuffer, u8 ucByte, unsigned nLength)
 	}
 
 	return FALSE;
+}
+
+void CPCKeyboard::DeviceRemovedHandler (CDevice *pDevice, void *pContext)
+{
+	assert (s_pThis != 0);
+	s_pThis->m_pKeyboard = 0;
 }

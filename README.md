@@ -10,7 +10,7 @@ Overview
 
 MiniSynth Pi is a polyphonic virtual analog audio synthesizer, running bare metal (without separate operating system) on the Raspberry Pi. On the Raspberry Pi 2, 3 and 4 it allows to play up to 24 polyphonic voices at a time, on the Raspberry Pi 1 only 4 voices.
 
-You have to attach an USB MIDI keyboard controller (which supports the USB Audio Class MIDI specification) or an USB PC keyboard to your Raspberry Pi to play on it. Alternatively you can feed serial MIDI data (at 31250 Bps) into GPIO15 (Broadcom numbering), if no USB keyboard is attached. Normally you will need some external circuit to be able to attach a device with serial MIDI interface.
+You have to attach an USB MIDI keyboard controller (which supports the USB Audio Class MIDI specification) or an USB PC keyboard to your Raspberry Pi to play on it. Alternatively you can feed serial MIDI data (at 31250 Bps) into GPIO15 (Broadcom numbering). Normally you will need some external circuit to be able to attach a device with serial MIDI interface.
 
 The audio signal is normally available on the 3.5mm headphones jack (I2S usage see below). Thus Raspberry Pi models without headphones jack (e.g. Raspberry Pi Zero) are not supported. The graphical user interface (GUI) of MiniSynth Pi can be controlled using a standard USB mouse or the official Raspberry Pi touch screen.
 
@@ -75,8 +75,6 @@ Before powering on your Raspberry Pi, the following devices have to be attached:
 * USB MIDI keyboard controller, USB PC keyboard or device with serial MIDI interface (at GPIO15, requires external circuit)
 * Standard USB mouse (if official touch screen is not used)
 * Headphones or amplifier (on the 3.5mm jack or via external I2S interface)
-
-The USB devices must not be removed or powered off while MiniSynth Pi is running. USB hot-plugging is not supported.
 
 MiniSynth Pi starts in about four seconds. It is controlled using the following GUI:
 

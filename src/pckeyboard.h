@@ -2,7 +2,7 @@
 // pckeyboard.h
 //
 // MiniSynth Pi - A virtual analogue synthesizer for Raspberry Pi
-// Copyright (C) 2017  R. Stange <rsta2@o2online.de>
+// Copyright (C) 2017-2020  R. Stange <rsta2@o2online.de>
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -20,6 +20,8 @@
 #ifndef _pckeyboard_h
 #define _pckeyboard_h
 
+#include <circle/usb/usbkeyboard.h>
+#include <circle/device.h>
 #include <circle/types.h>
 
 class CMiniSynthesizer;
@@ -30,7 +32,7 @@ public:
 	CPCKeyboard (CMiniSynthesizer *pSynthesizer);
 	~CPCKeyboard (void);
 
-	boolean Initialize (void);
+	void Process (boolean bPlugAndPlayUpdated);
 
 private:
 	static void KeyStatusHandlerRaw (unsigned char ucModifiers, const unsigned char RawKeys[6]);
@@ -39,8 +41,12 @@ private:
 
 	static boolean FindByte (const u8 *pBuffer, u8 ucByte, unsigned nLength);
 
+	static void DeviceRemovedHandler (CDevice *pDevice, void *pContext);
+
 private:
 	CMiniSynthesizer *m_pSynthesizer;
+
+	CUSBKeyboardDevice * volatile m_pKeyboard;
 
 	u8 m_LastKeys[6];
 

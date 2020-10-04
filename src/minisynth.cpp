@@ -59,32 +59,24 @@ CMiniSynthesizer::~CMiniSynthesizer (void)
 
 boolean CMiniSynthesizer::Initialize (void)
 {
-	if (m_MIDIKeyboard.Initialize ())
-	{
-		return m_VoiceManager.Initialize ();
-	}
-
-	if (m_Keyboard.Initialize ())
-	{
-		return m_VoiceManager.Initialize ();
-	}
-
 	if (m_SerialMIDI.Initialize ())
 	{
-		CLogger::Get ()->Write (FromMiniSynth, LogNotice, "Using serial MIDI interface");
+		CLogger::Get ()->Write (FromMiniSynth, LogNotice, "Serial MIDI interface enabled");
 
 		m_bUseSerial = TRUE;
 
 		return m_VoiceManager.Initialize ();
 	}
 
-	CLogger::Get ()->Write (FromMiniSynth, LogWarning, "Keyboard not found");
-
 	return FALSE;
 }
 
-void CMiniSynthesizer::Process (void)
+void CMiniSynthesizer::Process (boolean bPlugAndPlayUpdated)
 {
+	m_MIDIKeyboard.Process (bPlugAndPlayUpdated);
+
+	m_Keyboard.Process (bPlugAndPlayUpdated);
+
 	if (m_bUseSerial)
 	{
 		m_SerialMIDI.Process ();

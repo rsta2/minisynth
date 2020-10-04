@@ -58,7 +58,7 @@ public:
 
 	boolean Initialize (void);
 
-	void Process (void);
+	void Process (boolean bPlugAndPlayUpdated);
 
 	void SetPatch (CPatch *pPatch);
 
