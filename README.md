@@ -16,6 +16,8 @@ The audio signal is normally available on the 3.5mm headphones jack (I2S usage s
 
 This version of MiniSynth Pi can be built so that it can be used with an external I2S interface. The audio signal is then available via this interface. Please note that only I2S interfaces are supported, which do not need additional device initialization (e.g. via I2C). MiniSynth Pi has been tested with the [pHAT DAC](https://shop.pimoroni.com/products/phat-dac) I2S interface, which is based on the PCM5102A DAC chip.
 
+Please note that the included reverb effect module is experimental, because it generates some noise, when no note is played. Just leave the reverb volume (wet/dry ratio) at 0% to eliminate it, if it disturbs.
+
 Getting
 -------
 
