@@ -91,10 +91,10 @@ MiniSynth Pi starts in about four seconds. It is controlled using the following 
 	| <   Rate   >   <   Rate   >   <   Rate   >        6       |
 	| <  Volume  >   <  Volume  >   <  Volume  >        7       |
 	|                                                   8       |
-	|    REVERB        ENVELOPE       ENVELOPE          9       |
-	| <   Decay  >   <  Attack  >   <  Attack  >                |
-	| <  Volume  >   <   Decay  >   <   Decay  >       LOAD     |
-	|                <  Sustain >   <  Sustain >       SAVE     |
+	|    EFFECTS       ENVELOPE       ENVELOPE          9       |
+	|    REVERB      <  Attack  >   <  Attack  >                |
+	| <   Decay  >   <   Decay  >   <   Decay  >       LOAD     |
+	| <  Volume  >   <  Sustain >   <  Sustain >       SAVE     |
 	|     HELP       <  Release >   <  Release >                |
 	| MiniSynth Pi                   VIRTUAL ANALOG SYNTHESIZER |
 	+-----------------------------------------------------------+

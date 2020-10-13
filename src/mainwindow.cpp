@@ -30,6 +30,7 @@ enum
 	TXB_OSCILLATOR,
 	TXB_FILTER,
 	TXB_AMPLIFIER,
+	TXB_EFFECTS,
 	TXB_PATCHES,
 
 	// oscillator
@@ -194,6 +195,7 @@ CMainWindow::CMainWindow (CMiniSynthesizer *pSynthesizer, CSynthConfig *pConfig)
 	UG_TextboxCreate (&m_Window, &m_Textbox3, TXB_OSCILLATOR, 5, 5, 194, 25);
 	UG_TextboxCreate (&m_Window, &m_Textbox4, TXB_FILTER, 205, 5, 394, 25);
 	UG_TextboxCreate (&m_Window, &m_Textbox5, TXB_AMPLIFIER, 405, 5, 594, 25);
+	UG_TextboxCreate (&m_Window, &m_Textbox16, TXB_EFFECTS, 5, 300, 194, 325);
 	UG_TextboxCreate (&m_Window, &m_Textbox6, TXB_PATCHES, 605, 5, 794, 25);
 	// oscillator
 	UG_TextboxCreate (&m_Window, &m_Textbox7, TXB_VCO, 5, 30, 194, 55);
@@ -228,9 +230,9 @@ CMainWindow::CMainWindow (CMiniSynthesizer *pSynthesizer, CSynthConfig *pConfig)
 	m_EGVCASustain.Create (TXB_EG_VCA_SUSTAIN, BTN_EG_VCA_SUSTAIN_DOWN, BTN_EG_VCA_SUSTAIN_UP, 410, 390);
 	m_EGVCARelease.Create (TXB_EG_VCA_RELEASE, BTN_EG_VCA_RELEASE_DOWN, BTN_EG_VCA_RELEASE_UP, 410, 420);
 	// reverb
-	UG_TextboxCreate (&m_Window, &m_Textbox15, TXB_REVERB, 5, 300, 194, 325);
-	m_ReverbDecay.Create (TXB_REVERB_DECAY, BTN_REVERB_DECAY_DOWN, BTN_REVERB_DECAY_UP, 10, 330);
-	m_ReverbVolume.Create (TXB_REVERB_VOLUME, BTN_REVERB_VOLUME_DOWN, BTN_REVERB_VOLUME_UP, 10, 360);
+	UG_TextboxCreate (&m_Window, &m_Textbox15, TXB_REVERB, 5, 330, 194, 355);
+	m_ReverbDecay.Create (TXB_REVERB_DECAY, BTN_REVERB_DECAY_DOWN, BTN_REVERB_DECAY_UP, 10, 360);
+	m_ReverbVolume.Create (TXB_REVERB_VOLUME, BTN_REVERB_VOLUME_DOWN, BTN_REVERB_VOLUME_UP, 10, 390);
 	// patches
 	UG_ButtonCreate (&m_Window, &m_Button1, BTN_PATCH_0, 630, 30, 769, 55);
 	UG_ButtonCreate (&m_Window, &m_Button2, BTN_PATCH_1, 630, 60, 769, 85);
@@ -320,7 +322,13 @@ CMainWindow::CMainWindow (CMiniSynthesizer *pSynthesizer, CSynthConfig *pConfig)
 	UG_TextboxSetForeColor (&m_Window, TXB_EG_VCA, FORE_COLOR);
 	UG_TextboxSetAlignment (&m_Window, TXB_EG_VCA, ALIGN_CENTER);
 
-	// "Reverb"
+	// "Effects" section
+	UG_TextboxSetFont (&m_Window, TXB_EFFECTS, &FONT_8X14);
+	UG_TextboxSetText (&m_Window, TXB_EFFECTS, "EFFECTS");
+	UG_TextboxSetBackColor (&m_Window, TXB_EFFECTS, HEADER_BACK_COLOR);
+	UG_TextboxSetForeColor (&m_Window, TXB_EFFECTS, HEADER_FORE_COLOR);
+	UG_TextboxSetAlignment (&m_Window, TXB_EFFECTS, ALIGN_CENTER);
+
 	UG_TextboxSetFont (&m_Window, TXB_REVERB, &FONT_8X14);
 	UG_TextboxSetText (&m_Window, TXB_REVERB, "REVERB");
 	UG_TextboxSetForeColor (&m_Window, TXB_REVERB, FORE_COLOR);

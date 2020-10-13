@@ -59,6 +59,7 @@ private:
 	UG_TEXTBOX m_Textbox13;
 	UG_TEXTBOX m_Textbox14;
 	UG_TEXTBOX m_Textbox15;
+	UG_TEXTBOX m_Textbox16;
 
 	UG_BUTTON m_Button1;
 	UG_BUTTON m_Button2;
@@ -98,7 +99,7 @@ private:
 	CGUIParameter m_ReverbDecay;
 	CGUIParameter m_ReverbVolume;
 
-	static const unsigned s_ObjectCount = 15+13+23*3;	// must match the number of objects above
+	static const unsigned s_ObjectCount = 16+13+23*3;	// must match the number of objects above
 	UG_OBJECT m_ObjectList[s_ObjectCount];
 
 	CPatch *m_pActivePatch;
