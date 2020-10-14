@@ -2,7 +2,7 @@
 // oscillator.cpp
 //
 // MiniSynth Pi - A virtual analogue synthesizer for Raspberry Pi
-// Copyright (C) 2017  R. Stange <rsta2@o2online.de>
+// Copyright (C) 2017-2020  R. Stange <rsta2@o2online.de>
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -19,6 +19,7 @@
 //
 #include "oscillator.h"
 #include "config.h"
+#include "math.h"
 #include <assert.h>
 
 #define SINE_POINTS	360
@@ -76,6 +77,8 @@ COscillator::COscillator (CSynthModule *pModulator)
 :	m_pModulator (pModulator),
 	m_Waveform (WaveformSine),
 	m_fFrequency (20.0),
+	m_fMidFrequency (m_fFrequency),
+	m_fDetune (0.0),
 	m_fModulationVolume (0.0),
 	m_nSampleCount (0),
 	m_fOutputLevel (0.0)
@@ -96,7 +99,15 @@ void COscillator::SetWaveform (TWaveform Waveform)
 void COscillator::SetFrequency (float fFrequency)
 {
 	assert (fFrequency > 0.0);
-	m_fFrequency = fFrequency;
+	m_fMidFrequency = fFrequency;
+	m_fFrequency = exp2f (log2f (m_fMidFrequency) + m_fDetune);
+}
+
+void COscillator::SetDetune (float fDetune)
+{
+	assert (-1.0 <= fDetune && fDetune <= 1.0);
+	m_fDetune = fDetune;
+	m_fFrequency = exp2f (log2f (m_fMidFrequency) + m_fDetune);
 }
 
 void COscillator::SetModulationVolume (float fVolume)

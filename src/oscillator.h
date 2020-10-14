@@ -4,7 +4,7 @@
 // General purpose oscillator
 //
 // MiniSynth Pi - A virtual analogue synthesizer for Raspberry Pi
-// Copyright (C) 2017  R. Stange <rsta2@o2online.de>
+// Copyright (C) 2017-2020  R. Stange <rsta2@o2online.de>
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -43,6 +43,7 @@ public:
 
 	void SetWaveform (TWaveform Waveform);
 	void SetFrequency (float fFrequency);			// in Hz
+	void SetDetune (float fDetune);				// [-1.0, 1.0]
 	void SetModulationVolume (float fVolume);		// [0.0, 1.0]
 
 	void NextSample (void);
@@ -53,6 +54,8 @@ private:
 
 	TWaveform m_Waveform;
 	float m_fFrequency;
+	float m_fMidFrequency;
+	float m_fDetune;
 	float m_fModulationVolume;
 
 	unsigned m_nSampleCount;

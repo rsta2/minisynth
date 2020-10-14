@@ -35,6 +35,7 @@ enum TSynthParameter			// the parameters of a patch
 
 	VCOWaveform,
 	VCOModulationVolume,
+	VCODetune,
 
 	// VCF
 	LFOVCFWaveform,

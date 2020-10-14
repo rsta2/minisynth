@@ -78,6 +78,7 @@ private:
 	CGUIParameter m_LFOVCOWaveform;				// contains 3 objects each
 	CGUIParameter m_LFOVCOFrequency;
 	CGUIParameter m_VCOWaveform;
+	CGUIParameter m_VCODetune;
 	CGUIParameter m_VCOModulationVolume;
 	CGUIParameter m_LFOVCFWaveform;
 	CGUIParameter m_LFOVCFFrequency;
@@ -99,7 +100,7 @@ private:
 	CGUIParameter m_ReverbDecay;
 	CGUIParameter m_ReverbVolume;
 
-	static const unsigned s_ObjectCount = 16+13+23*3;	// must match the number of objects above
+	static const unsigned s_ObjectCount = 16+13+24*3;	// must match the number of objects above
 	UG_OBJECT m_ObjectList[s_ObjectCount];
 
 	CPatch *m_pActivePatch;

@@ -8,7 +8,7 @@ MiniSynth Pi
 Overview
 --------
 
-MiniSynth Pi is a polyphonic virtual analog audio synthesizer, running bare metal (without separate operating system) on the Raspberry Pi. On the Raspberry Pi 2, 3 and 4 it allows to play up to 24 polyphonic voices at a time, on the Raspberry Pi 1 only 4 voices.
+MiniSynth Pi is a polyphonic virtual analog audio synthesizer, running bare metal (without separate operating system) on the Raspberry Pi. On the Raspberry Pi 2, 3 and 4 it allows to play up to 24 polyphonic voices at a time, on the Raspberry Pi 1 only 3 voices.
 
 You have to attach an USB MIDI keyboard controller (which supports the USB Audio Class MIDI specification) or an USB PC keyboard to your Raspberry Pi to play on it. Alternatively you can feed serial MIDI data (at 31250 Bps) into GPIO15 (Broadcom numbering). Normally you will need some external circuit to be able to attach a device with serial MIDI interface.
 
@@ -84,7 +84,7 @@ MiniSynth Pi starts in about four seconds. It is controlled using the following 
 	|  OSCILLATOR       FILTER       AMPLIFIER       PATCHES    |
 	|     VCO            VCF       MASTER VOLUME        0       |
 	| <   Wave   >   <  Cutoff  >   <  Volume  >        1       |
-	|                < Resonance>                       2       |
+	| <  Detune  >   < Resonance>                       2       |
 	|                                                   3       |
 	|     LFO            LFO            LFO             4       |
 	| <   Wave   >   <   Wave   >   <   Wave   >        5       |
@@ -131,6 +131,7 @@ One patch of MiniSynth Pi has the following parameters:
 | Section    | Module   | Parameter | Unit | Range     | Default | Description          | MIDI CC |
 | ---------- | -------- | --------- | ---- | --------- | ------- | -------------------- | ------- |
 | OSCILLATOR | VCO      | Wave      |      |           | Square  | Waveform (*)         |         |
+| OSCILLATOR | VCO (2)  | Detune    | %    | 0-200     | 100     | Half semitone -/+    |         |
 | OSCILLATOR | LFO      | Wave      |      |           | Sine    | Waveform (*)         |         |
 | OSCILLATOR | LFO      | Rate      | Hz   | 1-35      | 20      | Modulation frequency |         |
 | OSCILLATOR | LFO      | Volume    | %    | 0-100     | 0       | Modulation volume    |         |
@@ -155,6 +156,8 @@ One patch of MiniSynth Pi has the following parameters:
 | EFFECTS    | REVERB   | Volume    | %    | 0-30      | 0       | Wet/dry ratio        |         |
 
 (*) Waveform can be: Sine, Square, Sawtooth, Triangle, Pulse 12.5% or Pulse 25%
+
+MiniSynth Pi provides two VCOs, one runs at the pitch frequency, the other at pitch frequency detuned by a configurable value (max. half semitone - or +, default 100% = Detune off).
 
 MiniSynth Pi allows to use a specific keyboard velocity curve, which fits best to your keyboard and your playing style. It has to be provided in the file *velocity.txt* on the SD card. The default velocity curve is linear. Have a look into the example files in the *config/* subdirectory. If you want to use one of these files, it has to be renamed to *velocity.txt* on the SD card. It should be easy to modify one example file to adjust the velocity curve to your own needs.
 

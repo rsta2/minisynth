@@ -40,7 +40,9 @@ static const float KeyFrequency[/* MIDI key number */] =
 
 CVoice::CVoice (void)
 :	m_VCO (&m_LFO_VCO),
-	m_VCF (&m_VCO, &m_LFO_VCF, &m_EG_VCF),
+	m_VCO2 (&m_LFO_VCO),
+	m_VCO_Mixer (&m_VCO, &m_VCO2),
+	m_VCF (&m_VCO_Mixer, &m_LFO_VCF, &m_EG_VCF),
 	m_VCA (&m_VCF, &m_LFO_VCA, &m_EG_VCA),
 	m_ucKeyNumber (KEY_NUMBER_NONE)
 {
@@ -60,6 +62,10 @@ void CVoice::SetPatch (CPatch *pPatch)
 
 	m_VCO.SetWaveform ((TWaveform) pPatch->GetParameter (VCOWaveform));
 	m_VCO.SetModulationVolume (pPatch->GetParameter (VCOModulationVolume) / 100.0);
+
+	m_VCO2.SetWaveform ((TWaveform) pPatch->GetParameter (VCOWaveform));
+	m_VCO2.SetModulationVolume (pPatch->GetParameter (VCOModulationVolume) / 100.0);
+	m_VCO2.SetDetune (pPatch->GetParameter (VCODetune) / 200.0 - 0.5);
 
 	// VCF
 	m_LFO_VCF.SetWaveform ((TWaveform) pPatch->GetParameter (LFOVCFWaveform));
@@ -93,6 +99,7 @@ void CVoice::NoteOn (u8 ucKeyNumber, u8 ucVelocity)
 	{
 		m_ucKeyNumber = ucKeyNumber;
 		m_VCO.SetFrequency (KeyFrequency[m_ucKeyNumber]);
+		m_VCO2.SetFrequency (KeyFrequency[m_ucKeyNumber]);
 
 		assert (1 <= ucVelocity && ucVelocity <= 127);
 		float fVelocityLevel = ucVelocity / 127.0;
@@ -138,6 +145,8 @@ void CVoice::NextSample (void)
 	// VCO
 	m_LFO_VCO.NextSample ();
 	m_VCO.NextSample ();
+	m_VCO2.NextSample ();
+	m_VCO_Mixer.NextSample ();
 
 	// VCF
 	m_LFO_VCF.NextSample ();

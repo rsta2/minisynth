@@ -36,6 +36,7 @@ enum
 	// oscillator
 	TXB_VCO,
 	TXB_VCO_WAVEFORM,
+	TXB_VCO_DETUNE,
 	TXB_LFO_VCO,
 	TXB_LFO_VCO_WAVEFORM,
 	TXB_LFO_VCO_FREQ,
@@ -79,6 +80,8 @@ enum
 	// oscillator
 	BTN_VCO_WAVEFORM_DOWN,
 	BTN_VCO_WAVEFORM_UP,
+	BTN_VCO_DETUNE_DOWN,
+	BTN_VCO_DETUNE_UP,
 	BTN_LFO_VCO_WAVEFORM_DOWN,
 	BTN_LFO_VCO_WAVEFORM_UP,
 	BTN_LFO_VCO_FREQ_DOWN,
@@ -156,6 +159,7 @@ CMainWindow::CMainWindow (CMiniSynthesizer *pSynthesizer, CSynthConfig *pConfig)
 	m_LFOVCOWaveform (&m_Window, LFOVCOWaveform, pConfig),
 	m_LFOVCOFrequency (&m_Window, LFOVCOFrequency, pConfig),
 	m_VCOWaveform (&m_Window, VCOWaveform, pConfig),
+	m_VCODetune (&m_Window, VCODetune, pConfig),
 	m_VCOModulationVolume (&m_Window, VCOModulationVolume, pConfig),
 	m_LFOVCFWaveform (&m_Window, LFOVCFWaveform, pConfig),
 	m_LFOVCFFrequency (&m_Window, LFOVCFFrequency, pConfig),
@@ -200,6 +204,7 @@ CMainWindow::CMainWindow (CMiniSynthesizer *pSynthesizer, CSynthConfig *pConfig)
 	// oscillator
 	UG_TextboxCreate (&m_Window, &m_Textbox7, TXB_VCO, 5, 30, 194, 55);
 	m_VCOWaveform.Create (TXB_VCO_WAVEFORM, BTN_VCO_WAVEFORM_DOWN, BTN_VCO_WAVEFORM_UP, 10, 60);
+	m_VCODetune.Create (TXB_VCO_DETUNE, BTN_VCO_DETUNE_DOWN, BTN_VCO_DETUNE_UP, 10, 90);
 	UG_TextboxCreate (&m_Window, &m_Textbox8, TXB_LFO_VCO, 5, 150, 194, 175);
 	m_LFOVCOWaveform.Create (TXB_LFO_VCO_WAVEFORM, BTN_LFO_VCO_WAVEFORM_DOWN, BTN_LFO_VCO_WAVEFORM_UP, 10, 180);
 	m_LFOVCOFrequency.Create (TXB_LFO_VCO_FREQ, BTN_LFO_VCO_FREQ_DOWN, BTN_LFO_VCO_FREQ_UP, 10, 210);
@@ -412,6 +417,8 @@ void CMainWindow::Callback (UG_MESSAGE *pMsg)
 		// oscillator
 		case BTN_VCO_WAVEFORM_DOWN:
 		case BTN_VCO_WAVEFORM_UP:
+		case BTN_VCO_DETUNE_DOWN:
+		case BTN_VCO_DETUNE_UP:
 		case BTN_LFO_VCO_WAVEFORM_DOWN:
 		case BTN_LFO_VCO_WAVEFORM_UP:
 		case BTN_LFO_VCO_FREQ_DOWN:
@@ -464,6 +471,7 @@ void CMainWindow::Callback (UG_MESSAGE *pMsg)
 			    || m_LFOVCOFrequency.ButtonPressed (nButtonID, m_bShowHelp)
 			    || m_VCOWaveform.ButtonPressed (nButtonID, m_bShowHelp)
 			    || m_VCOModulationVolume.ButtonPressed (nButtonID, m_bShowHelp)
+			    || m_VCODetune.ButtonPressed (nButtonID, m_bShowHelp)
 				// filter
 			    || m_VCFCutoffFrequency.ButtonPressed (nButtonID, m_bShowHelp)
 			    || m_VCFResonance.ButtonPressed (nButtonID, m_bShowHelp)
@@ -550,6 +558,7 @@ void CMainWindow::UpdateAllParameters (boolean bUpdatePatch)
 	m_LFOVCOFrequency.Update (m_bShowHelp);
 	m_VCOWaveform.Update (m_bShowHelp);
 	m_VCOModulationVolume.Update (m_bShowHelp);
+	m_VCODetune.Update (m_bShowHelp);
 
 	// filter
 	m_VCFCutoffFrequency.Update (m_bShowHelp);

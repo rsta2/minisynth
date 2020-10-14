@@ -4,7 +4,7 @@
 // One voice in a polyphonic choir
 //
 // MiniSynth Pi - A virtual analogue synthesizer for Raspberry Pi
-// Copyright (C) 2017  R. Stange <rsta2@o2online.de>
+// Copyright (C) 2017-2020  R. Stange <rsta2@o2online.de>
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -23,6 +23,7 @@
 #define _voice_h
 
 #include "oscillator.h"
+#include "mixer.h"
 #include "envelopegenerator.h"
 #include "filter.h"
 #include "amplifier.h"
@@ -59,6 +60,8 @@ private:
 	// VCO
 	COscillator m_LFO_VCO;
 	COscillator m_VCO;
+	COscillator m_VCO2;
+	CMixer m_VCO_Mixer;
 
 	// VCF
 	COscillator m_LFO_VCF;

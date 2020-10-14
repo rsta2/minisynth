@@ -27,7 +27,7 @@
 #if RASPPI >= 2
 	#define VOICES_PER_CORE	6		// polyphonic voices per CPU core
 #else
-	#define VOICES_PER_CORE	4		// polyphonic voices (1 core only)
+	#define VOICES_PER_CORE	3		// polyphonic voices (1 core only)
 #endif
 
 #define VELOCITY_DEFAULT	80		// for PC keyboard (max. 127)
