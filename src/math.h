@@ -2,7 +2,7 @@
 // math.h
 //
 // MiniSynth Pi - A virtual analogue synthesizer for Raspberry Pi
-// Copyright (C) 2017-2019  R. Stange <rsta2@o2online.de>
+// Copyright (C) 2017-2020  R. Stange <rsta2@o2online.de>
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -23,5 +23,14 @@
 #include <math.h>
 
 #define PI	3.1415926f
+
+#define RAND_MAX 32767
+
+static inline int rand_r (unsigned *pSeed)
+{
+	*pSeed = *pSeed * 1103515245 + 12345;
+
+	return (unsigned) (*pSeed / 65536) % 32768;
+}
 
 #endif

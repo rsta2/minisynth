@@ -81,7 +81,8 @@ COscillator::COscillator (CSynthModule *pModulator)
 	m_fDetune (0.0),
 	m_fModulationVolume (0.0),
 	m_nSampleCount (0),
-	m_fOutputLevel (0.0)
+	m_fOutputLevel (0.0),
+	m_nRandSeed (1)
 {
 }
 
@@ -159,6 +160,10 @@ void COscillator::NextSample (void)
 		float fPulseWidth = m_Waveform == WaveformPulse12 ? 0.125 : 0.25;
 		m_fOutputLevel = m_nSampleCount < nPeriod*fPulseWidth ? 1.0 : -1.0;
 		} break;
+
+	case WaveformWhiteNoise:
+		m_fOutputLevel = rand_r (&m_nRandSeed) * (2.0 / RAND_MAX) - 1.0;
+		break;
 
 	default:
 		assert (0);

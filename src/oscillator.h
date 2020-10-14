@@ -32,6 +32,7 @@ enum TWaveform
 	WaveformTriangle,
 	WaveformPulse12,
 	WaveformPulse25,
+	WaveformWhiteNoise,
 	WaveformUnknown
 };
 
@@ -61,6 +62,8 @@ private:
 	unsigned m_nSampleCount;
 
 	float m_fOutputLevel;
+
+	unsigned m_nRandSeed;
 
 	static float s_SineTable[];
 };

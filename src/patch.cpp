@@ -34,7 +34,7 @@ struct
 ParameterList[] =		// must match TSynthParameter
 {
 	// VCO
-	{"LFOVCOWaveform", ParameterWaveform, WaveformSine, WaveformUnknown-1, 1, WaveformSine, "Wave"},
+	{"LFOVCOWaveform", ParameterWaveform, WaveformSine, WaveformPulse25, 1, WaveformSine, "Wave"},
 	{"LFOVCOFrequency", ParameterFrequency, 1, 35, 1, 20, "Rate"},
 
 	{"VCOWaveform", ParameterWaveform, WaveformSine, WaveformUnknown-1, 1, WaveformSquare, "Wave"},
@@ -42,7 +42,7 @@ ParameterList[] =		// must match TSynthParameter
 	{"VCODetune", ParameterPercent, 0, 200, 1, 100, "Detune"},
 
 	// VCF
-	{"LFOVCFWaveform", ParameterWaveform, WaveformSine, WaveformUnknown-1, 1, WaveformSine, "Wave"},
+	{"LFOVCFWaveform", ParameterWaveform, WaveformSine, WaveformPulse25, 1, WaveformSine, "Wave"},
 	{"LFOVCFFrequency", ParameterFrequencyTenth, 5, 50, 5, 20, "Rate"},
 
 	{"VCFCutoffFrequency", ParameterPercent, 10, 100, 2, 80, "Cutoff"},
@@ -56,7 +56,7 @@ ParameterList[] =		// must match TSynthParameter
 	{"VCFModulationVolume", ParameterPercent, 0, 100, 5, 0, "Volume"},
 
 	// VCA
-	{"LFOVCAWaveform", ParameterWaveform, WaveformSine, WaveformUnknown-1, 1, WaveformSine, "Wave"},
+	{"LFOVCAWaveform", ParameterWaveform, WaveformSine, WaveformPulse25, 1, WaveformSine, "Wave"},
 	{"LFOVCAFrequency", ParameterFrequencyTenth, 5, 50, 5, 20, "Rate"},
 
 	{"EGVCAAttack", ParameterTime, 0, 2000, 50, 100, "Attack"},

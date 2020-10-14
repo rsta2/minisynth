@@ -106,7 +106,8 @@ const char *CParameter::GetString (void)
 		"Sawtooth",
 		"Triangle",
 		"Pulse12",
-		"Pulse25"
+		"Pulse25",
+		"Noise"
 	};
 
 	switch (m_Type)
