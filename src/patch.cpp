@@ -39,7 +39,7 @@ ParameterList[] =		// must match TSynthParameter
 
 	{"VCOWaveform", ParameterWaveform, WaveformSine, WaveformUnknown-1, 1, WaveformSquare, "Wave"},
 	{"VCOModulationVolume", ParameterPercent, 0, 100, 10, 0, "Volume"},
-	{"VCODetune", ParameterPercent, 0, 200, 1, 100, "Detune"},
+	{"VCODetune", ParameterPercent, 0, 200, 2, 100, "Detune"},
 
 	// VCF
 	{"LFOVCFWaveform", ParameterWaveform, WaveformSine, WaveformPulse25, 1, WaveformSine, "Wave"},

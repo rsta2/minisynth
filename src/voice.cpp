@@ -65,7 +65,7 @@ void CVoice::SetPatch (CPatch *pPatch)
 
 	m_VCO2.SetWaveform ((TWaveform) pPatch->GetParameter (VCOWaveform));
 	m_VCO2.SetModulationVolume (pPatch->GetParameter (VCOModulationVolume) / 100.0);
-	m_VCO2.SetDetune (pPatch->GetParameter (VCODetune) / 200.0 - 0.5);
+	m_VCO2.SetDetune (pPatch->GetParameter (VCODetune) / 100.0 - 1.0);
 
 	// VCF
 	m_LFO_VCF.SetWaveform ((TWaveform) pPatch->GetParameter (LFOVCFWaveform));

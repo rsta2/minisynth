@@ -131,7 +131,7 @@ One patch of MiniSynth Pi has the following parameters:
 | Section    | Module   | Parameter | Unit | Range     | Default | Description          | MIDI CC |
 | ---------- | -------- | --------- | ---- | --------- | ------- | -------------------- | ------- |
 | OSCILLATOR | VCO      | Wave      |      |           | Square  | Waveform (*)         |         |
-| OSCILLATOR | VCO (2)  | Detune    | %    | 0-200     | 100     | Half semitone -/+    |         |
+| OSCILLATOR | VCO (2)  | Detune    | %    | 0-200     | 100     | Semitone -/+         |         |
 | OSCILLATOR | LFO      | Wave      |      |           | Sine    | Waveform (*)         |         |
 | OSCILLATOR | LFO      | Rate      | Hz   | 1-35      | 20      | Modulation frequency |         |
 | OSCILLATOR | LFO      | Volume    | %    | 0-100     | 0       | Modulation volume    |         |

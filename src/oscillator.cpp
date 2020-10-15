@@ -107,7 +107,7 @@ void COscillator::SetFrequency (float fFrequency)
 void COscillator::SetDetune (float fDetune)
 {
 	assert (-1.0 <= fDetune && fDetune <= 1.0);
-	m_fDetune = fDetune;
+	m_fDetune = fDetune / 12.0;
 	m_fFrequency = exp2f (log2f (m_fMidFrequency) + m_fDetune);
 }
 
