@@ -20,7 +20,7 @@
 #ifndef _mainwindow_h
 #define _mainwindow_h
 
-#include <ugui/uguicpp.h>
+#include <lvgl/lvgl.h>
 #include "minisynth.h"
 #include "synthconfig.h"
 #include "guiparameter.h"
@@ -34,48 +34,39 @@ public:
 
 	void UpdateAllParameters (boolean bUpdatePatch = FALSE);
 
+	static void EventStub (lv_obj_t *pObject, lv_event_t Event);
+
 private:
-	void Callback (UG_MESSAGE *pMsg);
-	static void CallbackStub (UG_MESSAGE *pMsg);
+	void EventHandler (lv_obj_t *pObject, lv_event_t Event);
+
+	enum TLabelStyle
+	{
+		LabelStyleTitle,
+		LabelStyleSubtitle,
+		LabelStyleSection,
+		LabelStyleDefault
+	};
+	void LabelCreate (unsigned nPosX, unsigned nPosY, const char *pText,
+			  TLabelStyle Style = LabelStyleDefault);
+
+	lv_obj_t *ButtonCreate (unsigned nPosX, unsigned nPosY, const char *pText);
 
 private:
 	CMiniSynthesizer *m_pSynthesizer;
 	CSynthConfig *m_pConfig;
 
-	UG_WINDOW m_Window;
+	lv_style_t m_StyleNoBorder;
+	lv_style_t m_StyleWhiteBackground;
+	lv_style_t m_StyleGrayBackground;
 
-	UG_TEXTBOX m_Textbox1;
-	UG_TEXTBOX m_Textbox2;
-	UG_TEXTBOX m_Textbox3;
-	UG_TEXTBOX m_Textbox4;
-	UG_TEXTBOX m_Textbox5;
-	UG_TEXTBOX m_Textbox6;
-	UG_TEXTBOX m_Textbox7;
-	UG_TEXTBOX m_Textbox8;
-	UG_TEXTBOX m_Textbox9;
-	UG_TEXTBOX m_Textbox10;
-	UG_TEXTBOX m_Textbox11;
-	UG_TEXTBOX m_Textbox12;
-	UG_TEXTBOX m_Textbox13;
-	UG_TEXTBOX m_Textbox14;
-	UG_TEXTBOX m_Textbox15;
-	UG_TEXTBOX m_Textbox16;
+	lv_obj_t *m_pWindow;
 
-	UG_BUTTON m_Button1;
-	UG_BUTTON m_Button2;
-	UG_BUTTON m_Button3;
-	UG_BUTTON m_Button4;
-	UG_BUTTON m_Button5;
-	UG_BUTTON m_Button6;
-	UG_BUTTON m_Button7;
-	UG_BUTTON m_Button8;
-	UG_BUTTON m_Button9;
-	UG_BUTTON m_Button10;
-	UG_BUTTON m_Button11;
-	UG_BUTTON m_Button12;
-	UG_BUTTON m_Button13;
+	lv_obj_t *m_pButtonPatch[PATCHES];
+	lv_obj_t *m_pButtonLoad;
+	lv_obj_t *m_pButtonSave;
+	lv_obj_t *m_pButtonHelp;
 
-	CGUIParameter m_LFOVCOWaveform;				// contains 3 objects each
+	CGUIParameter m_LFOVCOWaveform;
 	CGUIParameter m_LFOVCOFrequency;
 	CGUIParameter m_VCOWaveform;
 	CGUIParameter m_VCODetune;
@@ -99,9 +90,6 @@ private:
 	CGUIParameter m_SynthVolume;
 	CGUIParameter m_ReverbDecay;
 	CGUIParameter m_ReverbVolume;
-
-	static const unsigned s_ObjectCount = 16+13+24*3;	// must match the number of objects above
-	UG_OBJECT m_ObjectList[s_ObjectCount];
 
 	CPatch *m_pActivePatch;
 

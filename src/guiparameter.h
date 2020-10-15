@@ -4,7 +4,7 @@
 // GUI representation of one patch parameter
 //
 // MiniSynth Pi - A virtual analogue synthesizer for Raspberry Pi
-// Copyright (C) 2017  R. Stange <rsta2@o2online.de>
+// Copyright (C) 2017-2020  R. Stange <rsta2@o2online.de>
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -22,7 +22,7 @@
 #ifndef _guiparameter_h
 #define _guiparameter_h
 
-#include <ugui/uguicpp.h>
+#include <lvgl/lvgl.h>
 #include "patch.h"
 #include "synthconfig.h"
 #include <circle/types.h>
@@ -30,28 +30,30 @@
 class CGUIParameter
 {
 public:
-	CGUIParameter (UG_WINDOW *pWindow, TSynthParameter Parameter, CSynthConfig *pConfig);
+	CGUIParameter (lv_obj_t *pWindow, TSynthParameter Parameter, CSynthConfig *pConfig);
 	~CGUIParameter (void);
 
-	void Create (unsigned nTextboxID, unsigned nButtonDownID, unsigned nButtonUpID,
-		     unsigned nPosX, unsigned nPosY);
+	void Create (unsigned nPosX, unsigned nPosY);
 
 	void Update (boolean bShowHelp);
 
-	boolean ButtonPressed (unsigned nButtonID, boolean bShowHelp);
+	boolean ButtonPressed (lv_obj_t *pObject, boolean bShowHelp);
 
 private:
-	UG_WINDOW *m_pWindow;
+	lv_obj_t *m_pWindow;
 	TSynthParameter m_Parameter;
 	CSynthConfig *m_pConfig;
 
-	unsigned m_nTextboxID;
-	unsigned m_nButtonDownID;
-	unsigned m_nButtonUpID;
+	lv_style_t m_StyleNoBorder;
+	lv_style_t m_StyleSilverBackground;
 
-	UG_TEXTBOX m_Textbox;
-	UG_BUTTON m_ButtonDown;
-	UG_BUTTON m_ButtonUp;
+	lv_obj_t *m_pContainer;
+	lv_obj_t *m_pButtonDown;
+	lv_obj_t *m_pButtonDownLabel;
+	lv_obj_t *m_pContainerText;
+	lv_obj_t *m_pTextLabel;
+	lv_obj_t *m_pButtonUp;
+	lv_obj_t *m_pButtonUpLabel;
 };
 
 #endif

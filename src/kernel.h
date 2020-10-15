@@ -34,7 +34,7 @@
 #include <circle/usb/usbhcidevice.h>
 #include <SDCard/emmc.h>
 #include <circle/input/touchscreen.h>
-#include <ugui/uguicpp.h>
+#include <lvgl/lvgl.h>
 #include <fatfs/ff.h>
 #include <circle/types.h>
 #include "synthconfig.h"
@@ -73,7 +73,7 @@ private:
 	CUSBHCIDevice		m_USBHCI;
 	CEMMCDevice		m_EMMC;
 	CTouchScreenDevice	m_TouchScreen;
-	CUGUI			m_GUI;
+	CLVGL			m_GUI;
 
 	FATFS			m_FileSystem;
 	CSynthConfig		m_Config;
