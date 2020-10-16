@@ -46,10 +46,11 @@ private:
 		LabelStyleSection,
 		LabelStyleDefault
 	};
-	void LabelCreate (unsigned nPosX, unsigned nPosY, const char *pText,
+	void LabelCreate (lv_obj_t *pParent, unsigned nPosX, unsigned nPosY, const char *pText,
 			  TLabelStyle Style = LabelStyleDefault);
 
-	lv_obj_t *ButtonCreate (unsigned nPosX, unsigned nPosY, const char *pText);
+	lv_obj_t *ButtonCreate (lv_obj_t *pParent, unsigned nPosX, unsigned nPosY,
+				const char *pText);
 
 private:
 	CMiniSynthesizer *m_pSynthesizer;
@@ -60,6 +61,10 @@ private:
 	lv_style_t m_StyleGrayBackground;
 
 	lv_obj_t *m_pWindow;
+
+	lv_obj_t *m_pTabView;
+	lv_obj_t *m_pTabMain;
+	lv_obj_t *m_pTabPatches;
 
 	lv_obj_t *m_pButtonPatch[PATCHES];
 	lv_obj_t *m_pButtonLoad;

@@ -19,6 +19,7 @@
 //
 #include "mainwindow.h"
 #include "config.h"
+#include <circle/string.h>
 #include <assert.h>
 
 CMainWindow *CMainWindow::s_pThis = 0;
@@ -27,30 +28,33 @@ CMainWindow::CMainWindow (CMiniSynthesizer *pSynthesizer, CSynthConfig *pConfig)
 :	m_pSynthesizer (pSynthesizer),
 	m_pConfig (pConfig),
 	m_pWindow (lv_scr_act ()),
-	m_LFOVCOWaveform (m_pWindow, LFOVCOWaveform, pConfig),
-	m_LFOVCOFrequency (m_pWindow, LFOVCOFrequency, pConfig),
-	m_VCOWaveform (m_pWindow, VCOWaveform, pConfig),
-	m_VCODetune (m_pWindow, VCODetune, pConfig),
-	m_VCOModulationVolume (m_pWindow, VCOModulationVolume, pConfig),
-	m_LFOVCFWaveform (m_pWindow, LFOVCFWaveform, pConfig),
-	m_LFOVCFFrequency (m_pWindow, LFOVCFFrequency, pConfig),
-	m_VCFCutoffFrequency (m_pWindow, VCFCutoffFrequency, pConfig),
-	m_VCFResonance (m_pWindow, VCFResonance, pConfig),
-	m_EGVCFAttack (m_pWindow, EGVCFAttack, pConfig),
-	m_EGVCFDecay (m_pWindow, EGVCFDecay, pConfig),
-	m_EGVCFSustain (m_pWindow, EGVCFSustain, pConfig),
-	m_EGVCFRelease (m_pWindow, EGVCFRelease, pConfig),
-	m_VCFModulationVolume (m_pWindow, VCFModulationVolume, pConfig),
-	m_LFOVCAWaveform (m_pWindow, LFOVCAWaveform, pConfig),
-	m_LFOVCAFrequency (m_pWindow, LFOVCAFrequency, pConfig),
-	m_EGVCAAttack (m_pWindow, EGVCAAttack, pConfig),
-	m_EGVCADecay (m_pWindow, EGVCADecay, pConfig),
-	m_EGVCASustain (m_pWindow, EGVCASustain, pConfig),
-	m_EGVCARelease (m_pWindow, EGVCARelease, pConfig),
-	m_VCAModulationVolume (m_pWindow, VCAModulationVolume, pConfig),
-	m_SynthVolume (m_pWindow, SynthVolume, pConfig),
-	m_ReverbDecay (m_pWindow, ReverbDecay, pConfig),
-	m_ReverbVolume (m_pWindow, ReverbVolume, pConfig),
+	m_pTabView (lv_tabview_create (m_pWindow, 0)),
+	m_pTabMain (lv_tabview_add_tab (m_pTabView, "MAIN")),
+	m_pTabPatches (lv_tabview_add_tab (m_pTabView, "PATCHES")),
+	m_LFOVCOWaveform (m_pTabMain, LFOVCOWaveform, pConfig),
+	m_LFOVCOFrequency (m_pTabMain, LFOVCOFrequency, pConfig),
+	m_VCOWaveform (m_pTabMain, VCOWaveform, pConfig),
+	m_VCODetune (m_pTabMain, VCODetune, pConfig),
+	m_VCOModulationVolume (m_pTabMain, VCOModulationVolume, pConfig),
+	m_LFOVCFWaveform (m_pTabMain, LFOVCFWaveform, pConfig),
+	m_LFOVCFFrequency (m_pTabMain, LFOVCFFrequency, pConfig),
+	m_VCFCutoffFrequency (m_pTabMain, VCFCutoffFrequency, pConfig),
+	m_VCFResonance (m_pTabMain, VCFResonance, pConfig),
+	m_EGVCFAttack (m_pTabMain, EGVCFAttack, pConfig),
+	m_EGVCFDecay (m_pTabMain, EGVCFDecay, pConfig),
+	m_EGVCFSustain (m_pTabMain, EGVCFSustain, pConfig),
+	m_EGVCFRelease (m_pTabMain, EGVCFRelease, pConfig),
+	m_VCFModulationVolume (m_pTabMain, VCFModulationVolume, pConfig),
+	m_LFOVCAWaveform (m_pTabMain, LFOVCAWaveform, pConfig),
+	m_LFOVCAFrequency (m_pTabMain, LFOVCAFrequency, pConfig),
+	m_EGVCAAttack (m_pTabMain, EGVCAAttack, pConfig),
+	m_EGVCADecay (m_pTabMain, EGVCADecay, pConfig),
+	m_EGVCASustain (m_pTabMain, EGVCASustain, pConfig),
+	m_EGVCARelease (m_pTabMain, EGVCARelease, pConfig),
+	m_VCAModulationVolume (m_pTabMain, VCAModulationVolume, pConfig),
+	m_SynthVolume (m_pTabMain, SynthVolume, pConfig),
+	m_ReverbDecay (m_pTabMain, ReverbDecay, pConfig),
+	m_ReverbVolume (m_pTabMain, ReverbVolume, pConfig),
 	m_pActivePatch (m_pConfig->GetActivePatch ()),
 	m_bShowHelp (FALSE)
 {
@@ -74,63 +78,71 @@ CMainWindow::CMainWindow (CMiniSynthesizer *pSynthesizer, CSynthConfig *pConfig)
 	// set window style
 	lv_obj_add_style (m_pWindow, LV_OBJ_PART_MAIN, &m_StyleWhiteBackground);
 
+	// set tabview style
+	lv_obj_add_style (m_pTabView, LV_OBJ_PART_MAIN, &m_StyleWhiteBackground);
+	lv_obj_set_style_local_pad_left (m_pTabView, LV_TABVIEW_PART_TAB_BG,
+					 LV_STATE_DEFAULT, 500);
+	lv_tabview_set_anim_time (m_pTabView, 0);
+
 	// create controls
-	LabelCreate (5, 450, "MiniSynth Pi", LabelStyleTitle);
-	LabelCreate (550, 450, "VIRTUAL ANALOG SYNTHESIZER", LabelStyleSubtitle);
+	LabelCreate (m_pWindow, 15, 15, "MiniSynth Pi", LabelStyleTitle);
 	// oscillator
-	LabelCreate (5, 5, "OSCILLATOR", LabelStyleSection);
-	LabelCreate (5, 30, "VCO");
+	LabelCreate (m_pTabMain, 5, 5, "OSCILLATOR", LabelStyleSection);
+	LabelCreate (m_pTabMain, 5, 30, "VCO");
 	m_VCOWaveform.Create (10, 60);
 	m_VCODetune.Create (10, 90);
-	LabelCreate (5, 150, "LFO");
-	m_LFOVCOWaveform.Create (10, 180);
-	m_LFOVCOFrequency.Create (10, 210);
-	m_VCOModulationVolume.Create (10, 240);
+	LabelCreate (m_pTabMain, 5, 120, "LFO");
+	m_LFOVCOWaveform.Create (10, 150);
+	m_LFOVCOFrequency.Create (10, 180);
+	m_VCOModulationVolume.Create (10, 210);
 	// filter
-	LabelCreate (205, 5, "FILTER", LabelStyleSection);
-	LabelCreate (205, 30, "VCF");
+	LabelCreate (m_pTabMain, 205, 5, "FILTER", LabelStyleSection);
+	LabelCreate (m_pTabMain, 205, 30, "VCF");
 	m_VCFCutoffFrequency.Create (210, 60);
 	m_VCFResonance.Create (210, 90);
-	LabelCreate (205, 150, "LFO");
-	m_LFOVCFWaveform.Create (210, 180);
-	m_LFOVCFFrequency.Create (210, 210);
-	m_VCFModulationVolume.Create (210, 240);
-	LabelCreate (205, 300, "ENVELOPE");
-	m_EGVCFAttack.Create (210, 330);
-	m_EGVCFDecay.Create (210, 360);
-	m_EGVCFSustain.Create (210, 390);
-	m_EGVCFRelease.Create (210, 420);
+	LabelCreate (m_pTabMain, 205, 120, "LFO");
+	m_LFOVCFWaveform.Create (210, 150);
+	m_LFOVCFFrequency.Create (210, 180);
+	m_VCFModulationVolume.Create (210, 210);
+	LabelCreate (m_pTabMain, 205, 240, "ENVELOPE");
+	m_EGVCFAttack.Create (210, 270);
+	m_EGVCFDecay.Create (210, 300);
+	m_EGVCFSustain.Create (210, 330);
+	m_EGVCFRelease.Create (210, 360);
 	// amplifier
-	LabelCreate (405, 5, "AMPLIFIER", LabelStyleSection);
-	LabelCreate (405, 30, "MASTER VOLUME");
+	LabelCreate (m_pTabMain, 405, 5, "AMPLIFIER", LabelStyleSection);
+	LabelCreate (m_pTabMain, 405, 30, "MASTER VOLUME");
 	m_SynthVolume.Create (410, 60);
-	LabelCreate (405, 150, "LFO");
-	m_LFOVCAWaveform.Create (410, 180);
-	m_LFOVCAFrequency.Create (410, 210);
-	m_VCAModulationVolume.Create (410, 240);
-	LabelCreate (405, 300, "ENVELOPE");
-	m_EGVCAAttack.Create (410, 330);
-	m_EGVCADecay.Create (410, 360);
-	m_EGVCASustain.Create (410, 390);
-	m_EGVCARelease.Create (410, 420);
+	LabelCreate (m_pTabMain, 405, 120, "LFO");
+	m_LFOVCAWaveform.Create (410, 150);
+	m_LFOVCAFrequency.Create (410, 180);
+	m_VCAModulationVolume.Create (410, 210);
+	LabelCreate (m_pTabMain, 405, 240, "ENVELOPE");
+	m_EGVCAAttack.Create (410, 270);
+	m_EGVCADecay.Create (410, 300);
+	m_EGVCASustain.Create (410, 330);
+	m_EGVCARelease.Create (410, 360);
 	// effects
-	LabelCreate (5, 300, "EFFECTS", LabelStyleSection);
-	LabelCreate (5, 330, "REVERB");
-	m_ReverbDecay.Create (10, 360);
-	m_ReverbVolume.Create (10, 390);
+	LabelCreate (m_pTabMain, 605, 5, "EFFECTS", LabelStyleSection);
+	LabelCreate (m_pTabMain, 605, 30, "REVERB");
+	m_ReverbDecay.Create (610, 60);
+	m_ReverbVolume.Create (610, 90);
+	// help
+	m_pButtonHelp = ButtonCreate (m_pTabMain, 630, 362, "HELP");
 	// patches
-	LabelCreate (605, 5, "PATCHES", LabelStyleSection);
 	for (unsigned i = 0; i < PATCHES; i++)
 	{
-		char Label[2] = "0";
-		Label[0] +=  i;
-		m_pButtonPatch[i] = ButtonCreate (630, 32+i*30, Label);
+		CString Label;
+		Label.Format ("%u", i);
+
+		unsigned nPosX = 45 + (i / 13) * 190;
+		unsigned nPosY = 10 + (i % 13) * 30;
+		m_pButtonPatch[i] = ButtonCreate (m_pTabPatches, nPosX, nPosY, Label);
 	}
 	lv_btn_set_state (m_pButtonPatch[0], LV_BTN_STATE_CHECKED_RELEASED);
-	m_pButtonLoad = ButtonCreate (630, 362, "LOAD");
-	m_pButtonSave = ButtonCreate (630, 392, "SAVE");
-	// help
-	m_pButtonHelp = ButtonCreate (30, 422, "HELP");
+	m_pButtonLoad = ButtonCreate (m_pTabPatches, 615, 310, "LOAD");
+	m_pButtonSave = ButtonCreate (m_pTabPatches, 615, 340, "SAVE");
+
 	UpdateAllParameters ();
 }
 
@@ -291,7 +303,7 @@ void CMainWindow::UpdateAllParameters (boolean bUpdatePatch)
 	}
 }
 
-void CMainWindow::LabelCreate (unsigned nPosX, unsigned nPosY, const char *pText,
+void CMainWindow::LabelCreate (lv_obj_t *pParent, unsigned nPosX, unsigned nPosY, const char *pText,
 			       TLabelStyle Style)
 {
 	lv_coord_t nWidth = 190;
@@ -318,8 +330,8 @@ void CMainWindow::LabelCreate (unsigned nPosX, unsigned nPosY, const char *pText
 		break;
 	}
 
-	assert (m_pWindow != 0);
-	lv_obj_t *pContainer = lv_cont_create (m_pWindow, 0);
+	assert (pParent != 0);
+	lv_obj_t *pContainer = lv_cont_create (pParent, 0);
 	lv_obj_add_style (pContainer, LV_OBJ_PART_MAIN, pStyle);
 	lv_obj_set_size (pContainer, nWidth, 24);
 	lv_obj_set_pos (pContainer, nPosX, nPosY);
@@ -331,10 +343,11 @@ void CMainWindow::LabelCreate (unsigned nPosX, unsigned nPosY, const char *pText
 	lv_obj_realign (pLabel);
 }
 
-lv_obj_t *CMainWindow::ButtonCreate (unsigned nPosX, unsigned nPosY, const char *pText)
+lv_obj_t *CMainWindow::ButtonCreate (lv_obj_t *pParent, unsigned nPosX, unsigned nPosY,
+				     const char *pText)
 {
-	assert (m_pWindow != 0);
-	lv_obj_t *pButton = lv_btn_create (m_pWindow, 0);
+	assert (pParent != 0);
+	lv_obj_t *pButton = lv_btn_create (pParent, 0);
 	lv_obj_set_size (pButton, 140, 22);
 	lv_obj_set_pos (pButton, nPosX, nPosY);
 	lv_obj_set_event_cb (pButton, EventStub);
