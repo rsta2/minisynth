@@ -143,8 +143,10 @@ CMainWindow::~CMainWindow (void)
 
 void CMainWindow::EventStub (lv_obj_t *pObject, lv_event_t Event)
 {
-	assert (s_pThis != 0);
-	s_pThis->EventHandler (pObject, Event);
+	if (s_pThis != 0)
+	{
+		s_pThis->EventHandler (pObject, Event);
+	}
 }
 
 void CMainWindow::EventHandler (lv_obj_t *pObject, lv_event_t Event)
