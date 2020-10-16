@@ -173,18 +173,23 @@ void CKernel::SaveScreenshot (void)
 {
 	CBcmFrameBuffer *pFrameBuffer = m_Screen.GetFrameBuffer ();
 
-	CString Filename;
-	Filename.Format ("%sscreenshot%ux%ux%u.bin", DRIVE, pFrameBuffer->GetWidth (),
-			 pFrameBuffer->GetHeight (), pFrameBuffer->GetDepth ());
-
-	FIL File;
-	if (f_open (&File, Filename, FA_WRITE | FA_CREATE_ALWAYS) == FR_OK)
+	for (unsigned i = 0; i < 20; i++)
 	{
-		unsigned nBytesWritten;
-		f_write (&File, (void *) (uintptr) pFrameBuffer->GetBuffer (),
-			 pFrameBuffer->GetSize (), &nBytesWritten);
+		CString Filename;
+		Filename.Format ("%sscreenshot%ux%ux%u.%03u", DRIVE, pFrameBuffer->GetWidth (),
+				pFrameBuffer->GetHeight (), pFrameBuffer->GetDepth (), i);
 
-		f_close (&File);
+		FIL File;
+		if (f_open (&File, Filename, FA_WRITE | FA_CREATE_NEW) == FR_OK)
+		{
+			unsigned nBytesWritten;
+			f_write (&File, (void *) (uintptr) pFrameBuffer->GetBuffer (),
+				pFrameBuffer->GetSize (), &nBytesWritten);
+
+			f_close (&File);
+
+			return;
+		}
 	}
 }
 
