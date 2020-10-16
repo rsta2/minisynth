@@ -192,7 +192,7 @@ void CMainWindow::EventHandler (lv_obj_t *pObject, lv_event_t Event)
 		}
 	}
 
-	if (Event == LV_EVENT_PRESSED)
+	if (Event == LV_EVENT_CLICKED)
 	{
 		for (unsigned i = 0; i < PATCHES; i++)
 		{
