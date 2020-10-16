@@ -58,6 +58,11 @@ public:
 	TShutdownMode Run (void);
 
 private:
+#ifdef SCREENSHOT_AFTER_SECS
+	void SaveScreenshot (void);
+#endif
+
+private:
 	// do not change this order
 	CMemorySystem		m_Memory;
 	CActLED			m_ActLED;

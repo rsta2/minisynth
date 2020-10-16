@@ -20,6 +20,7 @@
 #include "kernel.h"
 #include "mainwindow.h"
 #include "config.h"
+#include <circle/string.h>
 #include <assert.h>
 
 static const char FromKernel[] = "kernel";
@@ -141,7 +142,11 @@ TShutdownMode CKernel::Run (void)
 	CMainWindow MainWindow (&m_Synthesizer, &m_Config);
 	m_GUI.Update (FALSE);
 
+#ifndef SCREENSHOT_AFTER_SECS
 	while (m_Synthesizer.IsActive ())
+#else
+	while (m_Timer.GetUptime () < SCREENSHOT_AFTER_SECS)
+#endif
 	{
 		boolean bUpdated = m_USBHCI.UpdatePlugAndPlay ();
 
@@ -155,5 +160,32 @@ TShutdownMode CKernel::Run (void)
 		m_GUI.Update (bUpdated);
 	}
 
+#ifdef SCREENSHOT_AFTER_SECS
+	SaveScreenshot ();
+#endif
+
 	return ShutdownHalt;
 }
+
+#ifdef SCREENSHOT_AFTER_SECS
+
+void CKernel::SaveScreenshot (void)
+{
+	CBcmFrameBuffer *pFrameBuffer = m_Screen.GetFrameBuffer ();
+
+	CString Filename;
+	Filename.Format ("%sscreenshot%ux%ux%u.bin", DRIVE, pFrameBuffer->GetWidth (),
+			 pFrameBuffer->GetHeight (), pFrameBuffer->GetDepth ());
+
+	FIL File;
+	if (f_open (&File, Filename, FA_WRITE | FA_CREATE_ALWAYS) == FR_OK)
+	{
+		unsigned nBytesWritten;
+		f_write (&File, (void *) (uintptr) pFrameBuffer->GetBuffer (),
+			 pFrameBuffer->GetSize (), &nBytesWritten);
+
+		f_close (&File);
+	}
+}
+
+#endif

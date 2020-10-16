@@ -80,24 +80,7 @@ Before powering on your Raspberry Pi, the following devices have to be attached:
 
 MiniSynth Pi starts in about four seconds. It is controlled using the following GUI:
 
-	+-----------------------------------------------------------+
-	|  OSCILLATOR       FILTER       AMPLIFIER       PATCHES    |
-	|     VCO            VCF       MASTER VOLUME        0       |
-	| <   Wave   >   <  Cutoff  >   <  Volume  >        1       |
-	| <  Detune  >   < Resonance>                       2       |
-	|                                                   3       |
-	|     LFO            LFO            LFO             4       |
-	| <   Wave   >   <   Wave   >   <   Wave   >        5       |
-	| <   Rate   >   <   Rate   >   <   Rate   >        6       |
-	| <  Volume  >   <  Volume  >   <  Volume  >        7       |
-	|                                                   8       |
-	|    EFFECTS       ENVELOPE       ENVELOPE          9       |
-	|    REVERB      <  Attack  >   <  Attack  >                |
-	| <   Decay  >   <   Decay  >   <   Decay  >       LOAD     |
-	| <  Volume  >   <  Sustain >   <  Sustain >       SAVE     |
-	|     HELP       <  Release >   <  Release >                |
-	| MiniSynth Pi                   VIRTUAL ANALOG SYNTHESIZER |
-	+-----------------------------------------------------------+
+![MiniSynth Pi GUI](minisynth-pi-gui.png)
 
 You will get that picture when you click the *HELP* button with the mouse or on the touch screen. By default the GUI does not show the help info, but the values of the different parameters of the currently selected patch (see *Parameters*).
 
