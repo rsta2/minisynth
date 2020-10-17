@@ -55,6 +55,9 @@ CMainWindow::CMainWindow (CMiniSynthesizer *pSynthesizer, CSynthConfig *pConfig)
 	m_SynthVolume (m_pTabMain, SynthVolume, pConfig),
 	m_ReverbDecay (m_pTabMain, ReverbDecay, pConfig),
 	m_ReverbVolume (m_pTabMain, ReverbVolume, pConfig),
+	m_PropertyName (m_pTabMain, PatchPropertyName, pConfig),
+	m_PropertyAuthor (m_pTabMain, PatchPropertyAuthor, pConfig),
+	m_PropertyComment (m_pTabMain, PatchPropertyComment, pConfig),
 	m_pActivePatch (m_pConfig->GetActivePatch ()),
 	m_bShowHelp (FALSE)
 {
@@ -127,23 +130,24 @@ CMainWindow::CMainWindow (CMiniSynthesizer *pSynthesizer, CSynthConfig *pConfig)
 	LabelCreate (m_pTabMain, 605, 30, "REVERB");
 	m_ReverbDecay.Create (610, 60);
 	m_ReverbVolume.Create (610, 90);
+	// info
+	LabelCreate (m_pTabMain, 605, 210, "INFO", LabelStyleSection);
+	m_PropertyName.Create (610, 240);
+	m_PropertyAuthor.Create (610, 275);
+	m_PropertyComment.Create (610, 310);
 	// help
 	m_pButtonHelp = ButtonCreate (m_pTabMain, 630, 362, "HELP");
 	// patches
 	for (unsigned i = 0; i < PATCHES; i++)
 	{
-		CString Label;
-		Label.Format ("%u", i);
-
 		unsigned nPosX = 45 + (i / 13) * 190;
 		unsigned nPosY = 10 + (i % 13) * 30;
-		m_pButtonPatch[i] = ButtonCreate (m_pTabPatches, nPosX, nPosY, Label);
+		m_pButtonPatch[i] = ButtonCreate (m_pTabPatches, nPosX, nPosY, "");
 	}
-	lv_btn_set_state (m_pButtonPatch[0], LV_BTN_STATE_CHECKED_RELEASED);
 	m_pButtonLoad = ButtonCreate (m_pTabPatches, 615, 310, "LOAD");
 	m_pButtonSave = ButtonCreate (m_pTabPatches, 615, 340, "SAVE");
 
-	UpdateAllParameters ();
+	UpdateAllParameters (TRUE);
 }
 
 CMainWindow::~CMainWindow (void)
@@ -153,12 +157,26 @@ CMainWindow::~CMainWindow (void)
 	s_pThis = 0;
 }
 
+void CMainWindow::SetHeight (unsigned nPercent)
+{
+	assert (m_pWindow != 0);
+	assert (m_pTabView != 0);
+
+	lv_obj_set_height (m_pTabView, lv_obj_get_height (m_pWindow) * nPercent / 100);
+}
+
 void CMainWindow::EventStub (lv_obj_t *pObject, lv_event_t Event)
 {
 	if (s_pThis != 0)
 	{
 		s_pThis->EventHandler (pObject, Event);
 	}
+}
+
+CMainWindow *CMainWindow::Get (void)
+{
+	assert (s_pThis != 0);
+	return s_pThis;
 }
 
 void CMainWindow::EventHandler (lv_obj_t *pObject, lv_event_t Event)
@@ -229,7 +247,7 @@ void CMainWindow::EventHandler (lv_obj_t *pObject, lv_event_t Event)
 		{
 			m_pActivePatch->Load ();
 			m_pSynthesizer->SetPatch (m_pActivePatch);
-			UpdateAllParameters ();
+			UpdateAllParameters (TRUE);
 
 			return;
 		}
@@ -251,6 +269,13 @@ void CMainWindow::EventHandler (lv_obj_t *pObject, lv_event_t Event)
 
 			return;
 		}
+	}
+
+	if (   m_PropertyName.EventHandler (pObject, Event)
+	    || m_PropertyAuthor.EventHandler (pObject, Event)
+	    || m_PropertyComment.EventHandler (pObject, Event))
+	{
+		return;
 	}
 }
 
@@ -288,6 +313,11 @@ void CMainWindow::UpdateAllParameters (boolean bUpdatePatch)
 	m_ReverbDecay.Update (m_bShowHelp);
 	m_ReverbVolume.Update (m_bShowHelp);
 
+	// info
+	m_PropertyName.Update ();
+	m_PropertyAuthor.Update ();
+	m_PropertyComment.Update ();
+
 	// patch
 	if (bUpdatePatch)
 	{
@@ -296,6 +326,19 @@ void CMainWindow::UpdateAllParameters (boolean bUpdatePatch)
 
 		for (unsigned i = 0; i < PATCHES; i++)
 		{
+			CPatch *pPatch = m_pConfig->GetPatch (i);
+
+			CString Label (pPatch->GetProperty (PatchPropertyName));
+			if (Label.GetLength () == 0)
+			{
+				Label.Format ("%u", i);
+			}
+
+			// the only child is the button label
+			lv_obj_t *pButtonLabel = lv_obj_get_child (m_pButtonPatch[i], 0);
+			assert (pButtonLabel != 0);
+			lv_label_set_text (pButtonLabel, Label);
+
 			lv_btn_set_state (m_pButtonPatch[i],   i == nActivePatch
 							     ? LV_BTN_STATE_CHECKED_RELEASED
 							     : LV_BTN_STATE_RELEASED);

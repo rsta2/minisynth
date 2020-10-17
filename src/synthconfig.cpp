@@ -70,6 +70,13 @@ CPatch *CSynthConfig::GetActivePatch (void)
 	return m_pPatch[m_nActivePatch];
 }
 
+CPatch *CSynthConfig::GetPatch (unsigned nPatch)
+{
+	assert (nPatch < PATCHES);
+	assert (m_pPatch[nPatch] != 0);
+	return m_pPatch[nPatch];
+}
+
 u8 CSynthConfig::MapVelocity (u8 ucVelocity) const
 {
 	return m_VelocityCurve.MapVelocity (ucVelocity);

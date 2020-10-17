@@ -24,6 +24,7 @@
 #include "minisynth.h"
 #include "synthconfig.h"
 #include "guiparameter.h"
+#include "guistringproperty.h"
 #include <circle/types.h>
 
 class CMainWindow
@@ -32,9 +33,13 @@ public:
 	CMainWindow (CMiniSynthesizer *pSynthesizer, CSynthConfig *pConfig);
 	~CMainWindow (void);
 
+	void SetHeight (unsigned nPercent);
+
 	void UpdateAllParameters (boolean bUpdatePatch = FALSE);
 
 	static void EventStub (lv_obj_t *pObject, lv_event_t Event);
+
+	static CMainWindow *Get (void);
 
 private:
 	void EventHandler (lv_obj_t *pObject, lv_event_t Event);
@@ -95,6 +100,10 @@ private:
 	CGUIParameter m_SynthVolume;
 	CGUIParameter m_ReverbDecay;
 	CGUIParameter m_ReverbVolume;
+
+	CGUIStringProperty m_PropertyName;
+	CGUIStringProperty m_PropertyAuthor;
+	CGUIStringProperty m_PropertyComment;
 
 	CPatch *m_pActivePatch;
 

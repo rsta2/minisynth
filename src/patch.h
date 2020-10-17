@@ -23,6 +23,7 @@
 #define _patch_h
 
 #include "parameter.h"
+#include <circle/string.h>
 #include <circle/types.h>
 #include <Properties/propertiesfatfsfile.h>
 #include <fatfs/ff.h>
@@ -72,6 +73,15 @@ enum TSynthParameter			// the parameters of a patch
 	SynthParameterUnknown
 };
 
+enum TPatchProperty			// additional string properties
+{
+	PatchPropertyName,
+	PatchPropertyAuthor,
+	PatchPropertyComment,
+
+	PatchPropertyUnknown
+};
+
 class CPatch
 {
 public:
@@ -92,10 +102,18 @@ public:
 	const char *GetParameterHelp (TSynthParameter Parameter);
 	const char *GetParameterString (TSynthParameter Parameter);
 
+	const char *GetProperty (TPatchProperty Property) const;
+	void SetProperty (TPatchProperty Property, const char *pString);
+	static unsigned GetPropertyMaxLength (TPatchProperty Property);
+	static boolean GetPropertyUppercase (TPatchProperty Property);
+	static const char *GetPropertyHelp (TPatchProperty Property);
+
 private:
 	CPropertiesFatFsFile m_Properties;
 
 	CParameter *m_pParameter[SynthParameterUnknown];
+
+	CString m_PropertyString[PatchPropertyUnknown];
 };
 
 #endif
