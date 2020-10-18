@@ -27,9 +27,12 @@ Normally you need a *Git* client to get the MiniSynth Pi source code. Go to the 
 
 	git clone https://github.com/rsta2/minisynth.git minisynth
 	cd minisynth
-	git submodule update --init --recursive
+	git submodule update --init
+	cd circle
+	git submodule update --init addon/lvgl/lvgl
+	cd ..
 
-This will place the source code in the subdirectory *minisynth/* and clones the submodule *circle* (with its submodules) into the *minisynth/circle/* subdirectory.
+This will place the source code in the subdirectory *minisynth/* and clones the submodule *circle* (with the required submodule *addon/lvgl/lvgl*) into the *minisynth/circle/* subdirectory.
 
 Building
 --------
