@@ -49,6 +49,8 @@ public:
 	u8 MapVelocity (u8 ucVelocity) const;
 
 private:
+	FATFS *m_pFileSystem;
+
 	CPatch *m_pPatch[PATCHES];
 	unsigned m_nActivePatch;
 
