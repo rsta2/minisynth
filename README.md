@@ -46,9 +46,7 @@ The `configure` command writes a *Config.mk* file for Circle and patches Circle,
 
 An optional third parameter can be appended to specify the bit size of the ARM architecture to be used as build target. It can be "32" (default) or "64" (for Raspberry Pi 3 and 4 only).
 
-If you want to build MiniSynth Pi for I2S interface usage, you have to define "USE_I2S" manually before build in the file *src/config.h* like that:
-
-	#define USE_I2S
+If you want to build MiniSynth Pi for I2S interface usage, you have to specify the option `--i2s` as first parameter to `configure`.
 
 If the build was successful, you find the executable image file of MiniSynth Pi in the *src/* subdirectory with the name *kernel.img* (Raspberry Pi 1), *kernel7.img* (Raspberry Pi 2), *kernel8-32.img* (Raspberry Pi 3) or *kernel7l.img* (Raspberry Pi 4).
 
