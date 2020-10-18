@@ -43,9 +43,14 @@ public:
 	// get the active patch
 	CPatch *GetActivePatch (void);
 
+	// get patch by number
+	CPatch *GetPatch (unsigned nPatch);
+
 	u8 MapVelocity (u8 ucVelocity) const;
 
 private:
+	FATFS *m_pFileSystem;
+
 	CPatch *m_pPatch[PATCHES];
 	unsigned m_nActivePatch;
 

@@ -17,7 +17,7 @@ cd Properties
 make $1 $2 || exit
 cd ..
 
-cd ugui
+cd lvgl
 make $1 $2 || exit
 cd ..
 

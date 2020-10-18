@@ -20,6 +20,7 @@
 #include "kernel.h"
 #include "mainwindow.h"
 #include "config.h"
+#include <circle/string.h>
 #include <assert.h>
 
 static const char FromKernel[] = "kernel";
@@ -30,7 +31,7 @@ CKernel::CKernel (void)
 	m_Logger (m_Options.GetLogLevel (), &m_Timer),
 	m_USBHCI (&m_Interrupt, &m_Timer, TRUE),
 	m_EMMC (&m_Interrupt, &m_Timer, &m_ActLED),
-	m_GUI (&m_Screen),
+	m_GUI (&m_Screen, &m_Interrupt),
 	m_Config (&m_FileSystem),
 	m_Synthesizer (&m_Config, &m_Interrupt, &m_Memory)
 {
@@ -47,6 +48,12 @@ boolean CKernel::Initialize (void)
 	if (bOK)
 	{
 		bOK = m_Screen.Initialize ();
+	}
+
+	if (bOK)
+	{
+		static const char Msg[] = "Starting ...\n";
+		m_Screen.Write (Msg, sizeof Msg-1);
 	}
 
 #if 0
@@ -79,7 +86,7 @@ boolean CKernel::Initialize (void)
 
 	if (bOK)
 	{
-		bOK = m_USBHCI.Initialize ();
+		bOK = m_USBHCI.Initialize (FALSE);
 	}
 
 	if (bOK)
@@ -133,8 +140,13 @@ TShutdownMode CKernel::Run (void)
 	m_Synthesizer.Start ();
 
 	CMainWindow MainWindow (&m_Synthesizer, &m_Config);
+	m_GUI.Update (FALSE);
 
+#ifndef SCREENSHOT_AFTER_SECS
 	while (m_Synthesizer.IsActive ())
+#else
+	while (m_Timer.GetUptime () < SCREENSHOT_AFTER_SECS)
+#endif
 	{
 		boolean bUpdated = m_USBHCI.UpdatePlugAndPlay ();
 
@@ -148,5 +160,37 @@ TShutdownMode CKernel::Run (void)
 		m_GUI.Update (bUpdated);
 	}
 
+#ifdef SCREENSHOT_AFTER_SECS
+	SaveScreenshot ();
+#endif
+
 	return ShutdownHalt;
 }
+
+#ifdef SCREENSHOT_AFTER_SECS
+
+void CKernel::SaveScreenshot (void)
+{
+	CBcmFrameBuffer *pFrameBuffer = m_Screen.GetFrameBuffer ();
+
+	for (unsigned i = 0; i < 20; i++)
+	{
+		CString Filename;
+		Filename.Format ("%sscreenshot%ux%ux%u.%03u", DRIVE, pFrameBuffer->GetWidth (),
+				pFrameBuffer->GetHeight (), pFrameBuffer->GetDepth (), i);
+
+		FIL File;
+		if (f_open (&File, Filename, FA_WRITE | FA_CREATE_NEW) == FR_OK)
+		{
+			unsigned nBytesWritten;
+			f_write (&File, (void *) (uintptr) pFrameBuffer->GetBuffer (),
+				pFrameBuffer->GetSize (), &nBytesWritten);
+
+			f_close (&File);
+
+			return;
+		}
+	}
+}
+
+#endif

@@ -21,7 +21,7 @@
 #include "oscillator.h"
 #include <assert.h>
 
-struct
+static struct
 {
 	const char	*pName;
 	TParameterType	 Type;
@@ -74,6 +74,20 @@ ParameterList[] =		// must match TSynthParameter
 	{"SynthVolume", ParameterPercent, 0, 100, 10, 50, "Volume"}
 };
 
+static struct
+{
+	const char	*pName;
+	unsigned	 nMaxLength;
+	boolean		 bUppercase;
+	const char	*pHelp;
+}
+PropertyList[] =		// must match TPatchProperty
+{
+	{"Name", 10, TRUE, "Patch name"},
+	{"Author", 20, FALSE, "Patch author"},
+	{"Comment", 40, FALSE, "Any comment"}
+};
+
 CPatch::CPatch (const char *pFileName, FATFS *pFileSystem)
 :	m_Properties (pFileName, pFileSystem)
 {
@@ -105,6 +119,11 @@ boolean CPatch::Load (void)
 	if (!bResult)
 	{
 		m_Properties.RemoveAll ();
+	}
+
+	for (unsigned i = 0; i < PatchPropertyUnknown; i++)
+	{
+		m_PropertyString[i] = m_Properties.GetString (PropertyList[i].pName, "");
 	}
 
 	for (unsigned i = 0; i < SynthParameterUnknown; i++)
@@ -139,6 +158,11 @@ boolean CPatch::Save (void)
 	m_Properties.RemoveAll ();
 
 	m_Properties.SetNumber ("Version", 2);
+
+	for (unsigned i = 0; i < PatchPropertyUnknown; i++)
+	{
+		m_Properties.SetString (PropertyList[i].pName, m_PropertyString[i]);
+	}
 
 	for (unsigned i = 0; i < SynthParameterUnknown; i++)
 	{
@@ -206,4 +230,35 @@ const char *CPatch::GetParameterString (TSynthParameter Parameter)
 {
 	assert (m_pParameter[Parameter] != 0);
 	return m_pParameter[Parameter]->GetString ();
+}
+
+const char *CPatch::GetProperty (TPatchProperty Property) const
+{
+	assert (Property < PatchPropertyUnknown);
+	return m_PropertyString[Property];
+}
+
+void CPatch::SetProperty (TPatchProperty Property, const char *pString)
+{
+	assert (pString != 0);
+	assert (Property < PatchPropertyUnknown);
+	m_PropertyString[Property] = pString;
+}
+
+unsigned CPatch::GetPropertyMaxLength (TPatchProperty Property)
+{
+	assert (Property < PatchPropertyUnknown);
+	return PropertyList[Property].nMaxLength;
+}
+
+boolean CPatch::GetPropertyUppercase (TPatchProperty Property)
+{
+	assert (Property < PatchPropertyUnknown);
+	return PropertyList[Property].bUppercase;
+}
+
+const char *CPatch::GetPropertyHelp (TPatchProperty Property)
+{
+	assert (Property < PatchPropertyUnknown);
+	return PropertyList[Property].pHelp;
 }

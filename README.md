@@ -27,9 +27,9 @@ Normally you need a *Git* client to get the MiniSynth Pi source code. Go to the 
 
 	git clone https://github.com/rsta2/minisynth.git minisynth
 	cd minisynth
-	git submodule update --init
+	git submodule update --init --recursive
 
-This will place the source code in the subdirectory *minisynth/* and clones the submodule *circle* into the *minisynth/circle/* subdirectory.
+This will place the source code in the subdirectory *minisynth/* and clones the submodule *circle* (with its submodules) into the *minisynth/circle/* subdirectory.
 
 Building
 --------
@@ -64,7 +64,7 @@ Furthermore you need the Raspberry Pi firmware. You can get it as follows:
 
 You have to copy the three files *bootcode.bin*, *start.elf* and *fixup.dat* from the *circle/boot/* subdirectory to the FAT partition on the SD card. The Raspberry Pi 4 requires different firmware files. Please read the file *circle/boot/README* for details!
 
-Finally you may copy the configuration files *cmdline.txt*, *patchN.txt* (example patches) and *velocity-???.txt* (keyboard velocity curve) from the *config/* subdirectory to the SD card. The appropriate velocity curve file has to be renamed to *velocity.txt* to be used.
+Finally you have to copy the configuration files *cmdline.txt*, *patchN.txt* (example patches) and *velocity-???.txt* (keyboard velocity curve) from the *config/* subdirectory to the SD card. The appropriate velocity curve file has to be renamed to *velocity.txt* to be used. You can optionally create a subdirectory */patches* and copy the example patches there, if you do not want to have them in the root directory of your SD card.
 
 Put the SD card into the card reader of your Raspberry Pi.
 
@@ -78,30 +78,25 @@ Before powering on your Raspberry Pi, the following devices have to be attached:
 * Standard USB mouse (if official touch screen is not used)
 * Headphones or amplifier (on the 3.5mm jack or via external I2S interface)
 
-MiniSynth Pi starts in about four seconds. It is controlled using the following GUI:
+MiniSynth Pi starts in about four seconds. It is controlled using the following GUI (*MAIN* tab):
 
-	+-----------------------------------------------------------+
-	|  OSCILLATOR       FILTER       AMPLIFIER       PATCHES    |
-	|     VCO            VCF       MASTER VOLUME        0       |
-	| <   Wave   >   <  Cutoff  >   <  Volume  >        1       |
-	| <  Detune  >   < Resonance>                       2       |
-	|                                                   3       |
-	|     LFO            LFO            LFO             4       |
-	| <   Wave   >   <   Wave   >   <   Wave   >        5       |
-	| <   Rate   >   <   Rate   >   <   Rate   >        6       |
-	| <  Volume  >   <  Volume  >   <  Volume  >        7       |
-	|                                                   8       |
-	|    EFFECTS       ENVELOPE       ENVELOPE          9       |
-	|    REVERB      <  Attack  >   <  Attack  >                |
-	| <   Decay  >   <   Decay  >   <   Decay  >       LOAD     |
-	| <  Volume  >   <  Sustain >   <  Sustain >       SAVE     |
-	|     HELP       <  Release >   <  Release >                |
-	| MiniSynth Pi                   VIRTUAL ANALOG SYNTHESIZER |
-	+-----------------------------------------------------------+
+![MiniSynth Pi GUI](gui-main.png)
 
 You will get that picture when you click the *HELP* button with the mouse or on the touch screen. By default the GUI does not show the help info, but the values of the different parameters of the currently selected patch (see *Parameters*).
 
-The GUI allows to select ten different sound configurations (patches 0-9). There is always one (highlighted) active patch, which can be edited using the different parameter controls. The parameters of the active patch can be saved to a configuration file on the SD card (*patchX.txt* where X is the number of the patch). On start-up the configuration of all patches are loaded from these files (if available) or initialized to the default preset.
+The GUI allows to select 48 different sound configurations (patches 0-47) on the *PATCHES* tab:
+
+![PATCHES tab](gui-patches.png)
+
+There is always one (highlighted) active patch, which can be edited using the different parameter controls on the *MAIN* tab (see above). A tab can be selected by clicking on its name in the top right corner of the screen.
+
+The parameters of the active patch can be saved to a configuration file on the SD card (*patchX.txt* where X is the number of the patch). If the subdirectory */patches* exists, the patches will be saved here. On start-up the configuration of all patches is loaded from these files (if available) or initialized to the default preset.
+
+A patch can be described with the additional one-line text properties *Patch name*, *Patch author* and *Any comment*. To edit one of these strings, just click into the corresponding text box. The GUI will open a screen keyboard then:
+
+![Screen keyboard](gui-main-kbd.png)
+
+After editing one property, you can save it using the OK check (in the bottom right corner) or reject the latest changes by clicking on the cross (left corner). The *ENTER* key has no function here. Please note that any changes will be saved to a patch file only when you click the *SAVE* button on the *PATCHES* tab.
 
 The USB PC keyboard allows playing two octaves (keys C2-C4). Its mapping is as follows:
 
@@ -174,7 +169,7 @@ Credits
 MiniSynth Pi uses the following source modules:
 
 * [Circle C++ bare metal environment for the Raspberry Pi](https://github.com/rsta2/circle/) (includes USB MIDI driver by Joshua Otto)
-* [uGUI library](http://www.embeddedlightning.com/ugui/) by Achim Doebler
+* [Light and Versatile Graphics Library](https://lvgl.io/) by LVGL LLC
 * [EMMC SD card driver (part of rpi-boot)](https://github.com/jncronin/rpi-boot/blob/master/emmc.c) by John Cronin
 
 Additional information has been obtained from:

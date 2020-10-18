@@ -1,10 +1,10 @@
 //
-// guiparameter.h
+// guistringproperty.h
 //
-// GUI representation of one patch parameter
+// GUI representation of one patch string property (e.g. patch name)
 //
 // MiniSynth Pi - A virtual analogue synthesizer for Raspberry Pi
-// Copyright (C) 2017-2020  R. Stange <rsta2@o2online.de>
+// Copyright (C) 2020  R. Stange <rsta2@o2online.de>
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -19,41 +19,40 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
-#ifndef _guiparameter_h
-#define _guiparameter_h
+#ifndef _guistringproperty_h
+#define _guistringproperty_h
 
 #include <lvgl/lvgl.h>
 #include "patch.h"
 #include "synthconfig.h"
+#include <circle/ptrlist.h>
 #include <circle/types.h>
 
-class CGUIParameter
+class CGUIStringProperty
 {
 public:
-	CGUIParameter (lv_obj_t *pWindow, TSynthParameter Parameter, CSynthConfig *pConfig);
-	~CGUIParameter (void);
+	CGUIStringProperty (lv_obj_t *pWindow, TPatchProperty Property, CSynthConfig *pConfig);
+	~CGUIStringProperty (void);
 
 	void Create (unsigned nPosX, unsigned nPosY);
 
-	void Update (boolean bShowHelp);
+	void Update (void);
 
-	boolean ButtonPressed (lv_obj_t *pObject, boolean bShowHelp);
+	boolean EventHandler (lv_obj_t *pObject, lv_event_t Event);
+
+private:
+	static void KeyboardEventHandler (lv_obj_t *pObject, lv_event_t Event);
 
 private:
 	lv_obj_t *m_pWindow;
-	TSynthParameter m_Parameter;
+	TPatchProperty m_Property;
 	CSynthConfig *m_pConfig;
 
-	lv_style_t m_StyleNoBorder;
-	lv_style_t m_StyleSilverBackground;
+	lv_obj_t *m_pTextArea;
 
-	lv_obj_t *m_pContainer;
-	lv_obj_t *m_pButtonDown;
-	lv_obj_t *m_pButtonDownLabel;
-	lv_obj_t *m_pContainerText;
-	lv_obj_t *m_pTextLabel;
-	lv_obj_t *m_pButtonUp;
-	lv_obj_t *m_pButtonUpLabel;
+	static CPtrList s_InstanceList;
+
+	static lv_obj_t *s_pKeyboard;
 };
 
 #endif

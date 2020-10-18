@@ -23,18 +23,13 @@
 #include <assert.h>
 
 CSynthConfig::CSynthConfig (FATFS *pFileSystem)
-:	m_nActivePatch (0),
+:	m_pFileSystem (pFileSystem),
+	m_nActivePatch (0),
 	m_VelocityCurve (pFileSystem)
 {
-	assert (pFileSystem != 0);
-
 	for (unsigned i = 0; i < PATCHES; i++)
 	{
-		CString FileName;
-		FileName.Format (DRIVE "/patch%u.txt", i);
-
-		m_pPatch[i] = new CPatch (FileName, pFileSystem);
-		assert (m_pPatch[i] != 0);
+		m_pPatch[i] = 0;
 	}
 }
 
@@ -49,6 +44,24 @@ CSynthConfig::~CSynthConfig (void)
 
 boolean CSynthConfig::Load (void)
 {
+	assert (m_pFileSystem != 0);
+
+	const char *pPath = DRIVE "/patches";
+	if (f_stat (pPath, 0) != FR_OK)
+	{
+		pPath = DRIVE;
+	}
+
+	for (unsigned i = 0; i < PATCHES; i++)
+	{
+		CString FileName;
+		FileName.Format ("%s/patch%u.txt", pPath, i);
+
+		assert (m_pPatch[i] == 0);
+		m_pPatch[i] = new CPatch (FileName, m_pFileSystem);
+		assert (m_pPatch[i] != 0);
+	}
+
 	return m_VelocityCurve.Load ();
 }
 
@@ -68,6 +81,13 @@ CPatch *CSynthConfig::GetActivePatch (void)
 	assert (m_nActivePatch < PATCHES);
 	assert (m_pPatch[m_nActivePatch] != 0);
 	return m_pPatch[m_nActivePatch];
+}
+
+CPatch *CSynthConfig::GetPatch (unsigned nPatch)
+{
+	assert (nPatch < PATCHES);
+	assert (m_pPatch[nPatch] != 0);
+	return m_pPatch[nPatch];
 }
 
 u8 CSynthConfig::MapVelocity (u8 ucVelocity) const
