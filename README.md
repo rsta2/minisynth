@@ -153,7 +153,7 @@ One patch of MiniSynth Pi has the following parameters:
 
 (*) Waveform can be: Sine, Square, Sawtooth, Triangle, Pulse 12.5%, Pulse 25% or Noise (Noise not for LFO)
 
-MiniSynth Pi provides two VCOs, one runs at the pitch frequency, the other at pitch frequency detuned by a configurable value (max. half semitone - or +, default 100% = Detune off).
+MiniSynth Pi provides two VCOs, one runs at the pitch frequency, the other at pitch frequency detuned by a configurable value (max. one semitone - or +, default 100% = Detune off).
 
 MiniSynth Pi allows to use a specific keyboard velocity curve, which fits best to your keyboard and your playing style. It has to be provided in the file *velocity.txt* on the SD card. The default velocity curve is linear. Have a look into the example files in the *config/* subdirectory. If you want to use one of these files, it has to be renamed to *velocity.txt* on the SD card. It should be easy to modify one example file to adjust the velocity curve to your own needs.
 
@@ -172,8 +172,10 @@ MiniSynth Pi uses the following source modules:
 * [Circle C++ bare metal environment for the Raspberry Pi](https://github.com/rsta2/circle/) (includes USB MIDI driver by Joshua Otto)
 * [Light and Versatile Graphics Library](https://lvgl.io/) by LVGL LLC
 * [EMMC SD card driver (part of rpi-boot)](https://github.com/jncronin/rpi-boot/blob/master/emmc.c) by John Cronin
+* [FatFs file system module](http://elm-chan.org/fsw/ff/00index_e.html) by ChaN
 
 Additional information has been obtained from:
 
-* [Cookbook formulae for audio EQ biquad filter coefficients](http://www.musicdsp.org/files/Audio-EQ-Cookbook.txt) by Robert Bristow-Johnson
+* Cookbook formulae for audio EQ biquad filter coefficients (not available any more) by Robert Bristow-Johnson
 * [Digital Synth WRA32](https://github.com/risgk/digital-synth-wra32/) by Ryo Ishigaki
+* [Effect Design, Part 1: Reverberator and Other Filters](https://ccrma.stanford.edu/~dattorro/EffectDesignPart1.pdf) by Jon Dattorro
