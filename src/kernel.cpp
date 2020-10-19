@@ -158,6 +158,8 @@ TShutdownMode CKernel::Run (void)
 		}
 
 		m_GUI.Update (bUpdated);
+
+		m_CPUThrottle.Update ();
 	}
 
 #ifdef SCREENSHOT_AFTER_SECS
