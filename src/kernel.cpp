@@ -160,6 +160,10 @@ TShutdownMode CKernel::Run (void)
 		m_GUI.Update (bUpdated);
 
 		m_CPUThrottle.Update ();
+
+#ifdef SHOW_STATUS
+		MainWindow.UpdateStatus (m_Synthesizer.GetStatus ());
+#endif
 	}
 
 #ifdef SCREENSHOT_AFTER_SECS

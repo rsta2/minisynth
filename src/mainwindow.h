@@ -37,6 +37,8 @@ public:
 
 	void UpdateAllParameters (boolean bUpdatePatch = FALSE);
 
+	void UpdateStatus (const char *pString);
+
 	static void EventStub (lv_obj_t *pObject, lv_event_t Event);
 
 	static CMainWindow *Get (void);
@@ -51,8 +53,8 @@ private:
 		LabelStyleSection,
 		LabelStyleDefault
 	};
-	void LabelCreate (lv_obj_t *pParent, unsigned nPosX, unsigned nPosY, const char *pText,
-			  TLabelStyle Style = LabelStyleDefault);
+	lv_obj_t *LabelCreate (lv_obj_t *pParent, unsigned nPosX, unsigned nPosY, const char *pText,
+			       TLabelStyle Style = LabelStyleDefault);
 
 	lv_obj_t *ButtonCreate (lv_obj_t *pParent, unsigned nPosX, unsigned nPosY,
 				const char *pText);
@@ -75,6 +77,8 @@ private:
 	lv_obj_t *m_pButtonLoad;
 	lv_obj_t *m_pButtonSave;
 	lv_obj_t *m_pButtonHelp;
+
+	lv_obj_t *m_pLabelStatus;
 
 	CGUIParameter m_LFOVCOWaveform;
 	CGUIParameter m_LFOVCOFrequency;

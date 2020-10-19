@@ -20,6 +20,7 @@
 #include "minisynth.h"
 #include "math.h"
 #include "config.h"
+#include <circle/timer.h>
 #include <circle/logger.h>
 #include <assert.h>
 
@@ -50,6 +51,9 @@ CMiniSynthesizer::CMiniSynthesizer (CSynthConfig *pConfig,
 #endif
 	m_nVolumeLevel (0),
 	m_bChannelsSwapped (AreChannelsSwapped ())
+#ifdef SHOW_STATUS
+	, m_nMaxDelayTicks (0)
+#endif
 {
 }
 
@@ -163,6 +167,10 @@ void CMiniSynthesizer::ProgramChange (u8 ucProgram)
 
 unsigned CMiniSynthesizer::GetChunk (u32 *pBuffer, unsigned nChunkSize)
 {
+#ifdef SHOW_STATUS
+	unsigned nTicks = CTimer::GetClockTicks ();
+#endif
+
 	unsigned nResult = nChunkSize;
 
 	for (; nChunkSize > 0; nChunkSize -= 2)		// fill the whole buffer
@@ -218,5 +226,24 @@ unsigned CMiniSynthesizer::GetChunk (u32 *pBuffer, unsigned nChunkSize)
 		}
 	}
 
+#ifdef SHOW_STATUS
+	nTicks = CTimer::GetClockTicks () - nTicks;
+	if (nTicks > m_nMaxDelayTicks)
+	{
+		m_nMaxDelayTicks = nTicks;
+	}
+#endif
+
 	return nResult;
 }
+
+#ifdef SHOW_STATUS
+
+const char *CMiniSynthesizer::GetStatus (void)
+{
+	m_Status.Format ("%u ms", m_nMaxDelayTicks * 1000 / CLOCKHZ);
+
+	return m_Status;
+}
+
+#endif

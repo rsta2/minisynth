@@ -22,6 +22,7 @@
 
 #include <circle/interrupt.h>
 #include <circle/memory.h>
+#include <circle/string.h>
 #include <circle/types.h>
 #include "synthconfig.h"
 #include "patch.h"
@@ -71,6 +72,10 @@ public:
 
 	unsigned GetChunk (u32 *pBuffer, unsigned nChunkSize);
 
+#ifdef SHOW_STATUS
+	const char *GetStatus (void);
+#endif
+
 private:
 	CSynthConfig *m_pConfig;
 
@@ -96,6 +101,11 @@ private:
 	unsigned m_nVolumeLevel;
 #endif
 	boolean m_bChannelsSwapped;
+
+#ifdef SHOW_STATUS
+	CString m_Status;
+	unsigned m_nMaxDelayTicks;
+#endif
 };
 
 #endif

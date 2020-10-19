@@ -31,6 +31,7 @@ CMainWindow::CMainWindow (CMiniSynthesizer *pSynthesizer, CSynthConfig *pConfig)
 	m_pTabView (lv_tabview_create (m_pWindow, 0)),
 	m_pTabMain (lv_tabview_add_tab (m_pTabView, "MAIN")),
 	m_pTabPatches (lv_tabview_add_tab (m_pTabView, "PATCHES")),
+	m_pLabelStatus (0),
 	m_LFOVCOWaveform (m_pTabMain, LFOVCOWaveform, pConfig),
 	m_LFOVCOFrequency (m_pTabMain, LFOVCOFrequency, pConfig),
 	m_VCOWaveform (m_pTabMain, VCOWaveform, pConfig),
@@ -346,8 +347,23 @@ void CMainWindow::UpdateAllParameters (boolean bUpdatePatch)
 	}
 }
 
-void CMainWindow::LabelCreate (lv_obj_t *pParent, unsigned nPosX, unsigned nPosY, const char *pText,
-			       TLabelStyle Style)
+void CMainWindow::UpdateStatus (const char *pString)
+{
+	assert (pString != 0);
+
+	if (m_pLabelStatus == 0)
+	{
+		m_pLabelStatus = LabelCreate (m_pWindow, 250, 15, pString, LabelStyleTitle);
+	}
+	else
+	{
+		lv_label_set_text (m_pLabelStatus, pString);
+		lv_obj_realign (m_pLabelStatus);
+	}
+}
+
+lv_obj_t *CMainWindow::LabelCreate (lv_obj_t *pParent, unsigned nPosX, unsigned nPosY,
+				    const char *pText, TLabelStyle Style)
 {
 	lv_coord_t nWidth = 190;
 	lv_style_t *pStyle = &m_StyleNoBorder;
@@ -384,6 +400,8 @@ void CMainWindow::LabelCreate (lv_obj_t *pParent, unsigned nPosX, unsigned nPosY
 	lv_label_set_text (pLabel, pText);
 	lv_label_set_align (pLabel, LV_LABEL_ALIGN_CENTER);
 	lv_obj_realign (pLabel);
+
+	return pLabel;
 }
 
 lv_obj_t *CMainWindow::ButtonCreate (lv_obj_t *pParent, unsigned nPosX, unsigned nPosY,
