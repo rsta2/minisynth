@@ -2,7 +2,7 @@
 // config.h
 //
 // MiniSynth Pi - A virtual analogue synthesizer for Raspberry Pi
-// Copyright (C) 2017-2020  R. Stange <rsta2@o2online.de>
+// Copyright (C) 2017-2021  R. Stange <rsta2@o2online.de>
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -27,7 +27,7 @@
 #if RASPPI >= 2
 	#define VOICES_PER_CORE	6		// polyphonic voices per CPU core
 #else
-	#define VOICES_PER_CORE	3		// polyphonic voices (1 core only)
+	#define VOICES_PER_CORE	4		// polyphonic voices (1 core only)
 #endif
 
 #define VELOCITY_DEFAULT	80		// for PC keyboard (max. 127)
