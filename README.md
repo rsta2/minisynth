@@ -12,9 +12,11 @@ MiniSynth Pi is a polyphonic virtual analog audio synthesizer, running bare meta
 
 You have to attach an USB MIDI keyboard controller (which supports the USB Audio Class MIDI specification) or an USB PC keyboard to your Raspberry Pi to play on it. Alternatively you can feed serial MIDI data (at 31250 Bps) into GPIO15 (Broadcom numbering). Normally you will need some external circuit to be able to attach a device with serial MIDI interface.
 
-The audio signal is normally available on the 3.5mm headphones jack (I2S usage see below). Thus Raspberry Pi models without headphones jack (e.g. Raspberry Pi Zero) are not supported. The graphical user interface (GUI) of MiniSynth Pi can be controlled using a standard USB mouse or the official Raspberry Pi touch screen.
+The audio signal is normally available on the 3.5mm headphones jack (I2S and HDMI usage see below). Thus Raspberry Pi models without headphones jack (e.g. Raspberry Pi Zero) are not supported. The graphical user interface (GUI) of MiniSynth Pi can be controlled using a standard USB mouse or the official Raspberry Pi touch screen.
 
 This version of MiniSynth Pi can be built so that it can be used with an external I2S interface. The audio signal is then available via this interface. Please note that only I2S interfaces are supported, which do not need additional device initialization (e.g. via I2C). MiniSynth Pi has been tested with the [pHAT DAC](https://shop.pimoroni.com/products/phat-dac) I2S interface, which is based on the PCM5102A DAC chip.
+
+This version of MiniSynth Pi can be built so that it can be used via a HDMI display with audio output too. Please note that there is a relatively long delay between a MIDI note on/off event is received and the reaction on the HDMI audio output. This latency has technical reasons and cannot be reduced.
 
 Please note that the included reverb effect module is experimental, because it generates some noise, when no note is played. Just leave the reverb volume (wet/dry ratio) at 0% to eliminate it, if it disturbs.
 
@@ -49,7 +51,7 @@ The `configure` command writes a *Config.mk* file for Circle and patches Circle,
 
 An optional third parameter can be appended to specify the bit size of the ARM architecture to be used as build target. It can be "32" (default) or "64" (for Raspberry Pi 3 and 4 only).
 
-If you want to build MiniSynth Pi for I2S interface usage, you have to specify the option `--i2s` as first parameter to `configure`.
+If you want to build MiniSynth Pi for I2S interface usage, you have to specify the option `--i2s` as first parameter to `configure`. Alternatively the option "--hdmi" can be specified for HDMI audio output.
 
 If the build was successful, you find the executable image file of MiniSynth Pi in the *src/* subdirectory with the name *kernel.img* (Raspberry Pi 1), *kernel7.img* (Raspberry Pi 2), *kernel8-32.img* (Raspberry Pi 3) or *kernel7l.img* (Raspberry Pi 4).
 
@@ -77,7 +79,7 @@ Before powering on your Raspberry Pi, the following devices have to be attached:
 * HDMI display (must support 800x480 pixels mode)
 * USB MIDI keyboard controller, USB PC keyboard or device with serial MIDI interface (at GPIO15, requires external circuit)
 * Standard USB mouse (if official touch screen is not used)
-* Headphones or amplifier (on the 3.5mm jack or via external I2S interface)
+* Headphones or amplifier (on the 3.5mm jack or via external I2S or HDMI interface)
 
 MiniSynth Pi starts in about four seconds. It is controlled using the following GUI (*MAIN* tab):
 

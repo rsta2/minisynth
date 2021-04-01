@@ -34,6 +34,8 @@
 
 #ifdef USE_I2S
 	#include <circle/i2ssoundbasedevice.h>
+#elif defined (USE_HDMI)
+	#include <circle/hdmisoundbasedevice.h>
 #else
 	#include <circle/pwmsoundbasedevice.h>
 #endif
@@ -48,6 +50,8 @@
 class CMiniSynthesizer
 #ifdef USE_I2S
 	: public CI2SSoundBaseDevice
+#elif defined (USE_HDMI)
+	: public CHDMISoundBaseDevice
 #else
 	: public CPWMSoundBaseDevice
 #endif
@@ -90,7 +94,7 @@ private:
 	unsigned m_nConfigRevisionWrite;
 	unsigned m_nConfigRevisionRead;
 
-#ifdef USE_I2S
+#if defined (USE_I2S) || defined (USE_HDMI)
 	int m_nMinLevel;
 	int m_nMaxLevel;
 	int m_nNullLevel;
