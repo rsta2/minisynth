@@ -2,7 +2,7 @@
 // mididevice.cpp
 //
 // MiniSynth Pi - A virtual analogue synthesizer for Raspberry Pi
-// Copyright (C) 2017-2020  R. Stange <rsta2@o2online.de>
+// Copyright (C) 2017-2021  R. Stange <rsta2@o2online.de>
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -19,6 +19,7 @@
 //
 #include "mididevice.h"
 #include "minisynth.h"
+#include "config.h"
 #include <assert.h>
 
 #define MIDI_NOTE_OFF		0b1000
@@ -49,10 +50,15 @@ void CMIDIDevice::MIDIMessageHandler (const u8 *pMessage, size_t nLength)
 	}
 
 	u8 ucStatus    = pMessage[0];
-	//u8 ucChannel   = ucStatus & 0x0F;
+	u8 ucChannel   = ucStatus & 0x0F;
 	u8 ucType      = ucStatus >> 4;
 	u8 ucKeyNumber = pMessage[1];
 	u8 ucVelocity  = pMessage[2];
+
+	if (!((1 << ucChannel) & MIDI_CHANNEL_FILTER))
+	{
+		return;
+	}
 
 	switch (ucType)
 	{

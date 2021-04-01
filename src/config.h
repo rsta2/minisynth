@@ -39,4 +39,6 @@
 // configurable options
 #define LAST_NOTE_PRIORITY			// last note priority polyphony
 
+#define MIDI_CHANNEL_FILTER	0xFFFF		// set bit for each recognized channel
+
 #endif
