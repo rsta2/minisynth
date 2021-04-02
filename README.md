@@ -67,7 +67,7 @@ Furthermore you need the Raspberry Pi firmware. You can get it as follows:
 
 You have to copy the three files *bootcode.bin*, *start.elf* and *fixup.dat* from the *circle/boot/* subdirectory to the FAT partition on the SD card. The Raspberry Pi 4 requires different firmware files. Please read the file *circle/boot/README* for details!
 
-Finally you have to copy the configuration files *cmdline.txt*, *patchN.txt* (example patches) and *velocity-???.txt* (keyboard velocity curve) from the *config/* subdirectory to the SD card. The appropriate velocity curve file has to be renamed to *velocity.txt* to be used. You can optionally create a subdirectory */patches* and copy the example patches there, if you do not want to have them in the root directory of your SD card.
+Finally you have to copy the configuration files *cmdline.txt*, *patchN.txt* (example patches), *velocity-???.txt* (keyboard velocity curve) and *midi-cc.txt* (MIDI CC mapping) from the *config/* subdirectory to the SD card. The appropriate velocity curve file has to be renamed to *velocity.txt* to be used. You can optionally create a subdirectory */patches* and copy the example patches there, if you do not want to have them in the root directory of your SD card.
 
 Put the SD card into the card reader of your Raspberry Pi.
 
@@ -129,7 +129,7 @@ One patch of MiniSynth Pi has the following parameters:
 | Section    | Module   | Parameter | Unit | Range     | Default | Description          | MIDI CC |
 | ---------- | -------- | --------- | ---- | --------- | ------- | -------------------- | ------- |
 | OSCILLATOR | VCO      | Wave      |      |           | Square  | Waveform (*)         |         |
-| OSCILLATOR | VCO (2)  | Detune    | %    | 0-200     | 100     | Semitone -/+         |         |
+| OSCILLATOR | VCO (2)  | Detune    | %    | 0-200     | 100     | Semitone -/+         | 94 (**) |
 | OSCILLATOR | LFO      | Wave      |      |           | Sine    | Waveform (*)         |         |
 | OSCILLATOR | LFO      | Rate      | Hz   | 1-35      | 20      | Modulation frequency |         |
 | OSCILLATOR | LFO      | Volume    | %    | 0-100     | 0       | Modulation volume    |         |
@@ -151,9 +151,11 @@ One patch of MiniSynth Pi has the following parameters:
 | AMPLIFIER  | ENVELOPE | Sustain   | %    | 0-100     | 100     | Sustain level        |         |
 | AMPLIFIER  | ENVELOPE | Release   | ms   | 0-5000    | 100     | Release delay        |         |
 | EFFECTS    | REVERB   | Decay     | %    | 0-50      | 20      | Rate of decay        |         |
-| EFFECTS    | REVERB   | Volume    | %    | 0-30      | 0       | Wet/dry ratio        |         |
+| EFFECTS    | REVERB   | Volume    | %    | 0-30      | 0       | Wet/dry ratio        | 91      |
 
 (*) Waveform can be: Sine, Square, Sawtooth, Triangle, Pulse 12.5%, Pulse 25% or Noise (Noise not for LFO)
+
+(\*\*) The MIDI CC mapping can be modified in the file *midi-cc.txt*. This is the default mapping.
 
 MiniSynth Pi provides two VCOs, one runs at the pitch frequency, the other at pitch frequency detuned by a configurable value (max. one semitone - or +, default 100% = Detune off).
 

@@ -2,7 +2,7 @@
 // patch.cpp
 //
 // MiniSynth Pi - A virtual analogue synthesizer for Raspberry Pi
-// Copyright (C) 2017-2020  R. Stange <rsta2@o2online.de>
+// Copyright (C) 2017-2021  R. Stange <rsta2@o2online.de>
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -21,7 +21,7 @@
 #include "oscillator.h"
 #include <assert.h>
 
-static struct
+static const struct
 {
 	const char	*pName;
 	TParameterType	 Type;
@@ -74,7 +74,7 @@ ParameterList[] =		// must match TSynthParameter
 	{"SynthVolume", ParameterPercent, 0, 100, 10, 50, "Volume"}
 };
 
-static struct
+static const struct
 {
 	const char	*pName;
 	unsigned	 nMaxLength;
@@ -188,9 +188,12 @@ void CPatch::SetParameter (TSynthParameter Parameter, unsigned nValue)
 void CPatch::SetMIDIParameter (TSynthParameter Parameter, u8 ucValue)
 {
 	assert (Parameter < SynthParameterUnknown);
-	assert (ParameterList[Parameter].Type == ParameterPercent);
 
-	unsigned nValue = (ucValue*100 + 63) / 127;
+	unsigned nValue = ucValue;
+	nValue *= ParameterList[Parameter].nMaximum - ParameterList[Parameter].nMinimum;
+	nValue = (nValue + 63) / 127;
+	nValue += ParameterList[Parameter].nMinimum;
+
 	nValue =   (nValue + ParameterList[Parameter].nStep/2)
 		 / ParameterList[Parameter].nStep
 		 * ParameterList[Parameter].nStep;
@@ -261,4 +264,10 @@ const char *CPatch::GetPropertyHelp (TPatchProperty Property)
 {
 	assert (Property < PatchPropertyUnknown);
 	return PropertyList[Property].pHelp;
+}
+
+const char *CPatch::GetParameterName (TSynthParameter Parameter)
+{
+	assert (Parameter < SynthParameterUnknown);
+	return ParameterList[Parameter].pName;
 }

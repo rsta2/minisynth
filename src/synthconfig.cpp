@@ -2,7 +2,7 @@
 // synthconfig.cpp
 //
 // MiniSynth Pi - A virtual analogue synthesizer for Raspberry Pi
-// Copyright (C) 2017-2020  R. Stange <rsta2@o2online.de>
+// Copyright (C) 2017-2021  R. Stange <rsta2@o2online.de>
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -25,7 +25,8 @@
 CSynthConfig::CSynthConfig (FATFS *pFileSystem)
 :	m_pFileSystem (pFileSystem),
 	m_nActivePatch (0),
-	m_VelocityCurve (pFileSystem)
+	m_VelocityCurve (pFileSystem),
+	m_MIDICCMap (pFileSystem)
 {
 	for (unsigned i = 0; i < PATCHES; i++)
 	{
@@ -62,7 +63,11 @@ boolean CSynthConfig::Load (void)
 		assert (m_pPatch[i] != 0);
 	}
 
-	return m_VelocityCurve.Load ();
+	boolean bOK = m_VelocityCurve.Load ();
+
+	bOK = m_MIDICCMap.Load () && bOK;
+
+	return bOK;
 }
 
 unsigned CSynthConfig::GetActivePatchNumber (void) const
@@ -93,4 +98,9 @@ CPatch *CSynthConfig::GetPatch (unsigned nPatch)
 u8 CSynthConfig::MapVelocity (u8 ucVelocity) const
 {
 	return m_VelocityCurve.MapVelocity (ucVelocity);
+}
+
+TSynthParameter CSynthConfig::MapMIDICC (u8 ucMIDICC) const
+{
+	return m_MIDICCMap.Map (ucMIDICC);
 }

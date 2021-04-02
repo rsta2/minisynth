@@ -4,7 +4,7 @@
 // Container for global configuration and all patches
 //
 // MiniSynth Pi - A virtual analogue synthesizer for Raspberry Pi
-// Copyright (C) 2017-2020  R. Stange <rsta2@o2online.de>
+// Copyright (C) 2017-2021  R. Stange <rsta2@o2online.de>
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -25,6 +25,7 @@
 #include <fatfs/ff.h>
 #include "patch.h"
 #include "velocitycurve.h"
+#include "midiccmap.h"
 #include "config.h"
 
 class CSynthConfig
@@ -47,6 +48,7 @@ public:
 	CPatch *GetPatch (unsigned nPatch);
 
 	u8 MapVelocity (u8 ucVelocity) const;
+	TSynthParameter MapMIDICC (u8 ucMIDICC) const;
 
 private:
 	FATFS *m_pFileSystem;
@@ -55,6 +57,7 @@ private:
 	unsigned m_nActivePatch;
 
 	CVelocityCurve m_VelocityCurve;
+	CMIDICCMap m_MIDICCMap;
 };
 
 #endif

@@ -4,7 +4,7 @@
 // Container for patch settings, loadable from properties file
 //
 // MiniSynth Pi - A virtual analogue synthesizer for Raspberry Pi
-// Copyright (C) 2017-2020  R. Stange <rsta2@o2online.de>
+// Copyright (C) 2017-2021  R. Stange <rsta2@o2online.de>
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -107,6 +107,8 @@ public:
 	static unsigned GetPropertyMaxLength (TPatchProperty Property);
 	static boolean GetPropertyUppercase (TPatchProperty Property);
 	static const char *GetPropertyHelp (TPatchProperty Property);
+
+	static const char *GetParameterName (TSynthParameter Parameter);
 
 private:
 	CPropertiesFatFsFile m_Properties;

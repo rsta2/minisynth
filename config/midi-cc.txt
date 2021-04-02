@@ -1,0 +1,27 @@
+#
+# MIDI CC Mapping
+#
+LFOVCOWaveform=
+LFOVCOFrequency=
+VCOWaveform=
+VCOModulationVolume=
+VCODetune=94
+LFOVCFWaveform=
+LFOVCFFrequency=
+VCFCutoffFrequency=74
+VCFResonance=71
+EGVCFAttack=
+EGVCFDecay=
+EGVCFSustain=
+EGVCFRelease=
+VCFModulationVolume=
+LFOVCAWaveform=
+LFOVCAFrequency=
+EGVCAAttack=
+EGVCADecay=
+EGVCASustain=
+EGVCARelease=
+VCAModulationVolume=
+ReverbDecay=
+ReverbVolume=91
+SynthVolume=7

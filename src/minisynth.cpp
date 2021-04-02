@@ -2,7 +2,7 @@
 // minisynth.cpp
 //
 // MiniSynth Pi - A virtual analogue synthesizer for Raspberry Pi
-// Copyright (C) 2017-2020  R. Stange <rsta2@o2online.de>
+// Copyright (C) 2017-2021  R. Stange <rsta2@o2online.de>
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -133,19 +133,13 @@ boolean CMiniSynthesizer::ConfigUpdated (void)
 
 void CMiniSynthesizer::ControlChange (u8 ucFunction, u8 ucValue)
 {
-	TSynthParameter Parameter;
-
-	switch (ucFunction)
+	assert (m_pConfig != 0);
+	TSynthParameter Parameter = m_pConfig->MapMIDICC (ucFunction);
+	if (Parameter >= SynthParameterUnknown)
 	{
-	case 7:		Parameter = SynthVolume;		break;
-	case 71:	Parameter = VCFResonance;		break;
-	case 74:	Parameter = VCFCutoffFrequency;		break;
-
-	default:
 		return;
 	}
 
-	assert (m_pConfig != 0);
 	CPatch *pPatch = m_pConfig->GetActivePatch ();
 	assert (pPatch != 0);
 
