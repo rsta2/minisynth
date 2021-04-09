@@ -157,7 +157,7 @@ One patch of MiniSynth Pi has the following parameters:
 
 (\*\*) The MIDI CC mapping can be modified in the file *midi-cc.txt*. This is the default mapping.
 
-MiniSynth Pi provides two VCOs, one runs at the pitch frequency, the other at pitch frequency detuned by a configurable value (max. one semitone - or +, default 100% = Detune off).
+MiniSynth Pi provides two VCOs, one runs at the pitch frequency, the other at pitch frequency detuned by a configurable value (max. one semitone - or +, default 100% = Detune off). The VCF uses a second order recursive linear filter, containing two poles and two zeros (biquad), which is implemented as a low-pass filter.
 
 MiniSynth Pi allows to use a specific keyboard velocity curve, which fits best to your keyboard and your playing style. It has to be provided in the file *velocity.txt* on the SD card. The default velocity curve is linear. Have a look into the example files in the *config/* subdirectory. If you want to use one of these files, it has to be renamed to *velocity.txt* on the SD card. It should be easy to modify one example file to adjust the velocity curve to your own needs.
 
@@ -180,6 +180,6 @@ MiniSynth Pi uses the following source modules:
 
 Additional information has been obtained from:
 
-* Cookbook formulae for audio EQ biquad filter coefficients (not available any more) by Robert Bristow-Johnson
+* [Cookbook formulae for audio EQ biquad filter coefficients](https://webaudio.github.io/Audio-EQ-Cookbook/Audio-EQ-Cookbook.txt) by Robert Bristow-Johnson
 * [Digital Synth WRA32](https://github.com/risgk/digital-synth-wra32/) by Ryo Ishigaki
 * [Effect Design, Part 1: Reverberator and Other Filters](https://ccrma.stanford.edu/~dattorro/EffectDesignPart1.pdf) by Jon Dattorro
