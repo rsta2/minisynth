@@ -30,8 +30,6 @@ CMiniSynthesizer::CMiniSynthesizer (CSynthConfig *pConfig,
 				    CInterruptSystem *pInterrupt, CMemorySystem *pMemorySystem)
 #ifdef USE_I2S
 :	CI2SSoundBaseDevice (pInterrupt, SAMPLE_RATE, 2048),
-#elif defined (USE_HDMI)
-:	CHDMISoundBaseDevice (pInterrupt, SAMPLE_RATE),
 #else
 :	CPWMSoundBaseDevice (pInterrupt, SAMPLE_RATE),
 #endif
@@ -43,7 +41,7 @@ CMiniSynthesizer::CMiniSynthesizer (CSynthConfig *pConfig,
 	m_VoiceManager (pMemorySystem),
 	m_nConfigRevisionWrite (0),
 	m_nConfigRevisionRead (0),
-#if defined (USE_I2S) || defined (USE_HDMI)
+#ifdef USE_I2S
 	m_nMinLevel (GetRangeMin ()+1),
 	m_nMaxLevel (GetRangeMax ()-1),
 	m_nNullLevel (0),
@@ -96,7 +94,7 @@ void CMiniSynthesizer::SetPatch (CPatch *pPatch)
 	m_VoiceManager.SetPatch (pPatch);
 
 	m_nVolumeLevel =
-#if defined (USE_I2S) || defined (USE_HDMI)
+#ifdef USE_I2S
 			   m_nMaxLevel
 #else
 			   m_nMaxLevel/2
@@ -169,9 +167,6 @@ unsigned CMiniSynthesizer::GetChunk (u32 *pBuffer, unsigned nChunkSize)
 
 	unsigned nResult = nChunkSize;
 
-#ifdef USE_HDMI
-	unsigned nFrame = 0;
-#endif
 	for (; nChunkSize > 0; nChunkSize -= 2)		// fill the whole buffer
 	{
 		m_VoiceManager.NextSample ();
@@ -182,7 +177,7 @@ unsigned CMiniSynthesizer::GetChunk (u32 *pBuffer, unsigned nChunkSize)
 		{
 			nLevelLeft = m_nMaxLevel;
 		}
-#if defined (USE_I2S) || defined (USE_HDMI)
+#ifdef USE_I2S
 		else if (nLevelLeft < m_nMinLevel)
 		{
 			nLevelLeft = m_nMinLevel;
@@ -200,7 +195,7 @@ unsigned CMiniSynthesizer::GetChunk (u32 *pBuffer, unsigned nChunkSize)
 		{
 			nLevelRight = m_nMaxLevel;
 		}
-#if defined (USE_I2S) || defined (USE_HDMI)
+#ifdef USE_I2S
 		else if (nLevelRight < m_nMinLevel)
 		{
 			nLevelRight = m_nMinLevel;
@@ -212,29 +207,16 @@ unsigned CMiniSynthesizer::GetChunk (u32 *pBuffer, unsigned nChunkSize)
 		}
 #endif
 
-		u32 nSampleLeft = (u32) nLevelLeft;
-		u32 nSampleRight = (u32) nLevelRight;
-
-#ifdef USE_HDMI
-		nSampleLeft = ConvertIEC958Sample (nSampleLeft, nFrame);
-		nSampleRight = ConvertIEC958Sample (nSampleRight, nFrame);
-
-		if (++nFrame == IEC958_FRAMES_PER_BLOCK)
-		{
-			nFrame = 0;
-		}
-#endif
-
 		// for 2 stereo channels
 		if (!m_bChannelsSwapped)
 		{
-			*pBuffer++ = nSampleLeft;
-			*pBuffer++ = nSampleRight;
+			*pBuffer++ = (u32) nLevelLeft;
+			*pBuffer++ = (u32) nLevelRight;
 		}
 		else
 		{
-			*pBuffer++ = nSampleLeft;
-			*pBuffer++ = nSampleRight;
+			*pBuffer++ = (u32) nLevelRight;
+			*pBuffer++ = (u32) nLevelLeft;
 		}
 	}
 

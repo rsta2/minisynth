@@ -2,7 +2,7 @@
 // kernel.cpp
 //
 // MiniSynth Pi - A virtual analogue synthesizer for Raspberry Pi
-// Copyright (C) 2017-2021  R. Stange <rsta2@o2online.de>
+// Copyright (C) 2017-2020  R. Stange <rsta2@o2online.de>
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -137,11 +137,7 @@ TShutdownMode CKernel::Run (void)
 	m_Config.SetActivePatchNumber (0);
 	m_Synthesizer.SetPatch (m_Config.GetActivePatch ());
 
-	if (!m_Synthesizer.Start ())
-	{
-		static const char Msg[] = "Error: Cannot start sound device\n";
-		m_Screen.Write (Msg, sizeof Msg-1);
-	}
+	m_Synthesizer.Start ();
 
 	CMainWindow MainWindow (&m_Synthesizer, &m_Config);
 	m_GUI.Update (FALSE);

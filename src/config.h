@@ -20,9 +20,7 @@
 #ifndef _config_h
 #define _config_h
 
-// define only one
 //#define USE_I2S				// use I2S device instead of PWM
-//#define USE_HDMI				// use HDMI device instead of PWM
 
 #define SAMPLE_RATE		48000		// overall system clock
 
