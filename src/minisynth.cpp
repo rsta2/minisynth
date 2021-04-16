@@ -27,9 +27,10 @@
 static const char FromMiniSynth[] = "synth";
 
 CMiniSynthesizer::CMiniSynthesizer (CSynthConfig *pConfig,
-				    CInterruptSystem *pInterrupt, CMemorySystem *pMemorySystem)
+				    CInterruptSystem *pInterrupt, CMemorySystem *pMemorySystem,
+				    CI2CMaster *pI2CMaster)
 #ifdef USE_I2S
-:	CI2SSoundBaseDevice (pInterrupt, SAMPLE_RATE, 2048),
+:	CI2SSoundBaseDevice (pInterrupt, SAMPLE_RATE, 2048, FALSE, pI2CMaster, DAC_I2C_ADDRESS),
 #else
 :	CPWMSoundBaseDevice (pInterrupt, SAMPLE_RATE),
 #endif

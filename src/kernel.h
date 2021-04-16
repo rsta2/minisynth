@@ -2,7 +2,7 @@
 // kernel.h
 //
 // MiniSynth Pi - A virtual analogue synthesizer for Raspberry Pi
-// Copyright (C) 2017-2020  R. Stange <rsta2@o2online.de>
+// Copyright (C) 2017-2021  R. Stange <rsta2@o2online.de>
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -32,6 +32,7 @@
 #include <circle/interrupt.h>
 #include <circle/timer.h>
 #include <circle/logger.h>
+#include <circle/i2cmaster.h>
 #include <circle/usb/usbhcidevice.h>
 #include <SDCard/emmc.h>
 #include <circle/input/touchscreen.h>
@@ -77,6 +78,7 @@ private:
 	CInterruptSystem	m_Interrupt;
 	CTimer			m_Timer;
 	CLogger			m_Logger;
+	CI2CMaster		m_I2CMaster;
 	CUSBHCIDevice		m_USBHCI;
 	CEMMCDevice		m_EMMC;
 	CTouchScreenDevice	m_TouchScreen;

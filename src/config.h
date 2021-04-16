@@ -41,4 +41,6 @@
 
 #define MIDI_CHANNEL_FILTER	0xFFFF		// set bit for each recognized channel
 
+#define DAC_I2C_ADDRESS		0		// I2C slave address of the DAC (0 for auto probing)
+
 #endif

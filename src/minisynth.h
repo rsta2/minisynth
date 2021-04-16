@@ -2,7 +2,7 @@
 // minisynth.h
 //
 // MiniSynth Pi - A virtual analogue synthesizer for Raspberry Pi
-// Copyright (C) 2017-2020  R. Stange <rsta2@o2online.de>
+// Copyright (C) 2017-2021  R. Stange <rsta2@o2online.de>
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -21,6 +21,7 @@
 #define _minisynth_h
 
 #include <circle/interrupt.h>
+#include <circle/i2cmaster.h>
 #include <circle/memory.h>
 #include <circle/string.h>
 #include <circle/types.h>
@@ -54,7 +55,8 @@ class CMiniSynthesizer
 {
 public:
 	CMiniSynthesizer (CSynthConfig *pConfig,
-			  CInterruptSystem *pInterrupt, CMemorySystem *pMemorySystem);
+			  CInterruptSystem *pInterrupt, CMemorySystem *pMemorySystem,
+			  CI2CMaster *pI2CMaster);
 	~CMiniSynthesizer (void);
 
 	boolean Initialize (void);

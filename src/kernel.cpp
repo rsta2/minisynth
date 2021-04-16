@@ -2,7 +2,7 @@
 // kernel.cpp
 //
 // MiniSynth Pi - A virtual analogue synthesizer for Raspberry Pi
-// Copyright (C) 2017-2020  R. Stange <rsta2@o2online.de>
+// Copyright (C) 2017-2021  R. Stange <rsta2@o2online.de>
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -20,6 +20,7 @@
 #include "kernel.h"
 #include "mainwindow.h"
 #include "config.h"
+#include <circle/machineinfo.h>
 #include <circle/string.h>
 #include <assert.h>
 
@@ -29,11 +30,12 @@ CKernel::CKernel (void)
 :	m_Screen (800, 480),
 	m_Timer (&m_Interrupt),
 	m_Logger (m_Options.GetLogLevel (), &m_Timer),
+	m_I2CMaster (CMachineInfo::Get ()->GetDevice (DeviceI2CMaster), TRUE),
 	m_USBHCI (&m_Interrupt, &m_Timer, TRUE),
 	m_EMMC (&m_Interrupt, &m_Timer, &m_ActLED),
 	m_GUI (&m_Screen, &m_Interrupt),
 	m_Config (&m_FileSystem),
-	m_Synthesizer (&m_Config, &m_Interrupt, &m_Memory)
+	m_Synthesizer (&m_Config, &m_Interrupt, &m_Memory, &m_I2CMaster)
 {
 }
 
@@ -82,6 +84,11 @@ boolean CKernel::Initialize (void)
 	if (bOK)
 	{
 		bOK = m_Timer.Initialize ();
+	}
+
+	if (bOK)
+	{
+		bOK = m_I2CMaster.Initialize ();
 	}
 
 	if (bOK)

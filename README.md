@@ -14,7 +14,12 @@ You have to attach an USB MIDI keyboard controller (which supports the USB Audio
 
 The audio signal is normally available on the 3.5mm headphones jack (I2S usage see below). Thus Raspberry Pi models without headphones jack (e.g. Raspberry Pi Zero) are not supported. The graphical user interface (GUI) of MiniSynth Pi can be controlled using a standard USB mouse or the official Raspberry Pi touch screen.
 
-This version of MiniSynth Pi can be built so that it can be used with an external I2S interface. The audio signal is then available via this interface. Please note that only I2S interfaces are supported, which do not need additional device initialization (e.g. via I2C). MiniSynth Pi has been tested with the [pHAT DAC](https://shop.pimoroni.com/products/phat-dac) I2S interface, which is based on the PCM5102A DAC chip.
+This version of MiniSynth Pi can be built, so that it can be used with an external I2S interface. The audio signal is then available via this interface. MiniSynth Pi has been tested with the following I2S interfaces:
+
+* [pHAT DAC](https://shop.pimoroni.com/products/phat-dac) (with PCM5102A DAC)
+* PiFi DAC+ v2.0 (with PCM5122 DAC)
+
+Other I2S interfaces with these DACs may be compatible too. The I2C slave address of the PCM5122 DAC is auto-probed (0x4C or 0x4D).
 
 Please note that the included reverb effect module is experimental, because it generates some noise, when no note is played. Just leave the reverb volume (wet/dry ratio) at 0% to eliminate it, if it disturbs.
 
