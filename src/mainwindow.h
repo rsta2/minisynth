@@ -104,6 +104,8 @@ private:
 	CGUIParameter m_SynthVolume;
 	CGUIParameter m_ReverbDecay;
 	CGUIParameter m_ReverbVolume;
+	CGUIParameter m_VoiceMode;
+	CGUIParameter m_PortamentoTime;
 
 	CGUIStringProperty m_PropertyName;
 	CGUIStringProperty m_PropertyAuthor;

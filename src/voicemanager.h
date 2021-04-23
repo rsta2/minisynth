@@ -4,7 +4,7 @@
 // Manages the polyphonic voices and available CPU cores
 //
 // MiniSynth Pi - A virtual analogue synthesizer for Raspberry Pi
-// Copyright (C) 2017-2020  R. Stange <rsta2@o2online.de>
+// Copyright (C) 2017-2021  R. Stange <rsta2@o2online.de>
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -26,6 +26,7 @@
 #include <circle/memory.h>
 #include <circle/types.h>
 #include "patch.h"
+#include "notestack.h"
 #include "voice.h"
 #include "reverbmodule.h"
 #include "config.h"
@@ -87,8 +88,11 @@ private:
 	float ProcessVoices (unsigned nFirst, unsigned nLast);
 
 private:
+	CNoteStack m_NoteStack;
+
 	CVoice *m_pVoice[VOICES];
 
+	unsigned m_nActiveVoices;
 	unsigned m_nLastNoteOnVoice;
 
 #ifdef ARM_ALLOW_MULTI_CORE

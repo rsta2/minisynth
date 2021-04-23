@@ -4,7 +4,7 @@
 // One voice in a polyphonic choir
 //
 // MiniSynth Pi - A virtual analogue synthesizer for Raspberry Pi
-// Copyright (C) 2017-2020  R. Stange <rsta2@o2online.de>
+// Copyright (C) 2017-2021  R. Stange <rsta2@o2online.de>
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -30,6 +30,13 @@
 #include "patch.h"
 #include <circle/types.h>
 
+enum TVoiceMode
+{
+	VoiceModePoly,
+	VoiceModeMono,
+	VoiceModeUnknown
+};
+
 enum TVoiceState
 {
 	VoiceStateIdle,
@@ -47,6 +54,7 @@ public:
 	void SetPatch (CPatch *pPatch);
 
 	void NoteOn (u8 ucKeyNumber, u8 ucVelocity);	// MIDI key number and velocity
+#define VELOCITY_NO_TRIGGER	255
 	void NoteOff (void);
 
 	TVoiceState GetState (void) const;

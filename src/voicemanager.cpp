@@ -2,7 +2,7 @@
 // voicemanager.cpp
 //
 // MiniSynth Pi - A virtual analogue synthesizer for Raspberry Pi
-// Copyright (C) 2017-2020  R. Stange <rsta2@o2online.de>
+// Copyright (C) 2017-2021  R. Stange <rsta2@o2online.de>
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -25,6 +25,7 @@ CVoiceManager::CVoiceManager (CMemorySystem *pMemorySystem)
 #ifdef ARM_ALLOW_MULTI_CORE
 	CMultiCoreSupport (pMemorySystem),
 #endif
+	m_nActiveVoices (VOICES),
 	m_nLastNoteOnVoice (VOICES)
 {
 	for (unsigned i = 0; i < VOICES; i++)
@@ -129,10 +130,29 @@ void CVoiceManager::SetPatch (CPatch *pPatch)
 
 	m_ReverbModule.SetDecay (pPatch->GetParameter (ReverbDecay) / 100.0f);
 	m_ReverbModule.SetWetDryRatio (pPatch->GetParameter (ReverbVolume) / 100.0f);
+
+	if (pPatch->GetParameter (VoiceMode) == VoiceModePoly)
+	{
+		m_nActiveVoices = VOICES;
+	}
+	else
+	{
+		m_nActiveVoices =  1;
+	}
 }
 
 void CVoiceManager::NoteOn (u8 ucKeyNumber, u8 ucVelocity)
 {
+	if (m_nActiveVoices == 1)
+	{
+		m_NoteStack.NoteOn (ucKeyNumber);
+
+		assert (m_pVoice[0] != 0);
+		m_pVoice[0]->NoteOn (ucKeyNumber, ucVelocity);
+
+		return;
+	}
+
 	// find the voice which is currently playing this key
 	unsigned i;
 	for (i = 0; i < VOICES; i++)
@@ -176,6 +196,24 @@ void CVoiceManager::NoteOn (u8 ucKeyNumber, u8 ucVelocity)
 
 void CVoiceManager::NoteOff (u8 ucKeyNumber)
 {
+	if (m_nActiveVoices == 1)
+	{
+		m_NoteStack.NoteOff (ucKeyNumber);
+
+		assert (m_pVoice[0] != 0);
+		ucKeyNumber = m_NoteStack.GetCurrentNote ();
+		if (ucKeyNumber == CNoteStack::NoNote)
+		{
+			m_pVoice[0]->NoteOff ();
+		}
+		else
+		{
+			m_pVoice[0]->NoteOn (ucKeyNumber, VELOCITY_NO_TRIGGER);
+		}
+
+		return;
+	}
+
 	// find the voice used for this key
 	unsigned i;
 	for (i = 0; i < VOICES; i++)

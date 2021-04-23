@@ -2,7 +2,7 @@
 // voice.cpp
 //
 // MiniSynth Pi - A virtual analogue synthesizer for Raspberry Pi
-// Copyright (C) 2017-2020  R. Stange <rsta2@o2online.de>
+// Copyright (C) 2017-2021  R. Stange <rsta2@o2online.de>
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -67,6 +67,14 @@ void CVoice::SetPatch (CPatch *pPatch)
 	m_VCO2.SetModulationVolume (pPatch->GetParameter (VCOModulationVolume) / 100.0);
 	m_VCO2.SetDetune (pPatch->GetParameter (VCODetune) / 100.0 - 1.0);
 
+	unsigned nPortamentoTime = 0;
+	if (pPatch->GetParameter (VoiceMode) != VoiceModePoly)
+	{
+		nPortamentoTime = pPatch->GetParameter (PortamentoTime);
+	}
+	m_VCO.SetPortamentoTime (nPortamentoTime);
+	m_VCO2.SetPortamentoTime (nPortamentoTime);
+
 	// VCF
 	m_LFO_VCF.SetWaveform ((TWaveform) pPatch->GetParameter (LFOVCFWaveform));
 	m_LFO_VCF.SetFrequency (pPatch->GetParameter (LFOVCFFrequency) / 10.0);
@@ -101,10 +109,13 @@ void CVoice::NoteOn (u8 ucKeyNumber, u8 ucVelocity)
 		m_VCO.SetFrequency (KeyFrequency[m_ucKeyNumber]);
 		m_VCO2.SetFrequency (KeyFrequency[m_ucKeyNumber]);
 
-		assert (1 <= ucVelocity && ucVelocity <= 127);
-		float fVelocityLevel = ucVelocity / 127.0;
-		m_EG_VCF.NoteOn (fVelocityLevel);
-		m_EG_VCA.NoteOn (fVelocityLevel);
+		if (ucVelocity != VELOCITY_NO_TRIGGER)
+		{
+			assert (1 <= ucVelocity && ucVelocity <= 127);
+			float fVelocityLevel = ucVelocity / 127.0;
+			m_EG_VCF.NoteOn (fVelocityLevel);
+			m_EG_VCA.NoteOn (fVelocityLevel);
+		}
 	}
 }
 
@@ -157,6 +168,12 @@ void CVoice::NextSample (void)
 	m_LFO_VCA.NextSample ();
 	m_EG_VCA.NextSample ();
 	m_VCA.NextSample ();
+
+	if (m_EG_VCA.GetState () == EnvelopeStateIdle)
+	{
+		m_VCO.Stop ();
+		m_VCO2.Stop ();
+	}
 }
 
 float CVoice::GetOutputLevel (void) const

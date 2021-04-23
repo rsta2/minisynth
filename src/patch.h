@@ -67,6 +67,10 @@ enum TSynthParameter			// the parameters of a patch
 	ReverbDecay,
 	ReverbVolume,
 
+	// Vocing
+	VoiceMode,
+	PortamentoTime,
+
 	// Synth
 	SynthVolume,
 

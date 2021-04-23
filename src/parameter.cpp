@@ -2,7 +2,7 @@
 // parameter.cpp
 //
 // MiniSynth Pi - A virtual analogue synthesizer for Raspberry Pi
-// Copyright (C) 2017-2020  R. Stange <rsta2@o2online.de>
+// Copyright (C) 2017-2021  R. Stange <rsta2@o2online.de>
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -110,6 +110,12 @@ const char *CParameter::GetString (void)
 		"Noise"
 	};
 
+	static const char *VoiceModes[] =	// must match TVoiceMode in voice.h
+	{
+		"Poly",
+		"Mono"
+	};
+
 	switch (m_Type)
 	{
 	case ParameterWaveform:
@@ -131,6 +137,10 @@ const char *CParameter::GetString (void)
 	case ParameterPercent:
 		m_String.Format ("%u %", m_nValue);
 		return m_String;
+
+	case ParameterVoiceMode:
+		assert (m_nValue < sizeof VoiceModes / sizeof VoiceModes[0]);
+		return VoiceModes[m_nValue];
 
 	default:
 		assert (0);

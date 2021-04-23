@@ -19,6 +19,7 @@
 //
 #include "patch.h"
 #include "oscillator.h"
+#include "voice.h"
 #include <assert.h>
 
 static const struct
@@ -69,6 +70,10 @@ ParameterList[] =		// must match TSynthParameter
 	// Effects
 	{"ReverbDecay", ParameterPercent, 0, 50, 5, 20, "Decay"},
 	{"ReverbVolume", ParameterPercent, 0, 30, 5, 0, "Volume"},
+
+	// Voicing
+	{"VoiceMode", ParameterVoiceMode, VoiceModePoly, VoiceModeMono, 1, VoiceModePoly, "Mode"},
+	{"PortamentoTime", ParameterTime, 0, 1000, 10, 0, "Portamento"},
 
 	// Synth
 	{"SynthVolume", ParameterPercent, 0, 100, 10, 50, "Volume"}

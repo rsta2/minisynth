@@ -56,6 +56,8 @@ CMainWindow::CMainWindow (CMiniSynthesizer *pSynthesizer, CSynthConfig *pConfig)
 	m_SynthVolume (m_pTabMain, SynthVolume, pConfig),
 	m_ReverbDecay (m_pTabMain, ReverbDecay, pConfig),
 	m_ReverbVolume (m_pTabMain, ReverbVolume, pConfig),
+	m_VoiceMode (m_pTabMain, VoiceMode, pConfig),
+	m_PortamentoTime (m_pTabMain, PortamentoTime, pConfig),
 	m_PropertyName (m_pTabMain, PatchPropertyName, pConfig),
 	m_PropertyAuthor (m_pTabMain, PatchPropertyAuthor, pConfig),
 	m_PropertyComment (m_pTabMain, PatchPropertyComment, pConfig),
@@ -130,6 +132,10 @@ CMainWindow::CMainWindow (CMiniSynthesizer *pSynthesizer, CSynthConfig *pConfig)
 	LabelCreate (m_pTabMain, 605, 30, "REVERB");
 	m_ReverbDecay.Create (610, 60);
 	m_ReverbVolume.Create (610, 90);
+	// voicing
+	LabelCreate (m_pTabMain, 5, 270, "VOICING", LabelStyleSection);
+	m_VoiceMode.Create (10, 300);
+	m_PortamentoTime.Create (10, 330);
 	// info
 	LabelCreate (m_pTabMain, 605, 210, "INFO", LabelStyleSection);
 	m_PropertyName.Create (610, 240);
@@ -214,7 +220,10 @@ void CMainWindow::EventHandler (lv_obj_t *pObject, lv_event_t Event)
 		    || m_EGVCARelease.ButtonPressed (pObject, m_bShowHelp)
 		       // reverb
 		    || m_ReverbDecay.ButtonPressed (pObject, m_bShowHelp)
-		    || m_ReverbVolume.ButtonPressed (pObject, m_bShowHelp))
+		    || m_ReverbVolume.ButtonPressed (pObject, m_bShowHelp)
+		       // voicing
+		    || m_VoiceMode.ButtonPressed (pObject, m_bShowHelp)
+		    || m_PortamentoTime.ButtonPressed (pObject, m_bShowHelp))
 		{
 			m_pSynthesizer->SetPatch (m_pConfig->GetActivePatch ());
 
@@ -313,6 +322,10 @@ void CMainWindow::UpdateAllParameters (boolean bUpdatePatch)
 	// reverb
 	m_ReverbDecay.Update (m_bShowHelp);
 	m_ReverbVolume.Update (m_bShowHelp);
+
+	// voicing
+	m_VoiceMode.Update (m_bShowHelp);
+	m_PortamentoTime.Update (m_bShowHelp);
 
 	// info
 	m_PropertyName.Update ();

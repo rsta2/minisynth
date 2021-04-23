@@ -2,7 +2,7 @@
 // oscillator.cpp
 //
 // MiniSynth Pi - A virtual analogue synthesizer for Raspberry Pi
-// Copyright (C) 2017-2020  R. Stange <rsta2@o2online.de>
+// Copyright (C) 2017-2021  R. Stange <rsta2@o2online.de>
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -80,7 +80,9 @@ COscillator::COscillator (CSynthModule *pModulator)
 	m_fMidFrequency (m_fFrequency),
 	m_fDetune (0.0),
 	m_fModulationVolume (0.0),
+	m_nPortamentoTime (0),
 	m_nSampleCount (0),
+	m_bRunning (FALSE),
 	m_fOutputLevel (0.0),
 	m_nRandSeed (1)
 {
@@ -99,9 +101,36 @@ void COscillator::SetWaveform (TWaveform Waveform)
 
 void COscillator::SetFrequency (float fFrequency)
 {
+	m_fOldFrequency = m_fFrequency;
+
 	assert (fFrequency > 0.0);
 	m_fMidFrequency = fFrequency;
 	m_fFrequency = exp2f (log2f (m_fMidFrequency) + m_fDetune);
+
+	if (m_nPortamentoTime > 0)
+	{
+		if (m_bRunning)
+		{
+			m_fNewFrequency = m_fFrequency;
+			m_fFrequency = m_fOldFrequency;
+
+			unsigned nSemitones = fabsf (  log2f (m_fNewFrequency)
+						     - log2f (m_fOldFrequency)) * 12.0f + 0.5f;
+
+			m_nGlideSampleCount = SAMPLE_RATE * m_nPortamentoTime * nSemitones / 1000;
+			m_nGlideSample = 0;
+		}
+		else
+		{
+			m_fNewFrequency = m_fFrequency;
+			m_fOldFrequency = m_fFrequency;
+
+			m_nGlideSampleCount = 0;
+			m_nGlideSample = 0;
+
+			m_bRunning = TRUE;
+		}
+	}
 }
 
 void COscillator::SetDetune (float fDetune)
@@ -117,8 +146,38 @@ void COscillator::SetModulationVolume (float fVolume)
 	m_fModulationVolume = fVolume;
 }
 
+void COscillator::SetPortamentoTime (unsigned nMilliSeconds)
+{
+	m_nPortamentoTime = nMilliSeconds;
+
+	if (m_nPortamentoTime > 0)
+	{
+		m_fOldFrequency = m_fFrequency;
+		m_fNewFrequency = m_fFrequency;
+
+		m_nGlideSampleCount = 0;
+		m_nGlideSample = 0;
+	}
+}
+
+void COscillator::Stop (void)
+{
+	m_bRunning = FALSE;
+}
+
 void COscillator::NextSample (void)
 {
+	if (   m_nPortamentoTime > 0
+	    && m_nGlideSample < m_nGlideSampleCount)
+	{
+		m_fFrequency =   m_fOldFrequency
+			       +   (m_fNewFrequency - m_fOldFrequency)
+			         * m_nGlideSample
+			         / m_nGlideSampleCount;
+
+		m_nGlideSample++;
+	}
+
 	float fFrequency = m_fFrequency;
 	if (m_pModulator != 0)
 	{
