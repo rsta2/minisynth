@@ -79,6 +79,10 @@ public:
 #endif
 
 private:
+	void GlobalLock (void);
+	void GlobalUnlock (void);
+
+private:
 	CSynthConfig *m_pConfig;
 
 	CMIDIKeyboard m_MIDIKeyboard;

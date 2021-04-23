@@ -21,6 +21,7 @@
 #include "math.h"
 #include "config.h"
 #include <circle/timer.h>
+#include <circle/synchronize.h>
 #include <circle/logger.h>
 #include <assert.h>
 
@@ -92,6 +93,8 @@ void CMiniSynthesizer::SetPatch (CPatch *pPatch)
 {
 	assert (pPatch != 0);
 
+	GlobalLock ();
+
 	m_VoiceManager.SetPatch (pPatch);
 
 	m_nVolumeLevel =
@@ -101,6 +104,8 @@ void CMiniSynthesizer::SetPatch (CPatch *pPatch)
 			   m_nMaxLevel/2
 #endif
 			 * powf (pPatch->GetParameter (SynthVolume) / 100.0, 3.3f); // apply some curve
+
+	GlobalUnlock ();
 }
 
 void CMiniSynthesizer::NoteOn (u8 ucKeyNumber, u8 ucVelocity)
@@ -109,12 +114,20 @@ void CMiniSynthesizer::NoteOn (u8 ucKeyNumber, u8 ucVelocity)
 	assert (m_pConfig != 0);
 	ucVelocity = m_pConfig->MapVelocity (ucVelocity);
 
+	GlobalLock ();
+
 	m_VoiceManager.NoteOn (ucKeyNumber, ucVelocity);
+
+	GlobalUnlock ();
 }
 
 void CMiniSynthesizer::NoteOff (u8 ucKeyNumber)
 {
+	GlobalLock ();
+
 	m_VoiceManager.NoteOff (ucKeyNumber);
+
+	GlobalUnlock ();
 }
 
 boolean CMiniSynthesizer::ConfigUpdated (void)
@@ -139,6 +152,8 @@ void CMiniSynthesizer::ControlChange (u8 ucFunction, u8 ucValue)
 		return;
 	}
 
+	GlobalLock ();
+
 	CPatch *pPatch = m_pConfig->GetActivePatch ();
 	assert (pPatch != 0);
 
@@ -146,11 +161,15 @@ void CMiniSynthesizer::ControlChange (u8 ucFunction, u8 ucValue)
 	SetPatch (pPatch);
 
 	m_nConfigRevisionWrite++;
+
+	GlobalUnlock ();
 }
 
 void CMiniSynthesizer::ProgramChange (u8 ucProgram)
 {
 	assert (m_pConfig != 0);
+
+	GlobalLock ();
 
 	if (ucProgram < PATCHES)
 	{
@@ -158,6 +177,8 @@ void CMiniSynthesizer::ProgramChange (u8 ucProgram)
 		SetPatch (m_pConfig->GetActivePatch ());
 		m_nConfigRevisionWrite++;
 	}
+
+	GlobalUnlock ();
 }
 
 unsigned CMiniSynthesizer::GetChunk (u32 *pBuffer, unsigned nChunkSize)
@@ -165,6 +186,8 @@ unsigned CMiniSynthesizer::GetChunk (u32 *pBuffer, unsigned nChunkSize)
 #ifdef SHOW_STATUS
 	unsigned nTicks = CTimer::GetClockTicks ();
 #endif
+
+	GlobalLock ();
 
 	unsigned nResult = nChunkSize;
 
@@ -229,6 +252,8 @@ unsigned CMiniSynthesizer::GetChunk (u32 *pBuffer, unsigned nChunkSize)
 	}
 #endif
 
+	GlobalUnlock ();
+
 	return nResult;
 }
 
@@ -242,3 +267,13 @@ const char *CMiniSynthesizer::GetStatus (void)
 }
 
 #endif
+
+void CMiniSynthesizer::GlobalLock (void)
+{
+	EnterCritical (IRQ_LEVEL);
+}
+
+void CMiniSynthesizer::GlobalUnlock (void)
+{
+	LeaveCritical ();
+}
