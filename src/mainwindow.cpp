@@ -2,7 +2,7 @@
 // mainwindow.cpp
 //
 // MiniSynth Pi - A virtual analogue synthesizer for Raspberry Pi
-// Copyright (C) 2017-2020  R. Stange <rsta2@o2online.de>
+// Copyright (C) 2017-2021  R. Stange <rsta2@o2online.de>
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -59,7 +59,6 @@ CMainWindow::CMainWindow (CMiniSynthesizer *pSynthesizer, CSynthConfig *pConfig)
 	m_PropertyName (m_pTabMain, PatchPropertyName, pConfig),
 	m_PropertyAuthor (m_pTabMain, PatchPropertyAuthor, pConfig),
 	m_PropertyComment (m_pTabMain, PatchPropertyComment, pConfig),
-	m_pActivePatch (m_pConfig->GetActivePatch ()),
 	m_bShowHelp (FALSE)
 {
 	assert (s_pThis == 0);
@@ -217,7 +216,7 @@ void CMainWindow::EventHandler (lv_obj_t *pObject, lv_event_t Event)
 		    || m_ReverbDecay.ButtonPressed (pObject, m_bShowHelp)
 		    || m_ReverbVolume.ButtonPressed (pObject, m_bShowHelp))
 		{
-			m_pSynthesizer->SetPatch (m_pActivePatch);
+			m_pSynthesizer->SetPatch (m_pConfig->GetActivePatch ());
 
 			return;
 		}
@@ -235,9 +234,8 @@ void CMainWindow::EventHandler (lv_obj_t *pObject, lv_event_t Event)
 						  LV_BTN_STATE_CHECKED_RELEASED);
 
 				m_pConfig->SetActivePatchNumber (i);
-				m_pActivePatch = m_pConfig->GetActivePatch ();
 
-				m_pSynthesizer->SetPatch (m_pActivePatch);
+				m_pSynthesizer->SetPatch (m_pConfig->GetActivePatch ());
 				UpdateAllParameters ();
 
 				return;
@@ -246,8 +244,10 @@ void CMainWindow::EventHandler (lv_obj_t *pObject, lv_event_t Event)
 
 		if (pObject == m_pButtonLoad)
 		{
-			m_pActivePatch->Load ();
-			m_pSynthesizer->SetPatch (m_pActivePatch);
+			CPatch *pActivePatch = m_pConfig->GetActivePatch ();
+
+			pActivePatch->Load ();
+			m_pSynthesizer->SetPatch (pActivePatch);
 			UpdateAllParameters (TRUE);
 
 			return;
@@ -255,7 +255,7 @@ void CMainWindow::EventHandler (lv_obj_t *pObject, lv_event_t Event)
 
 		if (pObject == m_pButtonSave)
 		{
-			m_pActivePatch->Save ();
+			m_pConfig->GetActivePatch ()->Save ();
 
 			return;
 		}

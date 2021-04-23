@@ -2,7 +2,7 @@
 // mainwindow.h
 //
 // MiniSynth Pi - A virtual analogue synthesizer for Raspberry Pi
-// Copyright (C) 2017-2020  R. Stange <rsta2@o2online.de>
+// Copyright (C) 2017-2021  R. Stange <rsta2@o2online.de>
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -108,8 +108,6 @@ private:
 	CGUIStringProperty m_PropertyName;
 	CGUIStringProperty m_PropertyAuthor;
 	CGUIStringProperty m_PropertyComment;
-
-	CPatch *m_pActivePatch;
 
 	boolean m_bShowHelp;
 
