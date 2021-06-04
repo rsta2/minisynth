@@ -93,7 +93,7 @@ boolean CKernel::Initialize (void)
 
 	if (bOK)
 	{
-		bOK = m_USBHCI.Initialize (FALSE);
+		bOK = m_USBHCI.Initialize ();
 	}
 
 	if (bOK)
@@ -103,7 +103,7 @@ boolean CKernel::Initialize (void)
 
 	if (bOK)
 	{
-		m_TouchScreen.Initialize ();
+		m_RPiTouchScreen.Initialize ();
 
 		bOK = m_GUI.Initialize ();
 	}
