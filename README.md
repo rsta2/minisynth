@@ -12,7 +12,7 @@ MiniSynth Pi is a polyphonic virtual analog audio synthesizer, running bare meta
 
 You have to attach an USB MIDI keyboard controller (which supports the USB Audio Class MIDI specification) or an USB PC keyboard to your Raspberry Pi to play on it. Alternatively you can feed serial MIDI data (at 31250 Bps) into GPIO15 (Broadcom numbering). Normally you will need some external circuit to be able to attach a device with serial MIDI interface.
 
-The audio signal is normally available on the 3.5mm headphones jack (I2S usage see below). Thus Raspberry Pi models without headphones jack (e.g. Raspberry Pi Zero) are not supported. The graphical user interface (GUI) of MiniSynth Pi can be controlled using a standard USB mouse or the official Raspberry Pi touch screen.
+The audio signal is normally available on the 3.5mm headphones jack (I2S usage see below). Thus Raspberry Pi models without headphones jack (e.g. Raspberry Pi Zero) are not supported. The graphical user interface (GUI) of MiniSynth Pi can be controlled using a standard USB mouse, the official Raspberry Pi touch screen or an USB HID-class touch screen in  digitizer mode.
 
 This version of MiniSynth Pi can be built, so that it can be used with an external I2S interface. The audio signal is then available via this interface. MiniSynth Pi has been tested with the following I2S interfaces:
 
@@ -42,7 +42,7 @@ This will place the source code in the subdirectory *minisynth/* and clones the 
 Building
 --------
 
-MiniSynth Pi uses the Circle bare metal build environment for the Raspberry Pi. You need an appropriate compiler toolchain for ARM processors to build it. Have a look at the Circle *README.md* file (in *circle/*) for further information on this (section *Building*). The build information herein is for Linux hosts only. For building on other hosts you have to adapt some script files.
+MiniSynth Pi uses the Circle bare metal build environment for the Raspberry Pi. You need an appropriate compiler toolchain for ARM processors to build it. Have a look at the Circle *README.md* file (in *circle/*) for further information on this (section *Building*). The build information herein is for Linux hosts only.
 
 When the toolchain is installed on your computer you can build MiniSynth Pi using the following commands:
 
@@ -74,14 +74,29 @@ Finally you have to copy the configuration files *cmdline.txt*, *patchN.txt* (ex
 
 Put the SD card into the card reader of your Raspberry Pi.
 
+USB Touch Screen Calibration
+----------------------------
+
+If you want to use an USB touch screen, an additional calibration step may be required. Your touch screen must be compliant with the USB HID-class specification and must support the digitizer mode. Touch screens which emulate an USB mouse with absolute coordinates cannot be used. Touch screen calibration is needed, if your touch screen does not send screen pixel coordinates. If you are unsure about this, you can apply this step and will get the required information from the calibration program.
+
+After building the MiniSynth Pi application, enter from MiniSynth Pi project root:
+
+	cd circle/tools/touchscreen-calibrator
+	make clean
+	make
+
+A file *kernel???.img* should be created, which is the calibration program. Copy it to the SD card, which has been prepared in the previous step. Because the kernel image of MiniSynth Pi is needed later, you should temporary rename it. Now put the SD card into your Raspberry Pi and start it. Please read the file *README* in the subdirectory of the calibration program for further info on the calibration process!
+
+The calibration program will finally tell you, if your touch screen needs calibration. If so, the option `touchscreen=min-x,max-x,min-y,max-y` (parameters given by the calibration program) has to be added to the first line of the file *cmdline.txt*. Multiple options will be delimited with a space character in this file.
+
 Using
 -----
 
 Before powering on your Raspberry Pi, the following devices have to be attached:
 
-* HDMI display (must support 800x480 pixels mode)
+* HDMI display (1920x1080 pixels max.)
 * USB MIDI keyboard controller, USB PC keyboard or device with serial MIDI interface (at GPIO15, requires external circuit)
-* Standard USB mouse (if official touch screen is not used)
+* Standard USB mouse (if touch screen is not used)
 * Headphones or amplifier (on the 3.5mm jack or via external I2S interface)
 
 MiniSynth Pi starts in about four seconds. It is controlled using the following GUI (*MAIN* tab):
