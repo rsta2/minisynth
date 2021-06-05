@@ -59,6 +59,9 @@ private:
 	lv_obj_t *ButtonCreate (lv_obj_t *pParent, unsigned nPosX, unsigned nPosY,
 				const char *pText);
 
+	unsigned ScaleX (unsigned nPos) const;
+	unsigned ScaleY (unsigned nPos) const;
+
 private:
 	CMiniSynthesizer *m_pSynthesizer;
 	CSynthConfig *m_pConfig;

@@ -2,7 +2,7 @@
 // guistringproperty.cpp
 //
 // MiniSynth Pi - A virtual analogue synthesizer for Raspberry Pi
-// Copyright (C) 2020  R. Stange <rsta2@o2online.de>
+// Copyright (C) 2020-2021  R. Stange <rsta2@o2online.de>
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -67,8 +67,8 @@ void CGUIStringProperty::Create (unsigned nPosX, unsigned nPosY)
 
 	m_pTextArea = lv_textarea_create (m_pWindow, 0);
 	assert (m_pTextArea != 0);
-	lv_obj_set_size (m_pTextArea, 180, 25);		// TODO: height does not apply
-	lv_obj_set_pos (m_pTextArea, nPosX, nPosY);
+	lv_obj_set_size (m_pTextArea, ScaleX (180), ScaleY (25));  // TODO: height does not apply
+	lv_obj_set_pos (m_pTextArea, ScaleX (nPosX), ScaleY (nPosY));
 
 	lv_textarea_set_max_length (m_pTextArea, CPatch::GetPropertyMaxLength (m_Property));
 	lv_textarea_set_placeholder_text (m_pTextArea, CPatch::GetPropertyHelp (m_Property));
@@ -188,4 +188,14 @@ void CGUIStringProperty::KeyboardEventHandler (lv_obj_t *pObject, lv_event_t Eve
 		lv_obj_del (s_pKeyboard);
 		s_pKeyboard = 0;
 	}
+}
+
+unsigned CGUIStringProperty::ScaleX (unsigned nPos) const
+{
+	return nPos * lv_obj_get_width_margin (lv_scr_act ()) / 800;
+}
+
+unsigned CGUIStringProperty::ScaleY (unsigned nPos) const
+{
+	return nPos * lv_obj_get_height_margin (lv_scr_act ()) / 480;
 }

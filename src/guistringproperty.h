@@ -4,7 +4,7 @@
 // GUI representation of one patch string property (e.g. patch name)
 //
 // MiniSynth Pi - A virtual analogue synthesizer for Raspberry Pi
-// Copyright (C) 2020  R. Stange <rsta2@o2online.de>
+// Copyright (C) 2020-2021  R. Stange <rsta2@o2online.de>
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -42,6 +42,9 @@ public:
 
 private:
 	static void KeyboardEventHandler (lv_obj_t *pObject, lv_event_t Event);
+
+	unsigned ScaleX (unsigned nPos) const;
+	unsigned ScaleY (unsigned nPos) const;
 
 private:
 	lv_obj_t *m_pWindow;

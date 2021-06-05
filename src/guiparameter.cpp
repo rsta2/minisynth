@@ -2,7 +2,7 @@
 // guiparameter.cpp
 //
 // MiniSynth Pi - A virtual analogue synthesizer for Raspberry Pi
-// Copyright (C) 2017-2020  R. Stange <rsta2@o2online.de>
+// Copyright (C) 2017-2021  R. Stange <rsta2@o2online.de>
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -60,27 +60,27 @@ void CGUIParameter::Create (unsigned nPosX, unsigned nPosY)
 
 	m_pContainer = lv_cont_create (m_pWindow, 0);
 	lv_obj_add_style (m_pContainer, LV_OBJ_PART_MAIN, &m_StyleNoBorder);
-	lv_obj_set_size (m_pContainer, 180, 26);
-	lv_obj_set_pos (m_pContainer, nPosX, nPosY);
+	lv_obj_set_size (m_pContainer, ScaleX (180), ScaleY (26));
+	lv_obj_set_pos (m_pContainer, ScaleX (nPosX), ScaleY (nPosY));
 
 	m_pButtonDown = lv_btn_create (m_pContainer, 0);
-	lv_obj_set_size (m_pButtonDown, 38, 22);
-	lv_obj_set_pos (m_pButtonDown, 2, 2);
+	lv_obj_set_size (m_pButtonDown, ScaleX (38), ScaleY (22));
+	lv_obj_set_pos (m_pButtonDown, ScaleX (2), ScaleY (2));
 	lv_obj_set_event_cb (m_pButtonDown, CMainWindow::EventStub);
 	m_pButtonDownLabel = lv_label_create (m_pButtonDown, 0);
 	lv_label_set_text (m_pButtonDownLabel, "<");
 
 	m_pContainerText = lv_cont_create (m_pContainer, 0);
 	lv_obj_add_style (m_pContainerText, LV_OBJ_PART_MAIN, &m_StyleSilverBackground);
-	lv_obj_set_size (m_pContainerText, 86, 22);
-	lv_obj_set_pos (m_pContainerText, 47, 2);
+	lv_obj_set_size (m_pContainerText, ScaleX (86), ScaleY (22));
+	lv_obj_set_pos (m_pContainerText, ScaleX (47), ScaleY (2));
 
 	m_pTextLabel = lv_label_create (m_pContainerText, 0);
 	lv_label_set_align (m_pTextLabel, LV_LABEL_ALIGN_CENTER);
 
 	m_pButtonUp = lv_btn_create (m_pContainer, 0);
-	lv_obj_set_size (m_pButtonUp, 38, 22);
-	lv_obj_set_pos (m_pButtonUp, 140, 2);
+	lv_obj_set_size (m_pButtonUp, ScaleX (38), ScaleY (22));
+	lv_obj_set_pos (m_pButtonUp, ScaleX (140), ScaleY (2));
 	lv_obj_set_event_cb (m_pButtonUp, CMainWindow::EventStub);
 	m_pButtonUpLabel = lv_label_create (m_pButtonUp, 0);
 	lv_label_set_text (m_pButtonUpLabel, ">");
@@ -127,4 +127,14 @@ boolean CGUIParameter::ButtonPressed (lv_obj_t *pObject, boolean bShowHelp)
 	}
 
 	return bUpdated;
+}
+
+unsigned CGUIParameter::ScaleX (unsigned nPos) const
+{
+	return nPos * lv_obj_get_width_margin (lv_scr_act ()) / 800;
+}
+
+unsigned CGUIParameter::ScaleY (unsigned nPos) const
+{
+	return nPos * lv_obj_get_height_margin (lv_scr_act ()) / 480;
 }

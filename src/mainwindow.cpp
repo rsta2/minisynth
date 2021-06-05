@@ -84,7 +84,7 @@ CMainWindow::CMainWindow (CMiniSynthesizer *pSynthesizer, CSynthConfig *pConfig)
 	// set tabview style
 	lv_obj_add_style (m_pTabView, LV_OBJ_PART_MAIN, &m_StyleWhiteBackground);
 	lv_obj_set_style_local_pad_left (m_pTabView, LV_TABVIEW_PART_TAB_BG,
-					 LV_STATE_DEFAULT, 500);
+					 LV_STATE_DEFAULT, ScaleX (500));
 	lv_tabview_set_anim_time (m_pTabView, 0);
 
 	// create controls
@@ -131,10 +131,10 @@ CMainWindow::CMainWindow (CMiniSynthesizer *pSynthesizer, CSynthConfig *pConfig)
 	m_ReverbDecay.Create (610, 60);
 	m_ReverbVolume.Create (610, 90);
 	// info
-	LabelCreate (m_pTabMain, 605, 210, "INFO", LabelStyleSection);
-	m_PropertyName.Create (610, 240);
-	m_PropertyAuthor.Create (610, 275);
-	m_PropertyComment.Create (610, 310);
+	LabelCreate (m_pTabMain, 605, 150, "INFO", LabelStyleSection);
+	m_PropertyName.Create (610, 180);
+	m_PropertyAuthor.Create (610, 230);
+	m_PropertyComment.Create (610, 280);
 	// help
 	m_pButtonHelp = ButtonCreate (m_pTabMain, 630, 362, "HELP");
 	// patches
@@ -365,23 +365,28 @@ void CMainWindow::UpdateStatus (const char *pString)
 lv_obj_t *CMainWindow::LabelCreate (lv_obj_t *pParent, unsigned nPosX, unsigned nPosY,
 				    const char *pText, TLabelStyle Style)
 {
-	lv_coord_t nWidth = 190;
+	lv_coord_t nWidth = ScaleX (190);
+	lv_coord_t nHeight = ScaleY (24);
 	lv_style_t *pStyle = &m_StyleNoBorder;
 	switch (Style)
 	{
 	case LabelStyleTitle:
-		nWidth = 108;
+		nWidth = ScaleX (108);
+		nHeight = 24;
 		break;
 
 	case LabelStyleSubtitle:
-		nWidth = 250;
+		nWidth = ScaleX (250);
+		nPosY = ScaleY (nPosY);
 		break;
 
 	case LabelStyleSection:
 		pStyle = &m_StyleGrayBackground;
+		nPosY = ScaleY (nPosY);
 		break;
 
 	case LabelStyleDefault:
+		nPosY = ScaleY (nPosY);
 		break;
 
 	default:
@@ -392,8 +397,8 @@ lv_obj_t *CMainWindow::LabelCreate (lv_obj_t *pParent, unsigned nPosX, unsigned 
 	assert (pParent != 0);
 	lv_obj_t *pContainer = lv_cont_create (pParent, 0);
 	lv_obj_add_style (pContainer, LV_OBJ_PART_MAIN, pStyle);
-	lv_obj_set_size (pContainer, nWidth, 24);
-	lv_obj_set_pos (pContainer, nPosX, nPosY);
+	lv_obj_set_size (pContainer, nWidth, nHeight);
+	lv_obj_set_pos (pContainer, ScaleX (nPosX), nPosY);
 
 	lv_obj_t *pLabel = lv_label_create (pContainer, 0);
 	assert (pText != 0);
@@ -409,8 +414,8 @@ lv_obj_t *CMainWindow::ButtonCreate (lv_obj_t *pParent, unsigned nPosX, unsigned
 {
 	assert (pParent != 0);
 	lv_obj_t *pButton = lv_btn_create (pParent, 0);
-	lv_obj_set_size (pButton, 140, 22);
-	lv_obj_set_pos (pButton, nPosX, nPosY);
+	lv_obj_set_size (pButton, ScaleX (140), ScaleY (22));
+	lv_obj_set_pos (pButton, ScaleX (nPosX), ScaleY (nPosY));
 	lv_obj_set_event_cb (pButton, EventStub);
 
 	lv_obj_t *pButtonLabel = lv_label_create (pButton, 0);
@@ -418,4 +423,14 @@ lv_obj_t *CMainWindow::ButtonCreate (lv_obj_t *pParent, unsigned nPosX, unsigned
 	lv_label_set_text (pButtonLabel, pText);
 
 	return pButton;
+}
+
+unsigned CMainWindow::ScaleX (unsigned nPos) const
+{
+	return nPos * lv_obj_get_width_margin (m_pWindow) / 800;
+}
+
+unsigned CMainWindow::ScaleY (unsigned nPos) const
+{
+	return nPos * lv_obj_get_height_margin (m_pWindow) / 480;
 }
