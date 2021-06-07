@@ -105,6 +105,8 @@ MiniSynth Pi starts in about four seconds. It is controlled using the following 
 
 You will get that picture when you click the *HELP* button with the mouse or on the touch screen. By default the GUI does not show the help info, but the values of the different parameters of the currently selected patch (see *Parameters*).
 
+A parameter value can be modified using the down (<) and up (>) buttons or can be directly entered using a screen keyboard for numeric parameters, when the parameter value is clicked with the mouse or touched on a touch screen.
+
 The GUI allows to select 48 different sound configurations (patches 0-47) on the *PATCHES* tab:
 
 ![PATCHES tab](gui-patches.png)

@@ -185,36 +185,37 @@ void CMainWindow::EventHandler (lv_obj_t *pObject, lv_event_t Event)
 	assert (m_pConfig != 0);
 
 	if (   Event == LV_EVENT_PRESSED
-	    || Event == LV_EVENT_LONG_PRESSED_REPEAT)
+	    || Event == LV_EVENT_LONG_PRESSED_REPEAT
+	    || Event == LV_EVENT_CLICKED)
 	{
 		if (   // oscillator
-		       m_LFOVCOWaveform.ButtonPressed (pObject, m_bShowHelp)
-		    || m_LFOVCOFrequency.ButtonPressed (pObject, m_bShowHelp)
-		    || m_VCOWaveform.ButtonPressed (pObject, m_bShowHelp)
-		    || m_VCOModulationVolume.ButtonPressed (pObject, m_bShowHelp)
-		    || m_VCODetune.ButtonPressed (pObject, m_bShowHelp)
+		       m_LFOVCOWaveform.EventHandler (pObject, Event, m_bShowHelp)
+		    || m_LFOVCOFrequency.EventHandler (pObject, Event, m_bShowHelp)
+		    || m_VCOWaveform.EventHandler (pObject, Event, m_bShowHelp)
+		    || m_VCOModulationVolume.EventHandler (pObject, Event, m_bShowHelp)
+		    || m_VCODetune.EventHandler (pObject, Event, m_bShowHelp)
 		       // filter
-		    || m_VCFCutoffFrequency.ButtonPressed (pObject, m_bShowHelp)
-		    || m_VCFResonance.ButtonPressed (pObject, m_bShowHelp)
-		    || m_LFOVCFWaveform.ButtonPressed (pObject, m_bShowHelp)
-		    || m_LFOVCFFrequency.ButtonPressed (pObject, m_bShowHelp)
-		    || m_VCFModulationVolume.ButtonPressed (pObject, m_bShowHelp)
-		    || m_EGVCFAttack.ButtonPressed (pObject, m_bShowHelp)
-		    || m_EGVCFDecay.ButtonPressed (pObject, m_bShowHelp)
-		    || m_EGVCFSustain.ButtonPressed (pObject, m_bShowHelp)
-		    || m_EGVCFRelease.ButtonPressed (pObject, m_bShowHelp)
+		    || m_VCFCutoffFrequency.EventHandler (pObject, Event, m_bShowHelp)
+		    || m_VCFResonance.EventHandler (pObject, Event, m_bShowHelp)
+		    || m_LFOVCFWaveform.EventHandler (pObject, Event, m_bShowHelp)
+		    || m_LFOVCFFrequency.EventHandler (pObject, Event, m_bShowHelp)
+		    || m_VCFModulationVolume.EventHandler (pObject, Event, m_bShowHelp)
+		    || m_EGVCFAttack.EventHandler (pObject, Event, m_bShowHelp)
+		    || m_EGVCFDecay.EventHandler (pObject, Event, m_bShowHelp)
+		    || m_EGVCFSustain.EventHandler (pObject, Event, m_bShowHelp)
+		    || m_EGVCFRelease.EventHandler (pObject, Event, m_bShowHelp)
 		       // amplifier
-		    || m_SynthVolume.ButtonPressed (pObject, m_bShowHelp)
-		    || m_LFOVCAWaveform.ButtonPressed (pObject, m_bShowHelp)
-		    || m_LFOVCAFrequency.ButtonPressed (pObject, m_bShowHelp)
-		    || m_VCAModulationVolume.ButtonPressed (pObject, m_bShowHelp)
-		    || m_EGVCAAttack.ButtonPressed (pObject, m_bShowHelp)
-		    || m_EGVCADecay.ButtonPressed (pObject, m_bShowHelp)
-		    || m_EGVCASustain.ButtonPressed (pObject, m_bShowHelp)
-		    || m_EGVCARelease.ButtonPressed (pObject, m_bShowHelp)
+		    || m_SynthVolume.EventHandler (pObject, Event, m_bShowHelp)
+		    || m_LFOVCAWaveform.EventHandler (pObject, Event, m_bShowHelp)
+		    || m_LFOVCAFrequency.EventHandler (pObject, Event, m_bShowHelp)
+		    || m_VCAModulationVolume.EventHandler (pObject, Event, m_bShowHelp)
+		    || m_EGVCAAttack.EventHandler (pObject, Event, m_bShowHelp)
+		    || m_EGVCADecay.EventHandler (pObject, Event, m_bShowHelp)
+		    || m_EGVCASustain.EventHandler (pObject, Event, m_bShowHelp)
+		    || m_EGVCARelease.EventHandler (pObject, Event, m_bShowHelp)
 		       // reverb
-		    || m_ReverbDecay.ButtonPressed (pObject, m_bShowHelp)
-		    || m_ReverbVolume.ButtonPressed (pObject, m_bShowHelp))
+		    || m_ReverbDecay.EventHandler (pObject, Event, m_bShowHelp)
+		    || m_ReverbVolume.EventHandler (pObject, Event, m_bShowHelp))
 		{
 			m_pSynthesizer->SetPatch (m_pConfig->GetActivePatch ());
 
@@ -345,6 +346,14 @@ void CMainWindow::UpdateAllParameters (boolean bUpdatePatch)
 							     : LV_BTN_STATE_RELEASED);
 		}
 	}
+}
+
+void CMainWindow::UpdateSynthPatch (void)
+{
+	assert (m_pSynthesizer != 0);
+	assert (m_pConfig != 0);
+
+	m_pSynthesizer->SetPatch (m_pConfig->GetActivePatch ());
 }
 
 void CMainWindow::UpdateStatus (const char *pString)

@@ -235,6 +235,24 @@ const char *CPatch::GetParameterString (TSynthParameter Parameter)
 	return m_pParameter[Parameter]->GetString ();
 }
 
+boolean CPatch::IsParameterEditable (TSynthParameter Parameter) const
+{
+	assert (m_pParameter[Parameter] != 0);
+	return m_pParameter[Parameter]->IsEditable ();
+}
+
+const char *CPatch::GetParameterEditString (TSynthParameter Parameter)
+{
+	assert (m_pParameter[Parameter] != 0);
+	return m_pParameter[Parameter]->GetEditString ();
+}
+
+void CPatch::SetParameterEditString (TSynthParameter Parameter, const char *pString)
+{
+	assert (m_pParameter[Parameter] != 0);
+	return m_pParameter[Parameter]->SetEditString (pString);
+}
+
 const char *CPatch::GetProperty (TPatchProperty Property) const
 {
 	assert (Property < PatchPropertyUnknown);

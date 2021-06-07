@@ -22,11 +22,15 @@
 #include "config.h"
 #include <assert.h>
 
+CGUIParameter *CGUIParameter::s_pCurrentEdit = 0;
+
 CGUIParameter::CGUIParameter (lv_obj_t *pWindow, TSynthParameter Parameter, CSynthConfig *pConfig)
 :	m_pWindow (pWindow),
 	m_Parameter (Parameter),
 	m_pConfig (pConfig),
-	m_pContainer (0)
+	m_pContainer (0),
+	m_pTextArea (0),
+	m_pKeyboard (0)
 {
 	assert (m_pWindow != 0);
 	assert (Parameter < SynthParameterUnknown);
@@ -58,6 +62,9 @@ void CGUIParameter::Create (unsigned nPosX, unsigned nPosY)
 {
 	assert (m_pWindow != 0);
 
+	m_nPosX = nPosX;
+	m_nPosY = nPosY;
+
 	m_pContainer = lv_cont_create (m_pWindow, 0);
 	lv_obj_add_style (m_pContainer, LV_OBJ_PART_MAIN, &m_StyleNoBorder);
 	lv_obj_set_size (m_pContainer, ScaleX (180), ScaleY (26));
@@ -74,6 +81,7 @@ void CGUIParameter::Create (unsigned nPosX, unsigned nPosY)
 	lv_obj_add_style (m_pContainerText, LV_OBJ_PART_MAIN, &m_StyleSilverBackground);
 	lv_obj_set_size (m_pContainerText, ScaleX (86), ScaleY (22));
 	lv_obj_set_pos (m_pContainerText, ScaleX (47), ScaleY (2));
+	lv_obj_set_event_cb (m_pContainerText, CMainWindow::EventStub);
 
 	m_pTextLabel = lv_label_create (m_pContainerText, 0);
 	lv_label_set_align (m_pTextLabel, LV_LABEL_ALIGN_CENTER);
@@ -127,6 +135,101 @@ boolean CGUIParameter::ButtonPressed (lv_obj_t *pObject, boolean bShowHelp)
 	}
 
 	return bUpdated;
+}
+
+boolean CGUIParameter::EventHandler (lv_obj_t *pObject, lv_event_t Event, boolean bShowHelp)
+{
+	assert (m_pConfig != 0);
+
+	if (   Event == LV_EVENT_PRESSED
+	    || Event == LV_EVENT_LONG_PRESSED_REPEAT)
+	{
+		return ButtonPressed (pObject, bShowHelp);
+	}
+
+	if (   pObject != m_pContainerText
+	    || Event != LV_EVENT_CLICKED
+	    || s_pCurrentEdit != 0
+	    || !m_pConfig->GetActivePatch ()->IsParameterEditable (m_Parameter))
+	{
+		return FALSE;
+	}
+
+	// create text area
+	assert (m_pTextArea == 0);
+	m_pTextArea = lv_textarea_create (m_pWindow, 0);
+	assert (m_pTextArea != 0);
+	lv_obj_set_size (m_pTextArea, ScaleX (180), ScaleY (26));  // TODO: height does not apply
+	lv_obj_set_pos (m_pTextArea, ScaleX (m_nPosX), ScaleY (m_nPosY));
+
+	lv_textarea_set_max_length (m_pTextArea, 10);
+	lv_textarea_set_text (m_pTextArea,
+			      m_pConfig->GetActivePatch ()->GetParameterEditString (m_Parameter));
+	lv_textarea_set_one_line (m_pTextArea, TRUE);
+
+	// open screen keyboard
+	CMainWindow::Get ()->SetHeight (50);
+
+	assert (m_pKeyboard == 0);
+	m_pKeyboard = lv_keyboard_create (lv_scr_act (), 0);
+	assert (m_pKeyboard != 0);
+
+	lv_keyboard_set_mode (m_pKeyboard, LV_KEYBOARD_MODE_NUM);
+	lv_obj_set_event_cb (m_pKeyboard, KeyboardEventStub);
+
+	lv_indev_wait_release (lv_indev_get_act ());
+
+	lv_page_focus (m_pWindow, lv_textarea_get_label (m_pTextArea), LV_ANIM_OFF);
+	lv_keyboard_set_textarea (m_pKeyboard, m_pTextArea);
+
+	assert (s_pCurrentEdit == 0);
+	s_pCurrentEdit = this;
+
+	return FALSE;
+}
+
+void CGUIParameter::KeyboardEventHandler (lv_obj_t *pObject, lv_event_t Event)
+{
+	assert (pObject == m_pKeyboard);
+	lv_keyboard_def_event_cb (pObject, Event);
+
+	if (Event == LV_EVENT_CANCEL)
+	{
+		CMainWindow::Get ()->SetHeight (100);
+
+		lv_obj_del (m_pKeyboard);
+		m_pKeyboard = 0;
+
+		lv_obj_del (m_pTextArea);
+		m_pTextArea = 0;
+
+		s_pCurrentEdit = 0;
+	}
+	else if (Event == LV_EVENT_APPLY)
+	{
+		assert (m_pConfig != 0);
+		m_pConfig->GetActivePatch ()->SetParameterEditString (m_Parameter,
+								lv_textarea_get_text (m_pTextArea));
+
+		CMainWindow::Get ()->UpdateAllParameters (FALSE);
+		CMainWindow::Get ()->UpdateSynthPatch ();
+
+		CMainWindow::Get ()->SetHeight (100);
+
+		lv_obj_del (m_pKeyboard);
+		m_pKeyboard = 0;
+
+		lv_obj_del (m_pTextArea);
+		m_pTextArea = 0;
+
+		s_pCurrentEdit = 0;
+	}
+}
+
+void CGUIParameter::KeyboardEventStub (lv_obj_t *pObject, lv_event_t Event)
+{
+	assert (s_pCurrentEdit != 0);
+	s_pCurrentEdit->KeyboardEventHandler (pObject, Event);
 }
 
 unsigned CGUIParameter::ScaleX (unsigned nPos) const

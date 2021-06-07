@@ -2,7 +2,7 @@
 // parameter.cpp
 //
 // MiniSynth Pi - A virtual analogue synthesizer for Raspberry Pi
-// Copyright (C) 2017-2020  R. Stange <rsta2@o2online.de>
+// Copyright (C) 2017-2021  R. Stange <rsta2@o2online.de>
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -18,6 +18,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 #include "parameter.h"
+#include <circle/util.h>
 #include <assert.h>
 
 CParameter::CParameter (const char *pName, TParameterType Type,
@@ -136,4 +137,71 @@ const char *CParameter::GetString (void)
 		assert (0);
 		return "";
 	}
+}
+
+boolean CParameter::IsEditable (void) const
+{
+	return m_Type != ParameterWaveform;
+}
+
+const char *CParameter::GetEditString (void)
+{
+	assert (m_Type != ParameterWaveform);
+	if (m_Type != ParameterFrequencyTenth)
+	{
+		m_String.Format ("%u", m_nValue);
+	}
+	else
+	{
+		m_String.Format ("%.1f", m_nValue / 10.0);
+	}
+
+	return m_String;
+}
+
+void CParameter::SetEditString (const char *pString)
+{
+	assert (pString != 0);
+
+	char Buffer[20];
+	strncpy (Buffer, pString, sizeof Buffer);
+	Buffer[sizeof Buffer-1] = '\0';
+
+	char *pSavePtr;
+	char *p = strtok_r (Buffer, ".", &pSavePtr);
+	if (!p)
+	{
+		return;
+	}
+
+	char *pEnd = 0;
+	unsigned long ulValue = strtoul (p, &pEnd, 10);
+	if (   pEnd != 0
+	    && *pEnd != '\0')
+	{
+		return;
+	}
+
+	if (m_Type == ParameterFrequencyTenth)
+	{
+		ulValue *= 10;
+
+		p = strtok_r (0, "", &pSavePtr);
+		if (p)
+		{
+			unsigned long ulTenth = strtoul (p, &pEnd, 10);
+			if (   (   pEnd != 0
+				&& *pEnd != '\0')
+			    || ulTenth > 9)
+			{
+				return;
+			}
+
+			ulValue += ulTenth;
+		}
+	}
+
+	ulValue = (ulValue + m_nStep/2) / m_nStep * m_nStep;
+
+	Set ((unsigned) ulValue);
 }

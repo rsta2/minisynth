@@ -4,7 +4,7 @@
 // One parameter of a patch
 //
 // MiniSynth Pi - A virtual analogue synthesizer for Raspberry Pi
-// Copyright (C) 2017-2020  R. Stange <rsta2@o2online.de>
+// Copyright (C) 2017-2021  R. Stange <rsta2@o2online.de>
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -54,6 +54,10 @@ public:
 	boolean Up (void);			// returns TRUE if value has changed
 
 	const char *GetString (void);
+
+	boolean IsEditable (void) const;
+	const char *GetEditString (void);
+	void SetEditString (const char *pString);
 
 private:
 	const char *m_pName;

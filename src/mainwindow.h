@@ -37,6 +37,8 @@ public:
 
 	void UpdateAllParameters (boolean bUpdatePatch = FALSE);
 
+	void UpdateSynthPatch (void);
+
 	void UpdateStatus (const char *pString);
 
 	static void EventStub (lv_obj_t *pObject, lv_event_t Event);

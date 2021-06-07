@@ -37,9 +37,14 @@ public:
 
 	void Update (boolean bShowHelp);
 
-	boolean ButtonPressed (lv_obj_t *pObject, boolean bShowHelp);
+	boolean EventHandler (lv_obj_t *pObject, lv_event_t Event, boolean bShowHelp);
 
 private:
+	boolean ButtonPressed (lv_obj_t *pObject, boolean bShowHelp);
+
+	void KeyboardEventHandler (lv_obj_t *pObject, lv_event_t Event);
+	static void KeyboardEventStub (lv_obj_t *pObject, lv_event_t Event);
+
 	unsigned ScaleX (unsigned nPos) const;
 	unsigned ScaleY (unsigned nPos) const;
 
@@ -51,6 +56,9 @@ private:
 	lv_style_t m_StyleNoBorder;
 	lv_style_t m_StyleSilverBackground;
 
+	unsigned m_nPosX;
+	unsigned m_nPosY;
+
 	lv_obj_t *m_pContainer;
 	lv_obj_t *m_pButtonDown;
 	lv_obj_t *m_pButtonDownLabel;
@@ -58,6 +66,11 @@ private:
 	lv_obj_t *m_pTextLabel;
 	lv_obj_t *m_pButtonUp;
 	lv_obj_t *m_pButtonUpLabel;
+
+	lv_obj_t *m_pTextArea;
+	lv_obj_t *m_pKeyboard;
+
+	static CGUIParameter *s_pCurrentEdit;
 };
 
 #endif

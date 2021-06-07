@@ -102,6 +102,10 @@ public:
 	const char *GetParameterHelp (TSynthParameter Parameter);
 	const char *GetParameterString (TSynthParameter Parameter);
 
+	boolean IsParameterEditable (TSynthParameter Parameter) const;
+	const char *GetParameterEditString (TSynthParameter Parameter);
+	void SetParameterEditString (TSynthParameter Parameter, const char *pString);
+
 	const char *GetProperty (TPatchProperty Property) const;
 	void SetProperty (TPatchProperty Property, const char *pString);
 	static unsigned GetPropertyMaxLength (TPatchProperty Property);
