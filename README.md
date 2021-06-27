@@ -18,7 +18,7 @@ This version of MiniSynth Pi can be built, so that it can be used with an extern
 
 * [pHAT DAC](https://shop.pimoroni.com/products/phat-dac) (with PCM5102A DAC)
 * PiFi DAC+ v2.0 (with PCM5122 DAC)
-* [Adafruit I2S Audio Bonnet](https://www.adafruit.com/product/4037) (with UDA1334A)
+* [Adafruit I2S Audio Bonnet](https://www.adafruit.com/product/4037) (with UDA1334A DAC)
 
 Other I2S interfaces with these DACs may be compatible too. The I2C slave address of the PCM5122 DAC is auto-probed (0x4C or 0x4D).
 
