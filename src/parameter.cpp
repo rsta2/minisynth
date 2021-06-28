@@ -75,6 +75,7 @@ void CParameter::Set (unsigned nValue)
 boolean CParameter::Down (void)
 {
 	unsigned nNewValue = m_nValue - m_nStep;
+	nNewValue = (nNewValue + m_nStep-1) / m_nStep * m_nStep;
 	if (m_nMinimum <= nNewValue && nNewValue <= m_nMaximum)
 	{
 		m_nValue = nNewValue;
@@ -88,6 +89,7 @@ boolean CParameter::Down (void)
 boolean CParameter::Up (void)
 {
 	unsigned nNewValue = m_nValue + m_nStep;
+	nNewValue = nNewValue / m_nStep * m_nStep;
 	if (m_nMinimum <= nNewValue && nNewValue <= m_nMaximum)
 	{
 		m_nValue = nNewValue;
@@ -200,8 +202,6 @@ void CParameter::SetEditString (const char *pString)
 			ulValue += ulTenth;
 		}
 	}
-
-	ulValue = (ulValue + m_nStep/2) / m_nStep * m_nStep;
 
 	Set ((unsigned) ulValue);
 }

@@ -194,10 +194,6 @@ void CPatch::SetMIDIParameter (TSynthParameter Parameter, u8 ucValue)
 	nValue = (nValue + 63) / 127;
 	nValue += ParameterList[Parameter].nMinimum;
 
-	nValue =   (nValue + ParameterList[Parameter].nStep/2)
-		 / ParameterList[Parameter].nStep
-		 * ParameterList[Parameter].nStep;
-
 	if (nValue < ParameterList[Parameter].nMinimum)
 	{
 		nValue = ParameterList[Parameter].nMinimum;
