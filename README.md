@@ -16,7 +16,7 @@ The audio signal is normally available on the 3.5mm headphones jack (I2S usage s
 
 This version of MiniSynth Pi can be built, so that it can be used with an external I2S interface. The audio signal is then available via this interface. MiniSynth Pi has been tested with the following I2S interfaces:
 
-* [pHAT DAC](https://shop.pimoroni.com/products/phat-dac) (with PCM5102A DAC)
+* pHAT DAC (with PCM5102A DAC)
 * PiFi DAC+ v2.0 (with PCM5122 DAC)
 * [Adafruit I2S Audio Bonnet](https://www.adafruit.com/product/4037) (with UDA1334A DAC)
 * [Adafruit I2S 3W Class D Amplifier Breakout](https://www.adafruit.com/product/3006) (with MAX98357A DAC)
@@ -189,6 +189,12 @@ Troubleshooting
 Some USB MIDI keyboard controllers have been reported to lose "Note on" and/or "Note off" events, if used with MiniSynth Pi. As a workaround you can modify the file *cmdline.txt* on the SD card as follows:
 
 	logdev=null usbspeed=full
+
+Some USB PC keyboards may not work with MiniSynth Pi, because its USB HID report descriptor cannot be fetched from the keyboard. As a workaround you can try to suppress fetching this descriptor by adding the `usbignore=` option to the file *cmdline.txt* on the SD card:
+
+	logdev=null usbspeed=auto usbignore=int3-0-0
+
+Please note, that you cannot use an USB PC keyboard to input data in MiniSynth Pi. It is just an replacement for an USB MIDI keyboard controller, in case you do not have the latter.
 
 Credits
 -------
