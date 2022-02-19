@@ -2,7 +2,7 @@
 // guiparameter.cpp
 //
 // MiniSynth Pi - A virtual analogue synthesizer for Raspberry Pi
-// Copyright (C) 2017-2021  R. Stange <rsta2@o2online.de>
+// Copyright (C) 2017-2022  R. Stange <rsta2@o2online.de>
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -22,6 +22,8 @@
 #include "config.h"
 #include <assert.h>
 
+#define LV_COLOR_SILVER		lv_color_make (192, 192, 192)
+
 CGUIParameter *CGUIParameter::s_pCurrentEdit = 0;
 
 CGUIParameter::CGUIParameter (lv_obj_t *pWindow, TSynthParameter Parameter, CSynthConfig *pConfig)
@@ -38,13 +40,13 @@ CGUIParameter::CGUIParameter (lv_obj_t *pWindow, TSynthParameter Parameter, CSyn
 
 	// setup styles
 	lv_style_init (&m_StyleNoBorder);
-	lv_style_set_radius (&m_StyleNoBorder, LV_STATE_DEFAULT, 0);
-	lv_style_set_border_width (&m_StyleNoBorder, LV_STATE_DEFAULT, 0);
+	lv_style_set_radius (&m_StyleNoBorder, 0);
+	lv_style_set_border_width (&m_StyleNoBorder, 0);
 
 	lv_style_init (&m_StyleSilverBackground);
-	lv_style_set_radius (&m_StyleSilverBackground, LV_STATE_DEFAULT, 0);
-	lv_style_set_border_width (&m_StyleSilverBackground, LV_STATE_DEFAULT, 0);
-	lv_style_set_bg_color (&m_StyleSilverBackground, LV_STATE_DEFAULT, LV_COLOR_SILVER);
+	lv_style_set_radius (&m_StyleSilverBackground, 0);
+	lv_style_set_border_width (&m_StyleSilverBackground, 0);
+	lv_style_set_bg_color (&m_StyleSilverBackground, LV_COLOR_SILVER);
 }
 
 CGUIParameter::~CGUIParameter (void)
@@ -65,33 +67,41 @@ void CGUIParameter::Create (unsigned nPosX, unsigned nPosY)
 	m_nPosX = nPosX;
 	m_nPosY = nPosY;
 
-	m_pContainer = lv_cont_create (m_pWindow, 0);
-	lv_obj_add_style (m_pContainer, LV_OBJ_PART_MAIN, &m_StyleNoBorder);
+	m_pContainer = lv_obj_create (m_pWindow);
+	lv_obj_add_style (m_pContainer, &m_StyleNoBorder, LV_PART_MAIN);
 	lv_obj_set_size (m_pContainer, ScaleX (180), ScaleY (26));
 	lv_obj_set_pos (m_pContainer, ScaleX (nPosX), ScaleY (nPosY));
+	lv_obj_set_style_pad_top (m_pContainer, 0, 0);
+	lv_obj_set_style_pad_left (m_pContainer, 0, 0);
+	lv_obj_set_scrollbar_mode (m_pContainer, LV_SCROLLBAR_MODE_OFF);
+	lv_obj_clear_flag (m_pContainer, LV_OBJ_FLAG_SCROLLABLE);
 
-	m_pButtonDown = lv_btn_create (m_pContainer, 0);
+	m_pButtonDown = lv_btn_create (m_pContainer);
 	lv_obj_set_size (m_pButtonDown, ScaleX (38), ScaleY (22));
 	lv_obj_set_pos (m_pButtonDown, ScaleX (2), ScaleY (2));
-	lv_obj_set_event_cb (m_pButtonDown, CMainWindow::EventStub);
-	m_pButtonDownLabel = lv_label_create (m_pButtonDown, 0);
+	lv_obj_add_event_cb (m_pButtonDown, CMainWindow::EventStub, LV_EVENT_ALL, 0);
+	m_pButtonDownLabel = lv_label_create (m_pButtonDown);
 	lv_label_set_text (m_pButtonDownLabel, "<");
+	lv_obj_set_align (m_pButtonDownLabel, LV_ALIGN_CENTER);
 
-	m_pContainerText = lv_cont_create (m_pContainer, 0);
-	lv_obj_add_style (m_pContainerText, LV_OBJ_PART_MAIN, &m_StyleSilverBackground);
+	m_pContainerText = lv_obj_create (m_pContainer);
+	lv_obj_add_style (m_pContainerText, &m_StyleSilverBackground, LV_PART_MAIN);
 	lv_obj_set_size (m_pContainerText, ScaleX (86), ScaleY (22));
 	lv_obj_set_pos (m_pContainerText, ScaleX (47), ScaleY (2));
-	lv_obj_set_event_cb (m_pContainerText, CMainWindow::EventStub);
+	lv_obj_set_scrollbar_mode (m_pContainerText, LV_SCROLLBAR_MODE_OFF);
+	lv_obj_clear_flag (m_pContainerText, LV_OBJ_FLAG_SCROLLABLE);
+	lv_obj_add_event_cb (m_pContainerText, CMainWindow::EventStub, LV_EVENT_ALL, 0);
 
-	m_pTextLabel = lv_label_create (m_pContainerText, 0);
-	lv_label_set_align (m_pTextLabel, LV_LABEL_ALIGN_CENTER);
+	m_pTextLabel = lv_label_create (m_pContainerText);
+	lv_obj_set_align (m_pTextLabel, LV_ALIGN_CENTER);
 
-	m_pButtonUp = lv_btn_create (m_pContainer, 0);
+	m_pButtonUp = lv_btn_create (m_pContainer);
 	lv_obj_set_size (m_pButtonUp, ScaleX (38), ScaleY (22));
 	lv_obj_set_pos (m_pButtonUp, ScaleX (140), ScaleY (2));
-	lv_obj_set_event_cb (m_pButtonUp, CMainWindow::EventStub);
-	m_pButtonUpLabel = lv_label_create (m_pButtonUp, 0);
+	lv_obj_add_event_cb (m_pButtonUp, CMainWindow::EventStub, LV_EVENT_ALL, 0);
+	m_pButtonUpLabel = lv_label_create (m_pButtonUp);
 	lv_label_set_text (m_pButtonUpLabel, ">");
+	lv_obj_set_align (m_pButtonUpLabel, LV_ALIGN_CENTER);
 
 	Update (FALSE);
 }
@@ -112,7 +122,6 @@ void CGUIParameter::Update (boolean bShowHelp)
 	}
 
 	lv_label_set_text (m_pTextLabel, pText);
-	lv_obj_realign (m_pTextLabel);
 }
 
 boolean CGUIParameter::ButtonPressed (lv_obj_t *pObject, boolean bShowHelp)
@@ -137,7 +146,7 @@ boolean CGUIParameter::ButtonPressed (lv_obj_t *pObject, boolean bShowHelp)
 	return bUpdated;
 }
 
-boolean CGUIParameter::EventHandler (lv_obj_t *pObject, lv_event_t Event, boolean bShowHelp)
+boolean CGUIParameter::EventHandler (lv_obj_t *pObject, lv_event_code_t Event, boolean bShowHelp)
 {
 	assert (m_pConfig != 0);
 
@@ -155,9 +164,12 @@ boolean CGUIParameter::EventHandler (lv_obj_t *pObject, lv_event_t Event, boolea
 		return FALSE;
 	}
 
+	assert (s_pCurrentEdit == 0);
+	s_pCurrentEdit = this;
+
 	// create text area
 	assert (m_pTextArea == 0);
-	m_pTextArea = lv_textarea_create (m_pWindow, 0);
+	m_pTextArea = lv_textarea_create (m_pWindow);
 	assert (m_pTextArea != 0);
 	lv_obj_set_size (m_pTextArea, ScaleX (180), ScaleY (26));  // TODO: height does not apply
 	lv_obj_set_pos (m_pTextArea, ScaleX (m_nPosX), ScaleY (m_nPosY));
@@ -171,27 +183,24 @@ boolean CGUIParameter::EventHandler (lv_obj_t *pObject, lv_event_t Event, boolea
 	CMainWindow::Get ()->SetHeight (50);
 
 	assert (m_pKeyboard == 0);
-	m_pKeyboard = lv_keyboard_create (lv_scr_act (), 0);
+	m_pKeyboard = lv_keyboard_create (lv_scr_act ());
 	assert (m_pKeyboard != 0);
 
-	lv_keyboard_set_mode (m_pKeyboard, LV_KEYBOARD_MODE_NUM);
-	lv_obj_set_event_cb (m_pKeyboard, KeyboardEventStub);
+	lv_keyboard_set_mode (m_pKeyboard, LV_KEYBOARD_MODE_NUMBER);
+	lv_obj_add_event_cb (m_pKeyboard, KeyboardEventStub, LV_EVENT_ALL, 0);
 
 	lv_indev_wait_release (lv_indev_get_act ());
 
-	lv_page_focus (m_pWindow, lv_textarea_get_label (m_pTextArea), LV_ANIM_OFF);
+	lv_obj_add_state (m_pTextArea, LV_STATE_FOCUSED);
+	lv_obj_scroll_to_view (m_pTextArea, LV_ANIM_OFF);
 	lv_keyboard_set_textarea (m_pKeyboard, m_pTextArea);
-
-	assert (s_pCurrentEdit == 0);
-	s_pCurrentEdit = this;
 
 	return FALSE;
 }
 
-void CGUIParameter::KeyboardEventHandler (lv_obj_t *pObject, lv_event_t Event)
+void CGUIParameter::KeyboardEventHandler (lv_obj_t *pObject, lv_event_code_t Event)
 {
 	assert (pObject == m_pKeyboard);
-	lv_keyboard_def_event_cb (pObject, Event);
 
 	if (Event == LV_EVENT_CANCEL)
 	{
@@ -205,7 +214,7 @@ void CGUIParameter::KeyboardEventHandler (lv_obj_t *pObject, lv_event_t Event)
 
 		s_pCurrentEdit = 0;
 	}
-	else if (Event == LV_EVENT_APPLY)
+	else if (Event == LV_EVENT_READY)
 	{
 		assert (m_pConfig != 0);
 		m_pConfig->GetActivePatch ()->SetParameterEditString (m_Parameter,
@@ -226,18 +235,19 @@ void CGUIParameter::KeyboardEventHandler (lv_obj_t *pObject, lv_event_t Event)
 	}
 }
 
-void CGUIParameter::KeyboardEventStub (lv_obj_t *pObject, lv_event_t Event)
+void CGUIParameter::KeyboardEventStub (lv_event_t *pEvent)
 {
 	assert (s_pCurrentEdit != 0);
-	s_pCurrentEdit->KeyboardEventHandler (pObject, Event);
+	s_pCurrentEdit->KeyboardEventHandler (lv_event_get_target (pEvent),
+					      lv_event_get_code (pEvent));
 }
 
 unsigned CGUIParameter::ScaleX (unsigned nPos) const
 {
-	return nPos * lv_obj_get_width_margin (lv_scr_act ()) / 800;
+	return nPos * lv_obj_get_width (lv_scr_act ()) / 800;
 }
 
 unsigned CGUIParameter::ScaleY (unsigned nPos) const
 {
-	return nPos * lv_obj_get_height_margin (lv_scr_act ()) / 480;
+	return nPos * lv_obj_get_height (lv_scr_act ()) / 480;
 }

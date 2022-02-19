@@ -1,7 +1,7 @@
 MiniSynth Pi
 ============
 
-> Raspberry Pi is a trademark of the Raspberry Pi Foundation.
+> Raspberry Pi is a trademark of Raspberry Pi Trading.
 
 > If you read this file in an editor you should switch line wrapping on.
 
@@ -121,7 +121,7 @@ A patch can be described with the additional one-line text properties *Patch nam
 
 ![Screen keyboard](gui-main-kbd.png)
 
-After editing one property, you can save it using the OK check (in the bottom right corner) or reject the latest changes by clicking on the cross (left corner). The *ENTER* key has no function here. Please note that any changes will be saved to a patch file only when you click the *SAVE* button on the *PATCHES* tab.
+After editing one property, you can save it using the OK check (in the bottom right corner) or reject the latest changes by clicking on the keyboard key (left corner). The *ENTER* key has no function here. Please note that any changes will be saved to a patch file only when you click the *SAVE* button on the *PATCHES* tab.
 
 The USB PC keyboard allows playing two octaves (keys C2-C4). Its mapping is as follows:
 
@@ -202,7 +202,7 @@ Credits
 MiniSynth Pi uses the following source modules:
 
 * [Circle C++ bare metal environment for the Raspberry Pi](https://github.com/rsta2/circle/) (includes USB MIDI driver by Joshua Otto)
-* [Light and Versatile Graphics Library](https://lvgl.io/) by LVGL LLC
+* [Light and Versatile Graphics Library](https://lvgl.io/) by LVGL Kft
 * [EMMC SD card driver (part of rpi-boot)](https://github.com/jncronin/rpi-boot/blob/master/emmc.c) by John Cronin
 * [FatFs file system module](http://elm-chan.org/fsw/ff/00index_e.html) by ChaN
 

@@ -2,7 +2,7 @@
 // mainwindow.cpp
 //
 // MiniSynth Pi - A virtual analogue synthesizer for Raspberry Pi
-// Copyright (C) 2017-2021  R. Stange <rsta2@o2online.de>
+// Copyright (C) 2017-2022  R. Stange <rsta2@o2online.de>
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -22,13 +22,16 @@
 #include <circle/string.h>
 #include <assert.h>
 
+#define LV_COLOR_WHITE		lv_color_white ()
+#define LV_COLOR_GRAY		lv_color_make (128, 128, 128)
+
 CMainWindow *CMainWindow::s_pThis = 0;
 
 CMainWindow::CMainWindow (CMiniSynthesizer *pSynthesizer, CSynthConfig *pConfig)
 :	m_pSynthesizer (pSynthesizer),
 	m_pConfig (pConfig),
 	m_pWindow (lv_scr_act ()),
-	m_pTabView (lv_tabview_create (m_pWindow, 0)),
+	m_pTabView (lv_tabview_create (m_pWindow, LV_DIR_TOP, ScaleY (50))),
 	m_pTabMain (lv_tabview_add_tab (m_pTabView, "MAIN")),
 	m_pTabPatches (lv_tabview_add_tab (m_pTabView, "PATCHES")),
 	m_pLabelStatus (0),
@@ -66,29 +69,29 @@ CMainWindow::CMainWindow (CMiniSynthesizer *pSynthesizer, CSynthConfig *pConfig)
 
 	// setup styles
 	lv_style_init (&m_StyleNoBorder);
-	lv_style_set_radius (&m_StyleNoBorder, LV_STATE_DEFAULT, 0);
-	lv_style_set_border_width (&m_StyleNoBorder, LV_STATE_DEFAULT, 0);
+	lv_style_set_radius (&m_StyleNoBorder, 0);
+	lv_style_set_border_width (&m_StyleNoBorder, 0);
 
 	lv_style_init (&m_StyleWhiteBackground);
-	lv_style_set_bg_color (&m_StyleWhiteBackground, LV_STATE_DEFAULT, LV_COLOR_WHITE);
+	lv_style_set_bg_color (&m_StyleWhiteBackground, LV_COLOR_WHITE);
 
 	lv_style_init (&m_StyleGrayBackground);
-	lv_style_set_radius (&m_StyleGrayBackground, LV_STATE_DEFAULT, 0);
-	lv_style_set_border_width (&m_StyleGrayBackground, LV_STATE_DEFAULT, 0);
-	lv_style_set_bg_color (&m_StyleGrayBackground, LV_STATE_DEFAULT, LV_COLOR_GRAY);
-	lv_style_set_text_color (&m_StyleGrayBackground, LV_STATE_DEFAULT, LV_COLOR_WHITE);
+	lv_style_set_radius (&m_StyleGrayBackground, 0);
+	lv_style_set_border_width (&m_StyleGrayBackground, 0);
+	lv_style_set_bg_color (&m_StyleGrayBackground, LV_COLOR_GRAY);
+	lv_style_set_text_color (&m_StyleGrayBackground, LV_COLOR_WHITE);
 
 	// set window style
-	lv_obj_add_style (m_pWindow, LV_OBJ_PART_MAIN, &m_StyleWhiteBackground);
+	lv_obj_add_style (m_pWindow, &m_StyleWhiteBackground, LV_PART_MAIN);
 
 	// set tabview style
-	lv_obj_add_style (m_pTabView, LV_OBJ_PART_MAIN, &m_StyleWhiteBackground);
-	lv_obj_set_style_local_pad_left (m_pTabView, LV_TABVIEW_PART_TAB_BG,
-					 LV_STATE_DEFAULT, ScaleX (500));
-	lv_tabview_set_anim_time (m_pTabView, 0);
+	lv_obj_add_style (m_pTabView, &m_StyleWhiteBackground, LV_PART_MAIN);
+	lv_obj_set_style_pad_left (lv_tabview_get_tab_btns (m_pTabView), ScaleX (500), 0);
+	lv_obj_add_event_cb (lv_tabview_get_content (m_pTabView), TabViewEventHandler,
+			     LV_EVENT_SCROLL_BEGIN, 0);
 
 	// create controls
-	LabelCreate (m_pWindow, 15, 15, "MiniSynth Pi", LabelStyleTitle);
+	LabelCreate (m_pWindow, 15, 24, "MiniSynth Pi", LabelStyleTitle);
 	// oscillator
 	LabelCreate (m_pTabMain, 5, 5, "OSCILLATOR", LabelStyleSection);
 	LabelCreate (m_pTabMain, 5, 30, "VCO");
@@ -165,11 +168,11 @@ void CMainWindow::SetHeight (unsigned nPercent)
 	lv_obj_set_height (m_pTabView, lv_obj_get_height (m_pWindow) * nPercent / 100);
 }
 
-void CMainWindow::EventStub (lv_obj_t *pObject, lv_event_t Event)
+void CMainWindow::EventStub (lv_event_t *pEvent)
 {
 	if (s_pThis != 0)
 	{
-		s_pThis->EventHandler (pObject, Event);
+		s_pThis->EventHandler (lv_event_get_target (pEvent), lv_event_get_code (pEvent));
 	}
 }
 
@@ -179,7 +182,20 @@ CMainWindow *CMainWindow::Get (void)
 	return s_pThis;
 }
 
-void CMainWindow::EventHandler (lv_obj_t *pObject, lv_event_t Event)
+void CMainWindow::TabViewEventHandler (lv_event_t *pEvent)
+{
+	// Disable the scroll animations. Triggered when a tab button is clicked.
+	if (lv_event_get_code (pEvent) == LV_EVENT_SCROLL_BEGIN)
+	{
+		lv_anim_t *pAnim = (lv_anim_t *) lv_event_get_param (pEvent);
+		if (pAnim != 0)
+		{
+			pAnim->time = 0;
+		}
+	}
+}
+
+void CMainWindow::EventHandler (lv_obj_t *pObject, lv_event_code_t Event)
 {
 	assert (m_pSynthesizer != 0);
 	assert (m_pConfig != 0);
@@ -229,10 +245,10 @@ void CMainWindow::EventHandler (lv_obj_t *pObject, lv_event_t Event)
 		{
 			if (pObject == m_pButtonPatch[i])
 			{
-				lv_btn_set_state (m_pButtonPatch[m_pConfig->GetActivePatchNumber ()],
-						  LV_BTN_STATE_RELEASED);
-				lv_btn_set_state (m_pButtonPatch[i],
-						  LV_BTN_STATE_CHECKED_RELEASED);
+				lv_obj_clear_state (
+					m_pButtonPatch[m_pConfig->GetActivePatchNumber ()],
+					LV_STATE_CHECKED);
+				lv_obj_add_state (m_pButtonPatch[i], LV_STATE_CHECKED);
 
 				m_pConfig->SetActivePatchNumber (i);
 
@@ -264,9 +280,14 @@ void CMainWindow::EventHandler (lv_obj_t *pObject, lv_event_t Event)
 		if (pObject == m_pButtonHelp)
 		{
 			m_bShowHelp = !m_bShowHelp;
-			lv_btn_set_state (m_pButtonHelp,   m_bShowHelp
-							 ? LV_BTN_STATE_CHECKED_RELEASED
-							 : LV_BTN_STATE_RELEASED);
+			if (m_bShowHelp)
+			{
+				lv_obj_add_state (m_pButtonHelp, LV_STATE_CHECKED);
+			}
+			else
+			{
+				lv_obj_clear_state (m_pButtonHelp, LV_STATE_CHECKED);
+			}
 			UpdateAllParameters ();
 
 			return;
@@ -341,9 +362,14 @@ void CMainWindow::UpdateAllParameters (boolean bUpdatePatch)
 			assert (pButtonLabel != 0);
 			lv_label_set_text (pButtonLabel, Label);
 
-			lv_btn_set_state (m_pButtonPatch[i],   i == nActivePatch
-							     ? LV_BTN_STATE_CHECKED_RELEASED
-							     : LV_BTN_STATE_RELEASED);
+			if (i == nActivePatch)
+			{
+				lv_obj_add_state (m_pButtonPatch[i], LV_STATE_CHECKED);
+			}
+			else
+			{
+				lv_obj_clear_state (m_pButtonPatch[i], LV_STATE_CHECKED);
+			}
 		}
 	}
 }
@@ -362,12 +388,11 @@ void CMainWindow::UpdateStatus (const char *pString)
 
 	if (m_pLabelStatus == 0)
 	{
-		m_pLabelStatus = LabelCreate (m_pWindow, 250, 15, pString, LabelStyleTitle);
+		m_pLabelStatus = LabelCreate (m_pWindow, 250, 24, pString, LabelStyleTitle);
 	}
 	else
 	{
 		lv_label_set_text (m_pLabelStatus, pString);
-		lv_obj_realign (m_pLabelStatus);
 	}
 }
 
@@ -381,7 +406,6 @@ lv_obj_t *CMainWindow::LabelCreate (lv_obj_t *pParent, unsigned nPosX, unsigned 
 	{
 	case LabelStyleTitle:
 		nWidth = ScaleX (108);
-		nHeight = 24;
 		break;
 
 	case LabelStyleSubtitle:
@@ -404,16 +428,17 @@ lv_obj_t *CMainWindow::LabelCreate (lv_obj_t *pParent, unsigned nPosX, unsigned 
 	}
 
 	assert (pParent != 0);
-	lv_obj_t *pContainer = lv_cont_create (pParent, 0);
-	lv_obj_add_style (pContainer, LV_OBJ_PART_MAIN, pStyle);
+	lv_obj_t *pContainer = lv_obj_create (pParent);
+	lv_obj_add_style (pContainer, pStyle, LV_PART_MAIN);
 	lv_obj_set_size (pContainer, nWidth, nHeight);
 	lv_obj_set_pos (pContainer, ScaleX (nPosX), nPosY);
+	lv_obj_set_scrollbar_mode (pContainer, LV_SCROLLBAR_MODE_OFF);
+	lv_obj_clear_flag (pContainer, LV_OBJ_FLAG_SCROLLABLE);
 
-	lv_obj_t *pLabel = lv_label_create (pContainer, 0);
+	lv_obj_t *pLabel = lv_label_create (pContainer);
 	assert (pText != 0);
 	lv_label_set_text (pLabel, pText);
-	lv_label_set_align (pLabel, LV_LABEL_ALIGN_CENTER);
-	lv_obj_realign (pLabel);
+	lv_obj_set_align (pLabel, LV_ALIGN_CENTER);
 
 	return pLabel;
 }
@@ -422,24 +447,25 @@ lv_obj_t *CMainWindow::ButtonCreate (lv_obj_t *pParent, unsigned nPosX, unsigned
 				     const char *pText)
 {
 	assert (pParent != 0);
-	lv_obj_t *pButton = lv_btn_create (pParent, 0);
+	lv_obj_t *pButton = lv_btn_create (pParent);
 	lv_obj_set_size (pButton, ScaleX (140), ScaleY (22));
 	lv_obj_set_pos (pButton, ScaleX (nPosX), ScaleY (nPosY));
-	lv_obj_set_event_cb (pButton, EventStub);
+	lv_obj_add_event_cb (pButton, EventStub, LV_EVENT_ALL, 0);
 
-	lv_obj_t *pButtonLabel = lv_label_create (pButton, 0);
+	lv_obj_t *pButtonLabel = lv_label_create (pButton);
 	assert (pText != 0);
 	lv_label_set_text (pButtonLabel, pText);
+	lv_obj_set_align (pButtonLabel, LV_ALIGN_CENTER);
 
 	return pButton;
 }
 
 unsigned CMainWindow::ScaleX (unsigned nPos) const
 {
-	return nPos * lv_obj_get_width_margin (m_pWindow) / 800;
+	return nPos * lv_obj_get_width (m_pWindow) / 800;
 }
 
 unsigned CMainWindow::ScaleY (unsigned nPos) const
 {
-	return nPos * lv_obj_get_height_margin (m_pWindow) / 480;
+	return nPos * lv_obj_get_height (m_pWindow) / 480;
 }

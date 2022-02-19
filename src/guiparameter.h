@@ -4,7 +4,7 @@
 // GUI representation of one patch parameter
 //
 // MiniSynth Pi - A virtual analogue synthesizer for Raspberry Pi
-// Copyright (C) 2017-2021  R. Stange <rsta2@o2online.de>
+// Copyright (C) 2017-2022  R. Stange <rsta2@o2online.de>
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -37,13 +37,13 @@ public:
 
 	void Update (boolean bShowHelp);
 
-	boolean EventHandler (lv_obj_t *pObject, lv_event_t Event, boolean bShowHelp);
+	boolean EventHandler (lv_obj_t *pObject, lv_event_code_t Event, boolean bShowHelp);
 
 private:
 	boolean ButtonPressed (lv_obj_t *pObject, boolean bShowHelp);
 
-	void KeyboardEventHandler (lv_obj_t *pObject, lv_event_t Event);
-	static void KeyboardEventStub (lv_obj_t *pObject, lv_event_t Event);
+	void KeyboardEventHandler (lv_obj_t *pObject, lv_event_code_t Event);
+	static void KeyboardEventStub (lv_event_t *pEvent);
 
 	unsigned ScaleX (unsigned nPos) const;
 	unsigned ScaleY (unsigned nPos) const;

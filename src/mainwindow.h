@@ -2,7 +2,7 @@
 // mainwindow.h
 //
 // MiniSynth Pi - A virtual analogue synthesizer for Raspberry Pi
-// Copyright (C) 2017-2021  R. Stange <rsta2@o2online.de>
+// Copyright (C) 2017-2022  R. Stange <rsta2@o2online.de>
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -41,12 +41,14 @@ public:
 
 	void UpdateStatus (const char *pString);
 
-	static void EventStub (lv_obj_t *pObject, lv_event_t Event);
+	static void EventStub (lv_event_t *pEvent);
 
 	static CMainWindow *Get (void);
 
 private:
-	void EventHandler (lv_obj_t *pObject, lv_event_t Event);
+	static void TabViewEventHandler (lv_event_t *pEvent);
+
+	void EventHandler (lv_obj_t *pObject, lv_event_code_t Event);
 
 	enum TLabelStyle
 	{
