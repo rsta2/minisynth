@@ -14,7 +14,7 @@ You have to attach an USB MIDI keyboard controller (which supports the USB Audio
 
 The audio signal is normally available on the 3.5mm headphones jack (I2S usage see below). Thus Raspberry Pi models without headphones jack (e.g. Raspberry Pi Zero) are not supported. The graphical user interface (GUI) of MiniSynth Pi can be controlled using a standard USB mouse, the official Raspberry Pi touch screen or an USB HID-class touch screen in  digitizer mode.
 
-This version of MiniSynth Pi can be built, so that it can be used with an external I2S interface. The audio signal is then available via this interface. MiniSynth Pi has been tested with the following I2S interfaces:
+This version of MiniSynth Pi can be configured, so that it can be used with an external I2S interface. The audio signal is then available via this interface. MiniSynth Pi has been tested with the following I2S interfaces:
 
 * pHAT DAC (with PCM5102A DAC)
 * PiFi DAC+ v2.0 (with PCM5122 DAC)
@@ -56,8 +56,6 @@ The `configure` command writes a *Config.mk* file for Circle and patches Circle,
 
 An optional third parameter can be appended to specify the bit size of the ARM architecture to be used as build target. It can be "32" (default) or "64" (for Raspberry Pi 3 and 4 only).
 
-If you want to build MiniSynth Pi for I2S interface usage, you have to specify the option `--i2s` as first parameter to `configure`.
-
 If the build was successful, you find the executable image file of MiniSynth Pi in the *src/* subdirectory with the name *kernel.img* (Raspberry Pi 1), *kernel7.img* (Raspberry Pi 2), *kernel8-32.img* (Raspberry Pi 3) or *kernel7l.img* (Raspberry Pi 4).
 
 Installation
@@ -73,6 +71,10 @@ Furthermore you need the Raspberry Pi firmware. You can get it as follows:
 You have to copy the three files *bootcode.bin*, *start.elf* and *fixup.dat* from the *circle/boot/* subdirectory to the FAT partition on the SD card. The Raspberry Pi 4 requires different firmware files. Please read the file *circle/boot/README* for details!
 
 Finally you have to copy the configuration files *cmdline.txt*, *patchN.txt* (example patches), *velocity-???.txt* (keyboard velocity curve) and *midi-cc.txt* (MIDI CC mapping) from the *config/* subdirectory to the SD card. The appropriate velocity curve file has to be renamed to *velocity.txt* to be used. You can optionally create a subdirectory */patches* and copy the example patches there, if you do not want to have them in the root directory of your SD card.
+
+If you want to use an I2S interface, you have to modify to file *cmdline.txt* on the SD card, so that it contains the following option (default is `sndpwm`):
+
+	sounddev=sndi2s
 
 Put the SD card into the card reader of your Raspberry Pi.
 
@@ -188,11 +190,11 @@ Troubleshooting
 
 Some USB MIDI keyboard controllers have been reported to lose "Note on" and/or "Note off" events, if used with MiniSynth Pi. As a workaround you can modify the file *cmdline.txt* on the SD card as follows:
 
-	logdev=null usbspeed=full
+	sounddev=sndpwm logdev=null usbspeed=full
 
 Some USB PC keyboards may not work with MiniSynth Pi, because its USB HID report descriptor cannot be fetched from the keyboard. As a workaround you can try to suppress fetching this descriptor by adding the `usbignore=` option to the file *cmdline.txt* on the SD card:
 
-	logdev=null usbspeed=auto usbignore=int3-0-0
+	sounddev=sndpwm logdev=null usbspeed=auto usbignore=int3-0-0
 
 Please note, that you cannot use an USB PC keyboard to input data in MiniSynth Pi. It is just an replacement for an USB MIDI keyboard controller, in case you do not have the latter.
 

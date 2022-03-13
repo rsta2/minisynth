@@ -2,7 +2,7 @@
 // kernel.cpp
 //
 // MiniSynth Pi - A virtual analogue synthesizer for Raspberry Pi
-// Copyright (C) 2017-2021  R. Stange <rsta2@o2online.de>
+// Copyright (C) 2017-2022  R. Stange <rsta2@o2online.de>
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -22,6 +22,7 @@
 #include "config.h"
 #include <circle/machineinfo.h>
 #include <circle/string.h>
+#include <circle/util.h>
 #include <assert.h>
 
 static const char FromKernel[] = "kernel";
@@ -35,7 +36,7 @@ CKernel::CKernel (void)
 	m_EMMC (&m_Interrupt, &m_Timer, &m_ActLED),
 	m_GUI (&m_Screen, &m_Interrupt),
 	m_Config (&m_FileSystem),
-	m_Synthesizer (&m_Config, &m_Interrupt, &m_Memory, &m_I2CMaster)
+	m_pSynthesizer (0)
 {
 }
 
@@ -110,7 +111,20 @@ boolean CKernel::Initialize (void)
 
 	if (bOK)
 	{
-		bOK = m_Synthesizer.Initialize ();
+		const char *pSoundDevice = m_Options.GetSoundDevice ();
+		assert (pSoundDevice);
+		if (strcmp (pSoundDevice, "sndi2s") == 0)
+		{
+			m_pSynthesizer = new CMiniSynthesizerI2S (&m_Config, &m_Interrupt,
+								  &m_I2CMaster);
+		}
+		else
+		{
+			m_pSynthesizer = new CMiniSynthesizerPWM (&m_Config, &m_Interrupt);
+		}
+
+		assert (m_pSynthesizer);
+		bOK = m_pSynthesizer->Initialize ();
 	}
 
 	return bOK;
@@ -142,24 +156,25 @@ TShutdownMode CKernel::Run (void)
 
 	// Activate patch 0
 	m_Config.SetActivePatchNumber (0);
-	m_Synthesizer.SetPatch (m_Config.GetActivePatch ());
+	assert (m_pSynthesizer);
+	m_pSynthesizer->SetPatch (m_Config.GetActivePatch ());
 
-	m_Synthesizer.Start ();
+	m_pSynthesizer->Start ();
 
-	CMainWindow MainWindow (&m_Synthesizer, &m_Config);
+	CMainWindow MainWindow (m_pSynthesizer, &m_Config);
 	m_GUI.Update (FALSE);
 
 #ifndef SCREENSHOT_AFTER_SECS
-	while (m_Synthesizer.IsActive ())
+	while (m_pSynthesizer->IsActive ())
 #else
 	while (m_Timer.GetUptime () < SCREENSHOT_AFTER_SECS)
 #endif
 	{
 		boolean bUpdated = m_USBHCI.UpdatePlugAndPlay ();
 
-		m_Synthesizer.Process (bUpdated);
+		m_pSynthesizer->Process (bUpdated);
 
-		if (m_Synthesizer.ConfigUpdated ())
+		if (m_pSynthesizer->ConfigUpdated ())
 		{
 			MainWindow.UpdateAllParameters (TRUE);
 		}
@@ -169,7 +184,7 @@ TShutdownMode CKernel::Run (void)
 		m_CPUThrottle.Update ();
 
 #ifdef SHOW_STATUS
-		MainWindow.UpdateStatus (m_Synthesizer.GetStatus ());
+		MainWindow.UpdateStatus (m_pSynthesizer->GetStatus ());
 #endif
 	}
 

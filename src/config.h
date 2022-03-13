@@ -2,7 +2,7 @@
 // config.h
 //
 // MiniSynth Pi - A virtual analogue synthesizer for Raspberry Pi
-// Copyright (C) 2017-2021  R. Stange <rsta2@o2online.de>
+// Copyright (C) 2017-2022  R. Stange <rsta2@o2online.de>
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -19,8 +19,6 @@
 //
 #ifndef _config_h
 #define _config_h
-
-//#define USE_I2S				// use I2S device instead of PWM
 
 #define SAMPLE_RATE		48000		// overall system clock
 

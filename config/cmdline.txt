@@ -1,1 +1,1 @@
-logdev=null usbspeed=auto
+sounddev=sndpwm logdev=null usbspeed=auto

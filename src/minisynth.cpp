@@ -2,7 +2,7 @@
 // minisynth.cpp
 //
 // MiniSynth Pi - A virtual analogue synthesizer for Raspberry Pi
-// Copyright (C) 2017-2021  R. Stange <rsta2@o2online.de>
+// Copyright (C) 2017-2022  R. Stange <rsta2@o2online.de>
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -22,37 +22,22 @@
 #include "config.h"
 #include <circle/timer.h>
 #include <circle/synchronize.h>
+#include <circle/memory.h>
 #include <circle/logger.h>
 #include <assert.h>
 
 static const char FromMiniSynth[] = "synth";
 
-CMiniSynthesizer::CMiniSynthesizer (CSynthConfig *pConfig,
-				    CInterruptSystem *pInterrupt, CMemorySystem *pMemorySystem,
-				    CI2CMaster *pI2CMaster)
-#ifdef USE_I2S
-:	CI2SSoundBaseDevice (pInterrupt, SAMPLE_RATE, 2048, FALSE, pI2CMaster, DAC_I2C_ADDRESS),
-#else
-:	CPWMSoundBaseDevice (pInterrupt, SAMPLE_RATE),
-#endif
-	m_pConfig (pConfig),
+CMiniSynthesizer::CMiniSynthesizer (CSynthConfig *pConfig, CInterruptSystem *pInterrupt)
+:	m_pConfig (pConfig),
 	m_MIDIKeyboard (this),
 	m_Keyboard (this),
 	m_SerialMIDI (this, pInterrupt),
 	m_bUseSerial (FALSE),
-	m_VoiceManager (pMemorySystem),
 	m_nConfigRevisionWrite (0),
 	m_nConfigRevisionRead (0),
-#ifdef USE_I2S
-	m_nMinLevel (GetRangeMin ()+1),
-	m_nMaxLevel (GetRangeMax ()-1),
-	m_nNullLevel (0),
-#else
-	m_nMaxLevel (GetRange ()-1),
-	m_nNullLevel (m_nMaxLevel / 2),
-#endif
-	m_nVolumeLevel (0),
-	m_bChannelsSwapped (AreChannelsSwapped ())
+	m_VoiceManager (CMemorySystem::Get ()),
+	m_fVolume (0.0)
 #ifdef SHOW_STATUS
 	, m_nMaxDelayTicks (0)
 #endif
@@ -97,13 +82,7 @@ void CMiniSynthesizer::SetPatch (CPatch *pPatch)
 
 	m_VoiceManager.SetPatch (pPatch);
 
-	m_nVolumeLevel =
-#ifdef USE_I2S
-			   m_nMaxLevel
-#else
-			   m_nMaxLevel/2
-#endif
-			 * powf (pPatch->GetParameter (SynthVolume) / 100.0, 3.3f); // apply some curve
+	m_fVolume = powf (pPatch->GetParameter (SynthVolume) / 100.0, 3.3f); // apply some curve
 
 	GlobalUnlock ();
 }
@@ -181,7 +160,50 @@ void CMiniSynthesizer::ProgramChange (u8 ucProgram)
 	GlobalUnlock ();
 }
 
-unsigned CMiniSynthesizer::GetChunk (u32 *pBuffer, unsigned nChunkSize)
+#ifdef SHOW_STATUS
+
+const char *CMiniSynthesizer::GetStatus (void)
+{
+	m_Status.Format ("%u ms", m_nMaxDelayTicks * 1000 / CLOCKHZ);
+
+	return m_Status;
+}
+
+#endif
+
+void CMiniSynthesizer::GlobalLock (void)
+{
+	EnterCritical (IRQ_LEVEL);
+}
+
+void CMiniSynthesizer::GlobalUnlock (void)
+{
+	LeaveCritical ();
+}
+
+//// PWM //////////////////////////////////////////////////////////////////////
+
+CMiniSynthesizerPWM::CMiniSynthesizerPWM (CSynthConfig *pConfig,
+					  CInterruptSystem *pInterrupt)
+:	CMiniSynthesizer (pConfig, pInterrupt),
+	CPWMSoundBaseDevice (pInterrupt, SAMPLE_RATE),
+	m_nMaxLevel (GetRangeMax ()-1),
+	m_nNullLevel (m_nMaxLevel / 2),
+	m_bChannelsSwapped (AreChannelsSwapped ())
+{
+}
+
+boolean CMiniSynthesizerPWM::Start (void)
+{
+	return CPWMSoundBaseDevice::Start ();
+}
+
+boolean CMiniSynthesizerPWM::IsActive (void)
+{
+	return CPWMSoundBaseDevice::IsActive ();
+}
+
+unsigned CMiniSynthesizerPWM::GetChunk (u32 *pBuffer, unsigned nChunkSize)
 {
 #ifdef SHOW_STATUS
 	unsigned nTicks = CTimer::GetClockTicks ();
@@ -191,45 +213,33 @@ unsigned CMiniSynthesizer::GetChunk (u32 *pBuffer, unsigned nChunkSize)
 
 	unsigned nResult = nChunkSize;
 
+	float fVolumeLevel = m_fVolume * m_nMaxLevel/2;
+
 	for (; nChunkSize > 0; nChunkSize -= 2)		// fill the whole buffer
 	{
 		m_VoiceManager.NextSample ();
 
 		float fLevelLeft = m_VoiceManager.GetOutputLevelLeft ();
-		int nLevelLeft = (int) (fLevelLeft*m_nVolumeLevel + m_nNullLevel);
+		int nLevelLeft = (int) (fLevelLeft*fVolumeLevel + m_nNullLevel);
 		if (nLevelLeft > (int) m_nMaxLevel)
 		{
 			nLevelLeft = m_nMaxLevel;
 		}
-#ifdef USE_I2S
-		else if (nLevelLeft < m_nMinLevel)
-		{
-			nLevelLeft = m_nMinLevel;
-		}
-#else
 		else if (nLevelLeft < 0)
 		{
 			nLevelLeft = 0;
 		}
-#endif
 
 		float fLevelRight = m_VoiceManager.GetOutputLevelRight ();
-		int nLevelRight = (int) (fLevelRight*m_nVolumeLevel + m_nNullLevel);
+		int nLevelRight = (int) (fLevelRight*fVolumeLevel + m_nNullLevel);
 		if (nLevelRight > (int) m_nMaxLevel)
 		{
 			nLevelRight = m_nMaxLevel;
 		}
-#ifdef USE_I2S
-		else if (nLevelRight < m_nMinLevel)
-		{
-			nLevelRight = m_nMinLevel;
-		}
-#else
 		else if (nLevelRight < 0)
 		{
 			nLevelRight = 0;
 		}
-#endif
 
 		// for 2 stereo channels
 		if (!m_bChannelsSwapped)
@@ -257,23 +267,89 @@ unsigned CMiniSynthesizer::GetChunk (u32 *pBuffer, unsigned nChunkSize)
 	return nResult;
 }
 
-#ifdef SHOW_STATUS
+//// I2S //////////////////////////////////////////////////////////////////////
 
-const char *CMiniSynthesizer::GetStatus (void)
+CMiniSynthesizerI2S::CMiniSynthesizerI2S (CSynthConfig *pConfig,
+					  CInterruptSystem *pInterrupt,
+					  CI2CMaster *pI2CMaster)
+:	CMiniSynthesizer (pConfig, pInterrupt),
+	CI2SSoundBaseDevice (pInterrupt, SAMPLE_RATE, 2048, FALSE, pI2CMaster, DAC_I2C_ADDRESS),
+	m_nMinLevel (GetRangeMin ()+1),
+	m_nMaxLevel (GetRangeMax ()-1),
+	m_bChannelsSwapped (AreChannelsSwapped ())
 {
-	m_Status.Format ("%u ms", m_nMaxDelayTicks * 1000 / CLOCKHZ);
-
-	return m_Status;
 }
 
+boolean CMiniSynthesizerI2S::Start (void)
+{
+	return CI2SSoundBaseDevice::Start ();
+}
+
+boolean CMiniSynthesizerI2S::IsActive (void)
+{
+	return CI2SSoundBaseDevice::IsActive ();
+}
+
+unsigned CMiniSynthesizerI2S::GetChunk (u32 *pBuffer, unsigned nChunkSize)
+{
+#ifdef SHOW_STATUS
+	unsigned nTicks = CTimer::GetClockTicks ();
 #endif
 
-void CMiniSynthesizer::GlobalLock (void)
-{
-	EnterCritical (IRQ_LEVEL);
-}
+	GlobalLock ();
 
-void CMiniSynthesizer::GlobalUnlock (void)
-{
-	LeaveCritical ();
+	unsigned nResult = nChunkSize;
+
+	float fVolumeLevel = m_fVolume * m_nMaxLevel;
+
+	for (; nChunkSize > 0; nChunkSize -= 2)		// fill the whole buffer
+	{
+		m_VoiceManager.NextSample ();
+
+		float fLevelLeft = m_VoiceManager.GetOutputLevelLeft ();
+		int nLevelLeft = (int) (fLevelLeft*fVolumeLevel);
+		if (nLevelLeft > (int) m_nMaxLevel)
+		{
+			nLevelLeft = m_nMaxLevel;
+		}
+		else if (nLevelLeft < m_nMinLevel)
+		{
+			nLevelLeft = m_nMinLevel;
+		}
+
+		float fLevelRight = m_VoiceManager.GetOutputLevelRight ();
+		int nLevelRight = (int) (fLevelRight*fVolumeLevel);
+		if (nLevelRight > (int) m_nMaxLevel)
+		{
+			nLevelRight = m_nMaxLevel;
+		}
+		else if (nLevelRight < m_nMinLevel)
+		{
+			nLevelRight = m_nMinLevel;
+		}
+
+		// for 2 stereo channels
+		if (!m_bChannelsSwapped)
+		{
+			*pBuffer++ = (u32) nLevelLeft;
+			*pBuffer++ = (u32) nLevelRight;
+		}
+		else
+		{
+			*pBuffer++ = (u32) nLevelRight;
+			*pBuffer++ = (u32) nLevelLeft;
+		}
+	}
+
+#ifdef SHOW_STATUS
+	nTicks = CTimer::GetClockTicks () - nTicks;
+	if (nTicks > m_nMaxDelayTicks)
+	{
+		m_nMaxDelayTicks = nTicks;
+	}
+#endif
+
+	GlobalUnlock ();
+
+	return nResult;
 }
