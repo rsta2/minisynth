@@ -20,8 +20,9 @@ This version of MiniSynth Pi can be configured, so that it can be used with an e
 * PiFi DAC+ v2.0 (with PCM5122 DAC)
 * [Adafruit I2S Audio Bonnet](https://www.adafruit.com/product/4037) (with UDA1334A DAC)
 * [Adafruit I2S 3W Class D Amplifier Breakout](https://www.adafruit.com/product/3006) (with MAX98357A DAC)
+* WM8960 DAC
 
-Other I2S interfaces with these DACs may be compatible too. The I2C slave address of the PCM5122 DAC is auto-probed (0x4C or 0x4D).
+Other I2S interfaces with these DACs may be compatible too. The I2C slave address of the DAC is auto-probed (0x4C, 0x4D or 0x1A).
 
 Please note that the included reverb effect module is experimental, because it generates some noise, when no note is played. Just leave the reverb volume (wet/dry ratio) at 0% to eliminate it, if it disturbs.
 
