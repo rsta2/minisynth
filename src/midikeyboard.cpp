@@ -2,7 +2,7 @@
 // midikeyboard.cpp
 //
 // MiniSynth Pi - A virtual analogue synthesizer for Raspberry Pi
-// Copyright (C) 2017-2020  R. Stange <rsta2@o2online.de>
+// Copyright (C) 2017-2022  R. Stange <rsta2@o2online.de>
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -21,18 +21,31 @@
 #include <circle/devicenameservice.h>
 #include <assert.h>
 
-CMIDIKeyboard *CMIDIKeyboard::s_pThis = 0;
+CMIDIKeyboard *CMIDIKeyboard::s_pThis[MaxInstances] = {0};
 
-CMIDIKeyboard::CMIDIKeyboard (CMiniSynthesizer *pSynthesizer)
+TMIDIPacketHandler * const CMIDIKeyboard::s_pMIDIPacketHandler[MaxInstances] =
+{
+	MIDIPacketHandler0,
+	MIDIPacketHandler1,
+	MIDIPacketHandler2,
+	MIDIPacketHandler3
+};
+
+CMIDIKeyboard::CMIDIKeyboard (CMiniSynthesizer *pSynthesizer, unsigned nInstance)
 :	CMIDIDevice (pSynthesizer),
+	m_nInstance (nInstance),
 	m_pMIDIDevice (0)
 {
-	s_pThis = this;
+	assert (m_nInstance < MaxInstances);
+	s_pThis[m_nInstance] = this;
+
+	m_DeviceName.Format ("umidi%u", m_nInstance+1);
 }
 
 CMIDIKeyboard::~CMIDIKeyboard (void)
 {
-	s_pThis = 0;
+	assert (m_nInstance < MaxInstances);
+	s_pThis[m_nInstance] = 0;
 }
 
 void CMIDIKeyboard::Process (boolean bPlugAndPlayUpdated)
@@ -45,24 +58,45 @@ void CMIDIKeyboard::Process (boolean bPlugAndPlayUpdated)
 	if (m_pMIDIDevice == 0)
 	{
 		m_pMIDIDevice =
-			(CUSBMIDIDevice *) CDeviceNameService::Get ()->GetDevice ("umidi1", FALSE);
+			(CUSBMIDIDevice *) CDeviceNameService::Get ()->GetDevice (m_DeviceName, FALSE);
 		if (m_pMIDIDevice != 0)
 		{
-			m_pMIDIDevice->RegisterPacketHandler (MIDIPacketHandler);
+			assert (m_nInstance < MaxInstances);
+			m_pMIDIDevice->RegisterPacketHandler (s_pMIDIPacketHandler[m_nInstance]);
 
-			m_pMIDIDevice->RegisterRemovedHandler (DeviceRemovedHandler);
+			m_pMIDIDevice->RegisterRemovedHandler (DeviceRemovedHandler, this);
 		}
 	}
 }
 
-void CMIDIKeyboard::MIDIPacketHandler (unsigned nCable, u8 *pPacket, unsigned nLength)
+void CMIDIKeyboard::MIDIPacketHandler0 (unsigned nCable, u8 *pPacket, unsigned nLength)
 {
-	assert (s_pThis != 0);
-	s_pThis->MIDIMessageHandler (pPacket, nLength);
+	assert (s_pThis[0] != 0);
+	s_pThis[0]->MIDIMessageHandler (pPacket, nLength);
+}
+
+void CMIDIKeyboard::MIDIPacketHandler1 (unsigned nCable, u8 *pPacket, unsigned nLength)
+{
+	assert (s_pThis[1] != 0);
+	s_pThis[1]->MIDIMessageHandler (pPacket, nLength);
+}
+
+void CMIDIKeyboard::MIDIPacketHandler2 (unsigned nCable, u8 *pPacket, unsigned nLength)
+{
+	assert (s_pThis[2] != 0);
+	s_pThis[2]->MIDIMessageHandler (pPacket, nLength);
+}
+
+void CMIDIKeyboard::MIDIPacketHandler3 (unsigned nCable, u8 *pPacket, unsigned nLength)
+{
+	assert (s_pThis[3] != 0);
+	s_pThis[3]->MIDIMessageHandler (pPacket, nLength);
 }
 
 void CMIDIKeyboard::DeviceRemovedHandler (CDevice *pDevice, void *pContext)
 {
-	assert (s_pThis != 0);
-	s_pThis->m_pMIDIDevice = 0;
+	CMIDIKeyboard *pThis = static_cast<CMIDIKeyboard *> (pContext);
+	assert (pThis != 0);
+
+	pThis->m_pMIDIDevice = 0;
 }

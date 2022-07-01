@@ -74,7 +74,8 @@ protected:
 private:
 	CSynthConfig *m_pConfig;
 
-	CMIDIKeyboard m_MIDIKeyboard;
+	CMIDIKeyboard m_MIDIKeyboard0;
+	CMIDIKeyboard m_MIDIKeyboard1;
 	CPCKeyboard   m_Keyboard;
 
 	CSerialMIDIDevice m_SerialMIDI;

@@ -2,7 +2,7 @@
 // midikeyboard.h
 //
 // MiniSynth Pi - A virtual analogue synthesizer for Raspberry Pi
-// Copyright (C) 2017-2020  R. Stange <rsta2@o2online.de>
+// Copyright (C) 2017-2022  R. Stange <rsta2@o2online.de>
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -23,6 +23,7 @@
 #include "mididevice.h"
 #include <circle/usb/usbmidi.h>
 #include <circle/device.h>
+#include <circle/string.h>
 #include <circle/types.h>
 
 class CMiniSynthesizer;
@@ -30,20 +31,31 @@ class CMiniSynthesizer;
 class CMIDIKeyboard : public CMIDIDevice
 {
 public:
-	CMIDIKeyboard (CMiniSynthesizer *pSynthesizer);
+	static const unsigned MaxInstances = 4;
+
+public:
+	CMIDIKeyboard (CMiniSynthesizer *pSynthesizer, unsigned nInstance = 0);
 	~CMIDIKeyboard (void);
 
 	void Process (boolean bPlugAndPlayUpdated);
 
 private:
-	static void MIDIPacketHandler (unsigned nCable, u8 *pPacket, unsigned nLength);
+	static void MIDIPacketHandler0 (unsigned nCable, u8 *pPacket, unsigned nLength);
+	static void MIDIPacketHandler1 (unsigned nCable, u8 *pPacket, unsigned nLength);
+	static void MIDIPacketHandler2 (unsigned nCable, u8 *pPacket, unsigned nLength);
+	static void MIDIPacketHandler3 (unsigned nCable, u8 *pPacket, unsigned nLength);
 
 	static void DeviceRemovedHandler (CDevice *pDevice, void *pContext);
 
 private:
+	unsigned m_nInstance;
+	CString m_DeviceName;
+
 	CUSBMIDIDevice * volatile m_pMIDIDevice;
 
-	static CMIDIKeyboard *s_pThis;
+	static CMIDIKeyboard *s_pThis[MaxInstances];
+
+	static TMIDIPacketHandler * const s_pMIDIPacketHandler[MaxInstances];
 };
 
 #endif
