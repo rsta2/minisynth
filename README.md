@@ -12,7 +12,7 @@ MiniSynth Pi is a polyphonic virtual analog audio synthesizer, running bare meta
 
 You have to attach an USB MIDI keyboard controller (which supports the USB Audio Class MIDI specification) or an USB PC keyboard to your Raspberry Pi to play on it. Alternatively you can feed serial MIDI data (at 31250 Bps) into GPIO15 (Broadcom numbering). Normally you will need some external circuit to be able to attach a device with serial MIDI interface.
 
-The audio signal is normally available on the 3.5mm headphones jack (I2S usage see below). Thus Raspberry Pi models without headphones jack (e.g. Raspberry Pi Zero) are not supported. The graphical user interface (GUI) of MiniSynth Pi can be controlled using a standard USB mouse, the official Raspberry Pi touch screen or an USB HID-class touch screen in  digitizer mode.
+The audio signal is normally available on the 3.5mm headphones jack (I2S and USB usage see below). Thus Raspberry Pi models without headphones jack (e.g. Raspberry Pi Zero) are not supported. The graphical user interface (GUI) of MiniSynth Pi can be controlled using a standard USB mouse, the official Raspberry Pi touch screen or an USB HID-class touch screen in  digitizer mode.
 
 This version of MiniSynth Pi can be configured, so that it can be used with an external I2S interface. The audio signal is then available via this interface. MiniSynth Pi has been tested with the following I2S interfaces:
 
@@ -23,6 +23,8 @@ This version of MiniSynth Pi can be configured, so that it can be used with an e
 * WM8960 DAC
 
 Other I2S interfaces with these DACs may be compatible too. The I2C slave address of the DAC is auto-probed (0x4C, 0x4D or 0x1A).
+
+On the Raspberry Pi 4 and 400 also external USB sound cards can be used.
 
 Please note that the included reverb effect module is experimental, because it generates some noise, when no note is played. Just leave the reverb volume (wet/dry ratio) at 0% to eliminate it, if it disturbs.
 
@@ -77,6 +79,10 @@ If you want to use an I2S interface, you have to modify to file *cmdline.txt* on
 
 	sounddev=sndi2s
 
+If you want to use an USB sound card (on the Raspberry Pi 4 and 400 only), you have to attach it, before the system is started. The file *cmdline.txt* must contain the following option:
+
+	sounddev=sndusb
+
 Put the SD card into the card reader of your Raspberry Pi.
 
 USB Touch Screen Calibration
@@ -102,7 +108,7 @@ Before powering on your Raspberry Pi, the following devices have to be attached:
 * HDMI display (1920x1080 pixels max.)
 * USB MIDI keyboard controller, USB PC keyboard or device with serial MIDI interface (at GPIO15, requires external circuit)
 * Standard USB mouse (if touch screen is not used)
-* Headphones or amplifier (on the 3.5mm jack or via external I2S interface)
+* Headphones or amplifier (on the 3.5mm jack or via external I2S interface or USB sound card)
 
 MiniSynth Pi starts in about four seconds. It is controlled using the following GUI (*MAIN* tab):
 

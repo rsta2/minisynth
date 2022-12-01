@@ -19,6 +19,7 @@ LIBS	= $(CIRCLEHOME)/addon/lvgl/liblvgl.a \
 	  $(CIRCLEHOME)/lib/usb/libusb.a \
 	  $(CIRCLEHOME)/lib/input/libinput.a \
 	  $(CIRCLEHOME)/lib/fs/libfs.a \
+	  $(CIRCLEHOME)/lib/sound/libsound.a \
 	  $(CIRCLEHOME)/lib/libcircle.a
 
 include $(CIRCLEHOME)/app/Rules.mk

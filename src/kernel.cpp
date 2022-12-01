@@ -118,6 +118,12 @@ boolean CKernel::Initialize (void)
 			m_pSynthesizer = new CMiniSynthesizerI2S (&m_Config, &m_Interrupt,
 								  &m_I2CMaster);
 		}
+#if RASPPI >= 4
+		else if (strcmp (pSoundDevice, "sndusb") == 0)
+		{
+			m_pSynthesizer = new CMiniSynthesizerUSB (&m_Config, &m_Interrupt);
+		}
+#endif
 		else
 		{
 			m_pSynthesizer = new CMiniSynthesizerPWM (&m_Config, &m_Interrupt);

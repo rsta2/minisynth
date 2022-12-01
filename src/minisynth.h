@@ -22,8 +22,9 @@
 
 #include <circle/interrupt.h>
 #include <circle/i2cmaster.h>
-#include <circle/pwmsoundbasedevice.h>
-#include <circle/i2ssoundbasedevice.h>
+#include <circle/sound/pwmsoundbasedevice.h>
+#include <circle/sound/i2ssoundbasedevice.h>
+#include <circle/sound/usbsoundbasedevice.h>
 #include <circle/string.h>
 #include <circle/types.h>
 #include "synthconfig.h"
@@ -133,5 +134,28 @@ private:
 	int m_nMaxLevel;
 	boolean m_bChannelsSwapped;
 };
+
+//// USB //////////////////////////////////////////////////////////////////////
+
+#if RASPPI >= 4
+
+class CMiniSynthesizerUSB : public CMiniSynthesizer, public CUSBSoundBaseDevice
+{
+public:
+	CMiniSynthesizerUSB (CSynthConfig *pConfig, CInterruptSystem *pInterrupt);
+
+	boolean Start (void);
+	boolean IsActive (void);
+
+private:
+	unsigned GetChunk (s16 *pBuffer, unsigned nChunkSize);
+
+private:
+	int m_nMinLevel;
+	int m_nMaxLevel;
+	boolean m_bChannelsSwapped;
+};
+
+#endif
 
 #endif

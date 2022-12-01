@@ -355,3 +355,93 @@ unsigned CMiniSynthesizerI2S::GetChunk (u32 *pBuffer, unsigned nChunkSize)
 
 	return nResult;
 }
+
+//// USB //////////////////////////////////////////////////////////////////////
+
+#if RASPPI >= 4
+
+CMiniSynthesizerUSB::CMiniSynthesizerUSB (CSynthConfig *pConfig,
+					  CInterruptSystem *pInterrupt)
+:	CMiniSynthesizer (pConfig, pInterrupt),
+	CUSBSoundBaseDevice (SAMPLE_RATE),
+	m_nMinLevel (GetRangeMin ()+1),
+	m_nMaxLevel (GetRangeMax ()-1),
+	m_bChannelsSwapped (AreChannelsSwapped ())
+{
+}
+
+boolean CMiniSynthesizerUSB::Start (void)
+{
+	return CUSBSoundBaseDevice::Start ();
+}
+
+boolean CMiniSynthesizerUSB::IsActive (void)
+{
+	return CUSBSoundBaseDevice::IsActive ();
+}
+
+unsigned CMiniSynthesizerUSB::GetChunk (s16 *pBuffer, unsigned nChunkSize)
+{
+#ifdef SHOW_STATUS
+	unsigned nTicks = CTimer::GetClockTicks ();
+#endif
+
+	GlobalLock ();
+
+	unsigned nResult = nChunkSize;
+
+	float fVolumeLevel = m_fVolume * m_nMaxLevel;
+
+	for (; nChunkSize > 0; nChunkSize -= 2)		// fill the whole buffer
+	{
+		m_VoiceManager.NextSample ();
+
+		float fLevelLeft = m_VoiceManager.GetOutputLevelLeft ();
+		int nLevelLeft = (int) (fLevelLeft*fVolumeLevel);
+		if (nLevelLeft > (int) m_nMaxLevel)
+		{
+			nLevelLeft = m_nMaxLevel;
+		}
+		else if (nLevelLeft < m_nMinLevel)
+		{
+			nLevelLeft = m_nMinLevel;
+		}
+
+		float fLevelRight = m_VoiceManager.GetOutputLevelRight ();
+		int nLevelRight = (int) (fLevelRight*fVolumeLevel);
+		if (nLevelRight > (int) m_nMaxLevel)
+		{
+			nLevelRight = m_nMaxLevel;
+		}
+		else if (nLevelRight < m_nMinLevel)
+		{
+			nLevelRight = m_nMinLevel;
+		}
+
+		// for 2 stereo channels
+		if (!m_bChannelsSwapped)
+		{
+			*pBuffer++ = (s16) nLevelLeft;
+			*pBuffer++ = (s16) nLevelRight;
+		}
+		else
+		{
+			*pBuffer++ = (s16) nLevelRight;
+			*pBuffer++ = (s16) nLevelLeft;
+		}
+	}
+
+#ifdef SHOW_STATUS
+	nTicks = CTimer::GetClockTicks () - nTicks;
+	if (nTicks > m_nMaxDelayTicks)
+	{
+		m_nMaxDelayTicks = nTicks;
+	}
+#endif
+
+	GlobalUnlock ();
+
+	return nResult;
+}
+
+#endif
