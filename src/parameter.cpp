@@ -2,7 +2,7 @@
 // parameter.cpp
 //
 // MiniSynth Pi - A virtual analogue synthesizer for Raspberry Pi
-// Copyright (C) 2017-2021  R. Stange <rsta2@o2online.de>
+// Copyright (C) 2017-2022  R. Stange <rsta2@o2online.de>
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -135,6 +135,14 @@ const char *CParameter::GetString (void)
 		m_String.Format ("%u %", m_nValue);
 		return m_String;
 
+	case ParameterChannel:
+		if (m_nValue == 0)
+		{
+			return "Omni Mode";
+		}
+		m_String.Format ("%u", m_nValue);
+		return m_String;
+
 	default:
 		assert (0);
 		return "";
@@ -143,12 +151,14 @@ const char *CParameter::GetString (void)
 
 boolean CParameter::IsEditable (void) const
 {
-	return m_Type != ParameterWaveform;
+	return    m_Type != ParameterWaveform
+	       && m_Type != ParameterChannel;
 }
 
 const char *CParameter::GetEditString (void)
 {
-	assert (m_Type != ParameterWaveform);
+	assert (   m_Type != ParameterWaveform
+		&& m_Type != ParameterChannel);
 	if (m_Type != ParameterFrequencyTenth)
 	{
 		m_String.Format ("%u", m_nValue);

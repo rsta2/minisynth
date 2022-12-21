@@ -111,6 +111,7 @@ private:
 	CGUIParameter m_SynthVolume;
 	CGUIParameter m_ReverbDecay;
 	CGUIParameter m_ReverbVolume;
+	CGUIParameter m_MIDIChannel;
 
 	CGUIStringProperty m_PropertyName;
 	CGUIStringProperty m_PropertyAuthor;

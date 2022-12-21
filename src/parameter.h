@@ -4,7 +4,7 @@
 // One parameter of a patch
 //
 // MiniSynth Pi - A virtual analogue synthesizer for Raspberry Pi
-// Copyright (C) 2017-2021  R. Stange <rsta2@o2online.de>
+// Copyright (C) 2017-2022  R. Stange <rsta2@o2online.de>
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -32,6 +32,7 @@ enum TParameterType
 	ParameterFrequencyTenth,
 	ParameterTime,
 	ParameterPercent,
+	ParameterChannel,
 	ParameterTypeUnknown
 };
 

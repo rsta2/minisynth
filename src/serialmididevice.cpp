@@ -21,8 +21,9 @@
 #include <circle/sysconfig.h>
 #include <assert.h>
 
-CSerialMIDIDevice::CSerialMIDIDevice (CMiniSynthesizer *pSynthesizer, CInterruptSystem *pInterrupt)
-:	CMIDIDevice (pSynthesizer),
+CSerialMIDIDevice::CSerialMIDIDevice (CMiniSynthesizer *pSynthesizer, CInterruptSystem *pInterrupt,
+				      CSynthConfig *pConfig)
+:	CMIDIDevice (pSynthesizer, pConfig),
 #if RASPPI <= 3 && defined (USE_USB_FIQ)
 	m_Serial (pInterrupt, FALSE),
 #else

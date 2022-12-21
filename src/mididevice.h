@@ -2,7 +2,7 @@
 // mididevice.h
 //
 // MiniSynth Pi - A virtual analogue synthesizer for Raspberry Pi
-// Copyright (C) 2017-2020  R. Stange <rsta2@o2online.de>
+// Copyright (C) 2017-2022  R. Stange <rsta2@o2online.de>
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -21,13 +21,14 @@
 #define _mididevice_h
 
 #include <circle/types.h>
+#include "synthconfig.h"
 
 class CMiniSynthesizer;
 
 class CMIDIDevice
 {
 public:
-	CMIDIDevice (CMiniSynthesizer *pSynthesizer);
+	CMIDIDevice (CMiniSynthesizer *pSynthesizer, CSynthConfig *pConfig);
 	~CMIDIDevice (void);
 
 protected:
@@ -35,6 +36,7 @@ protected:
 
 private:
 	CMiniSynthesizer *m_pSynthesizer;
+	CSynthConfig *m_pConfig;
 };
 
 #endif

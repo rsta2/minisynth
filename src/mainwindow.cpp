@@ -59,6 +59,7 @@ CMainWindow::CMainWindow (CMiniSynthesizer *pSynthesizer, CSynthConfig *pConfig)
 	m_SynthVolume (m_pTabMain, SynthVolume, pConfig),
 	m_ReverbDecay (m_pTabMain, ReverbDecay, pConfig),
 	m_ReverbVolume (m_pTabMain, ReverbVolume, pConfig),
+	m_MIDIChannel (m_pTabMain, MIDIChannel, pConfig),
 	m_PropertyName (m_pTabMain, PatchPropertyName, pConfig),
 	m_PropertyAuthor (m_pTabMain, PatchPropertyAuthor, pConfig),
 	m_PropertyComment (m_pTabMain, PatchPropertyComment, pConfig),
@@ -101,6 +102,9 @@ CMainWindow::CMainWindow (CMiniSynthesizer *pSynthesizer, CSynthConfig *pConfig)
 	m_LFOVCOWaveform.Create (10, 150);
 	m_LFOVCOFrequency.Create (10, 180);
 	m_VCOModulationVolume.Create (10, 210);
+	// MIDI
+	LabelCreate (m_pTabMain, 5, 270, "MIDI", LabelStyleSection);
+	m_MIDIChannel.Create (10, 300);
 	// filter
 	LabelCreate (m_pTabMain, 205, 5, "FILTER", LabelStyleSection);
 	LabelCreate (m_pTabMain, 205, 30, "VCF");
@@ -210,6 +214,8 @@ void CMainWindow::EventHandler (lv_obj_t *pObject, lv_event_code_t Event)
 		    || m_VCOWaveform.EventHandler (pObject, Event, m_bShowHelp)
 		    || m_VCOModulationVolume.EventHandler (pObject, Event, m_bShowHelp)
 		    || m_VCODetune.EventHandler (pObject, Event, m_bShowHelp)
+		       // MIDI
+		    || m_MIDIChannel.EventHandler (pObject, Event, m_bShowHelp)
 		       // filter
 		    || m_VCFCutoffFrequency.EventHandler (pObject, Event, m_bShowHelp)
 		    || m_VCFResonance.EventHandler (pObject, Event, m_bShowHelp)
@@ -310,6 +316,9 @@ void CMainWindow::UpdateAllParameters (boolean bUpdatePatch)
 	m_VCOWaveform.Update (m_bShowHelp);
 	m_VCOModulationVolume.Update (m_bShowHelp);
 	m_VCODetune.Update (m_bShowHelp);
+
+	// MIDI
+	m_MIDIChannel.Update (m_bShowHelp);
 
 	// filter
 	m_VCFCutoffFrequency.Update (m_bShowHelp);

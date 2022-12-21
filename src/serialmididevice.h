@@ -2,7 +2,7 @@
 // serialmididevice.h
 //
 // MiniSynth Pi - A virtual analogue synthesizer for Raspberry Pi
-// Copyright (C) 2017-2020  R. Stange <rsta2@o2online.de>
+// Copyright (C) 2017-2022  R. Stange <rsta2@o2online.de>
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -30,7 +30,8 @@ class CMiniSynthesizer;
 class CSerialMIDIDevice : public CMIDIDevice
 {
 public:
-	CSerialMIDIDevice (CMiniSynthesizer *pSynthesizer, CInterruptSystem *pInterrupt);
+	CSerialMIDIDevice (CMiniSynthesizer *pSynthesizer, CInterruptSystem *pInterrupt,
+			   CSynthConfig *pConfig);
 	~CSerialMIDIDevice (void);
 
 	boolean Initialize (void);

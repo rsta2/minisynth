@@ -2,7 +2,7 @@
 // patch.cpp
 //
 // MiniSynth Pi - A virtual analogue synthesizer for Raspberry Pi
-// Copyright (C) 2017-2021  R. Stange <rsta2@o2online.de>
+// Copyright (C) 2017-2022  R. Stange <rsta2@o2online.de>
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -71,7 +71,8 @@ ParameterList[] =		// must match TSynthParameter
 	{"ReverbVolume", ParameterPercent, 0, 30, 5, 0, "Volume"},
 
 	// Synth
-	{"SynthVolume", ParameterPercent, 0, 100, 10, 50, "Volume"}
+	{"SynthVolume", ParameterPercent, 0, 100, 10, 50, "Volume"},
+	{"MIDIChannel", ParameterChannel, 0, 16, 1, 0, "Channel"}
 };
 
 static const struct

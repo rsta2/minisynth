@@ -34,7 +34,8 @@ public:
 	static const unsigned MaxInstances = 4;
 
 public:
-	CMIDIKeyboard (CMiniSynthesizer *pSynthesizer, unsigned nInstance = 0);
+	CMIDIKeyboard (CMiniSynthesizer *pSynthesizer, CSynthConfig *pConfig,
+		       unsigned nInstance = 0);
 	~CMIDIKeyboard (void);
 
 	void Process (boolean bPlugAndPlayUpdated);

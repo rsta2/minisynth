@@ -183,10 +183,13 @@ One patch of MiniSynth Pi has the following parameters:
 | AMPLIFIER  | ENVELOPE | Release   | ms   | 0-5000    | 100     | Release delay        |         |
 | EFFECTS    | REVERB   | Decay     | %    | 0-50      | 20      | Rate of decay        |         |
 | EFFECTS    | REVERB   | Volume    | %    | 0-30      | 0       | Wet/dry ratio        | 91      |
+| MIDI       |          | Channel   |      | 1-16, Omni|Omni Mode| Input channel (***)  |         |
 
 (*) Waveform can be: Sine, Square, Sawtooth, Triangle, Pulse 12.5%, Pulse 25% or Noise (Noise not for LFO)
 
 (\*\*) The MIDI CC mapping can be modified in the file *midi-cc.txt*. This is the default mapping.
+
+(\*\*\*) MiniSynth Pi receives MIDI events only on the selected channel. In Omni Mode (default) it receives on all channels.
 
 MiniSynth Pi provides two VCOs, one runs at the pitch frequency, the other at pitch frequency detuned by a configurable value (max. one semitone - or +, default 100% = Detune off). The VCF uses a second order recursive linear filter, containing two poles and two zeros (biquad), which is implemented as a low-pass filter.
 

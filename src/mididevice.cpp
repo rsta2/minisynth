@@ -2,7 +2,7 @@
 // mididevice.cpp
 //
 // MiniSynth Pi - A virtual analogue synthesizer for Raspberry Pi
-// Copyright (C) 2017-2021  R. Stange <rsta2@o2online.de>
+// Copyright (C) 2017-2022  R. Stange <rsta2@o2online.de>
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -27,14 +27,16 @@
 #define MIDI_CONTROL_CHANGE	0b1011
 #define MIDI_PROGRAM_CHANGE	0b1100
 
-CMIDIDevice::CMIDIDevice (CMiniSynthesizer *pSynthesizer)
-:	m_pSynthesizer (pSynthesizer)
+CMIDIDevice::CMIDIDevice (CMiniSynthesizer *pSynthesizer, CSynthConfig *pConfig)
+:	m_pSynthesizer (pSynthesizer),
+	m_pConfig (pConfig)
 {
 }
 
 CMIDIDevice::~CMIDIDevice (void)
 {
 	m_pSynthesizer = 0;
+	m_pConfig = 0;
 }
 
 void CMIDIDevice::MIDIMessageHandler (const u8 *pMessage, size_t nLength)
@@ -55,7 +57,12 @@ void CMIDIDevice::MIDIMessageHandler (const u8 *pMessage, size_t nLength)
 	u8 ucKeyNumber = pMessage[1];
 	u8 ucVelocity  = pMessage[2];
 
-	if (!((1 << ucChannel) & MIDI_CHANNEL_FILTER))
+	assert (m_pConfig != 0);
+	CPatch *pPatch = m_pConfig->GetActivePatch ();
+	assert (pPatch != 0);
+	unsigned nMIDIChannel = pPatch->GetParameter (MIDIChannel);
+	if (   nMIDIChannel != 0		// Omni mode
+	    && nMIDIChannel != (ucChannel + 1U))
 	{
 		return;
 	}

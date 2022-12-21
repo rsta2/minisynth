@@ -30,10 +30,10 @@ static const char FromMiniSynth[] = "synth";
 
 CMiniSynthesizer::CMiniSynthesizer (CSynthConfig *pConfig, CInterruptSystem *pInterrupt)
 :	m_pConfig (pConfig),
-	m_MIDIKeyboard0 (this, 0),
-	m_MIDIKeyboard1 (this, 1),
+	m_MIDIKeyboard0 (this, pConfig, 0),
+	m_MIDIKeyboard1 (this, pConfig, 1),
 	m_Keyboard (this),
-	m_SerialMIDI (this, pInterrupt),
+	m_SerialMIDI (this, pInterrupt, pConfig),
 	m_bUseSerial (FALSE),
 	m_nConfigRevisionWrite (0),
 	m_nConfigRevisionRead (0),
