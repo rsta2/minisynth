@@ -79,9 +79,9 @@ If you want to use an I2S interface, you have to modify to file *cmdline.txt* on
 
 	sounddev=sndi2s
 
-If you want to use an USB sound card (on the Raspberry Pi 4 and 400 only), you have to attach it, before the system is started. The file *cmdline.txt* must contain the following option:
+If you want to use an USB sound card (on the Raspberry Pi 4 and 400 only), you have to attach it, before the system is started. The file *cmdline.txt* must contain the following options, where `soundopt=` specifies the width of one audio sample in number of bits, and must be `24` for some (especially Pro) devices:
 
-	sounddev=sndusb
+	sounddev=sndusb soundopt=16
 
 Put the SD card into the card reader of your Raspberry Pi.
 

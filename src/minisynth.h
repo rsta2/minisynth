@@ -2,7 +2,7 @@
 // minisynth.h
 //
 // MiniSynth Pi - A virtual analogue synthesizer for Raspberry Pi
-// Copyright (C) 2017-2022  R. Stange <rsta2@o2online.de>
+// Copyright (C) 2017-2023  R. Stange <rsta2@o2online.de>
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -149,6 +149,7 @@ public:
 
 private:
 	unsigned GetChunk (s16 *pBuffer, unsigned nChunkSize);
+	unsigned GetChunk (u32 *pBuffer, unsigned nChunkSize);
 
 private:
 	int m_nMinLevel;

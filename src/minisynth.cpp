@@ -2,7 +2,7 @@
 // minisynth.cpp
 //
 // MiniSynth Pi - A virtual analogue synthesizer for Raspberry Pi
-// Copyright (C) 2017-2022  R. Stange <rsta2@o2online.de>
+// Copyright (C) 2017-2023  R. Stange <rsta2@o2online.de>
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -388,11 +388,12 @@ unsigned CMiniSynthesizerUSB::GetChunk (s16 *pBuffer, unsigned nChunkSize)
 
 	GlobalLock ();
 
+	unsigned nChannels = GetHWTXChannels ();
 	unsigned nResult = nChunkSize;
 
 	float fVolumeLevel = m_fVolume * m_nMaxLevel;
 
-	for (; nChunkSize > 0; nChunkSize -= 2)		// fill the whole buffer
+	for (; nChunkSize > 0; nChunkSize -= nChannels)		// fill the whole buffer
 	{
 		m_VoiceManager.NextSample ();
 
@@ -418,7 +419,7 @@ unsigned CMiniSynthesizerUSB::GetChunk (s16 *pBuffer, unsigned nChunkSize)
 			nLevelRight = m_nMinLevel;
 		}
 
-		// for 2 stereo channels
+		assert (nChannels >= 2);
 		if (!m_bChannelsSwapped)
 		{
 			*pBuffer++ = (s16) nLevelLeft;
@@ -428,6 +429,86 @@ unsigned CMiniSynthesizerUSB::GetChunk (s16 *pBuffer, unsigned nChunkSize)
 		{
 			*pBuffer++ = (s16) nLevelRight;
 			*pBuffer++ = (s16) nLevelLeft;
+		}
+
+		for (unsigned i = 2; i < nChannels; i++)
+		{
+			*pBuffer++ = 0;
+		}
+	}
+
+#ifdef SHOW_STATUS
+	nTicks = CTimer::GetClockTicks () - nTicks;
+	if (nTicks > m_nMaxDelayTicks)
+	{
+		m_nMaxDelayTicks = nTicks;
+	}
+#endif
+
+	GlobalUnlock ();
+
+	return nResult;
+}
+
+unsigned CMiniSynthesizerUSB::GetChunk (u32 *pBuffer, unsigned nChunkSize)
+{
+#ifdef SHOW_STATUS
+	unsigned nTicks = CTimer::GetClockTicks ();
+#endif
+
+	GlobalLock ();
+
+	unsigned nChannels = GetHWTXChannels ();
+	unsigned nResult = nChunkSize;
+
+	float fVolumeLevel = m_fVolume * m_nMaxLevel;
+
+	for (; nChunkSize > 0; nChunkSize -= nChannels)		// fill the whole buffer
+	{
+		m_VoiceManager.NextSample ();
+
+		float fLevelLeft = m_VoiceManager.GetOutputLevelLeft ();
+		int nLevelLeft = (int) (fLevelLeft*fVolumeLevel);
+		if (nLevelLeft > (int) m_nMaxLevel)
+		{
+			nLevelLeft = m_nMaxLevel;
+		}
+		else if (nLevelLeft < m_nMinLevel)
+		{
+			nLevelLeft = m_nMinLevel;
+		}
+
+		float fLevelRight = m_VoiceManager.GetOutputLevelRight ();
+		int nLevelRight = (int) (fLevelRight*fVolumeLevel);
+		if (nLevelRight > (int) m_nMaxLevel)
+		{
+			nLevelRight = m_nMaxLevel;
+		}
+		else if (nLevelRight < m_nMinLevel)
+		{
+			nLevelRight = m_nMinLevel;
+		}
+
+		assert (nChannels >= 2);
+		if (!m_bChannelsSwapped)
+		{
+			*pBuffer = (u32) nLevelLeft;
+			pBuffer = (u32 *) ((u8 *) pBuffer + 3);
+			*pBuffer = (u32) nLevelRight;
+			pBuffer = (u32 *) ((u8 *) pBuffer + 3);
+		}
+		else
+		{
+			*pBuffer = (u32) nLevelRight;
+			pBuffer = (u32 *) ((u8 *) pBuffer + 3);
+			*pBuffer = (u32) nLevelLeft;
+			pBuffer = (u32 *) ((u8 *) pBuffer + 3);
+		}
+
+		for (unsigned i = 2; i < nChannels; i++)
+		{
+			*pBuffer = 0;
+			pBuffer = (u32 *) ((u8 *) pBuffer + 3);
 		}
 	}
 
