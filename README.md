@@ -1,14 +1,14 @@
 MiniSynth Pi
 ============
 
-> Raspberry Pi is a trademark of Raspberry Pi Trading.
+> Raspberry Pi is a trademark of Raspberry Pi Ltd.
 
 > If you read this file in an editor you should switch line wrapping on.
 
 Overview
 --------
 
-MiniSynth Pi is a polyphonic virtual analog audio synthesizer, running bare metal (without separate operating system) on the Raspberry Pi. On the Raspberry Pi 2, 3 and 4 it allows to play up to 24 polyphonic voices at a time, on the Raspberry Pi 1 only 4 voices.
+MiniSynth Pi is a polyphonic virtual analog audio synthesizer, running bare metal (without separate operating system) on the Raspberry Pi. On the Raspberry Pi 2, 3, 4 and 5 it allows to play up to 24 polyphonic voices at a time, on the Raspberry Pi 1 only 4 voices.
 
 You have to attach an USB MIDI keyboard controller (which supports the USB Audio Class MIDI specification) or an USB PC keyboard to your Raspberry Pi to play on it. Alternatively you can feed serial MIDI data (at 31250 Bps) into GPIO15 (Broadcom numbering). Normally you will need some external circuit to be able to attach a device with serial MIDI interface.
 
@@ -24,7 +24,7 @@ This version of MiniSynth Pi can be configured, so that it can be used with an e
 
 Other I2S interfaces with these DACs may be compatible too. The I2C slave address of the DAC is auto-probed (0x4C, 0x4D or 0x1A).
 
-On the Raspberry Pi 4 and 400 also external USB sound cards can be used.
+On the Raspberry Pi 4 and 400 also external USB sound cards can be used. USB sound cards are the only supported option on the Raspberry Pi 5.
 
 Please note that the included reverb effect module is experimental, because it generates some noise, when no note is played. Just leave the reverb volume (wet/dry ratio) at 0% to eliminate it, if it disturbs.
 
@@ -55,11 +55,11 @@ When the toolchain is installed on your computer you can build MiniSynth Pi usin
 	./makeall clean
 	./makeall
 
-The `configure` command writes a *Config.mk* file for Circle and patches Circle, so that it allows to use multiple CPU cores. "3" is the major revision number of your Raspberry Pi (1, 2, 3 or 4). The second (optional) parameter is the prefix of the commands of your toolchain and can be preceded with a path. Do not forget the dash at the end of the prefix!
+The `configure` command writes a *Config.mk* file for Circle and patches Circle, so that it allows to use multiple CPU cores. "3" is the major revision number of your Raspberry Pi (1, 2, 3, 4 or 5). The second (optional) parameter is the prefix of the commands of your toolchain and can be preceded with a path. Do not forget the dash at the end of the prefix!
 
-An optional third parameter can be appended to specify the bit size of the ARM architecture to be used as build target. It can be "32" (default) or "64" (for Raspberry Pi 3 and 4 only).
+An optional third parameter can be appended to specify the bit size of the ARM architecture to be used as build target. It can be "32" (default) or "64" (for Raspberry Pi 3 and 4 only). For the Raspberry Pi 5 it must be "64" (default).
 
-If the build was successful, you find the executable image file of MiniSynth Pi in the *src/* subdirectory with the name *kernel.img* (Raspberry Pi 1), *kernel7.img* (Raspberry Pi 2), *kernel8-32.img* (Raspberry Pi 3) or *kernel7l.img* (Raspberry Pi 4).
+If the build was successful, you find the executable image file of MiniSynth Pi in the *src/* subdirectory with the name *kernel.img* (Raspberry Pi 1), *kernel7.img* (Raspberry Pi 2), *kernel8-32.img* (Raspberry Pi 3), *kernel7l.img* (Raspberry Pi 4) or *kernel_2712.img* (Raspberry Pi 5).
 
 Installation
 ------------
@@ -71,7 +71,7 @@ Furthermore you need the Raspberry Pi firmware. You can get it as follows:
 	cd circle/boot
 	make
 
-You have to copy the three files *bootcode.bin*, *start.elf* and *fixup.dat* from the *circle/boot/* subdirectory to the FAT partition on the SD card. The Raspberry Pi 4 requires different firmware files. Please read the file *circle/boot/README* for details!
+You have to copy the three files *bootcode.bin*, *start.elf* and *fixup.dat* from the *circle/boot/* subdirectory to the FAT partition on the SD card. The Raspberry Pi 4 and 5 require different firmware files. Please read the file *circle/boot/README* for details!
 
 Finally you have to copy the configuration files *cmdline.txt*, *patchN.txt* (example patches), *velocity-???.txt* (keyboard velocity curve) and *midi-cc.txt* (MIDI CC mapping) from the *config/* subdirectory to the SD card. The appropriate velocity curve file has to be renamed to *velocity.txt* to be used. You can optionally create a subdirectory */patches* and copy the example patches there, if you do not want to have them in the root directory of your SD card.
 
@@ -79,7 +79,7 @@ If you want to use an I2S interface, you have to modify to file *cmdline.txt* on
 
 	sounddev=sndi2s
 
-If you want to use an USB sound card (on the Raspberry Pi 4 and 400 only), you have to attach it, before the system is started. The file *cmdline.txt* must contain the following options, where `soundopt=` specifies the width of one audio sample in number of bits, and must be `24` for some (especially Pro) devices:
+If you want to use an USB sound card (on the Raspberry Pi 4, 400 and 5 only), you have to attach it, before the system is started. The file *cmdline.txt* must contain the following options, where `soundopt=` specifies the width of one audio sample in number of bits, and must be `24` for some (especially Pro) devices:
 
 	sounddev=sndusb soundopt=16
 

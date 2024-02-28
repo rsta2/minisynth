@@ -2,7 +2,7 @@
 // minisynth.cpp
 //
 // MiniSynth Pi - A virtual analogue synthesizer for Raspberry Pi
-// Copyright (C) 2017-2023  R. Stange <rsta2@o2online.de>
+// Copyright (C) 2017-2024  R. Stange <rsta2@o2online.de>
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -185,6 +185,8 @@ void CMiniSynthesizer::GlobalUnlock (void)
 
 //// PWM //////////////////////////////////////////////////////////////////////
 
+#if RASPPI <= 4
+
 CMiniSynthesizerPWM::CMiniSynthesizerPWM (CSynthConfig *pConfig,
 					  CInterruptSystem *pInterrupt)
 :	CMiniSynthesizer (pConfig, pInterrupt),
@@ -269,7 +271,11 @@ unsigned CMiniSynthesizerPWM::GetChunk (u32 *pBuffer, unsigned nChunkSize)
 	return nResult;
 }
 
+#endif
+
 //// I2S //////////////////////////////////////////////////////////////////////
+
+#if RASPPI <= 4
 
 CMiniSynthesizerI2S::CMiniSynthesizerI2S (CSynthConfig *pConfig,
 					  CInterruptSystem *pInterrupt,
@@ -355,6 +361,8 @@ unsigned CMiniSynthesizerI2S::GetChunk (u32 *pBuffer, unsigned nChunkSize)
 
 	return nResult;
 }
+
+#endif
 
 //// USB //////////////////////////////////////////////////////////////////////
 

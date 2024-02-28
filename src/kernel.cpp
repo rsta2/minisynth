@@ -2,7 +2,7 @@
 // kernel.cpp
 //
 // MiniSynth Pi - A virtual analogue synthesizer for Raspberry Pi
-// Copyright (C) 2017-2022  R. Stange <rsta2@o2online.de>
+// Copyright (C) 2017-2024  R. Stange <rsta2@o2online.de>
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -111,6 +111,7 @@ boolean CKernel::Initialize (void)
 
 	if (bOK)
 	{
+#if RASPPI <= 4
 		const char *pSoundDevice = m_Options.GetSoundDevice ();
 		assert (pSoundDevice);
 		if (strcmp (pSoundDevice, "sndi2s") == 0)
@@ -128,6 +129,9 @@ boolean CKernel::Initialize (void)
 		{
 			m_pSynthesizer = new CMiniSynthesizerPWM (&m_Config, &m_Interrupt);
 		}
+#else
+		m_pSynthesizer = new CMiniSynthesizerUSB (&m_Config, &m_Interrupt);
+#endif
 
 		assert (m_pSynthesizer);
 		bOK = m_pSynthesizer->Initialize ();

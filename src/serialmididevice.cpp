@@ -2,7 +2,7 @@
 // serialmididevice.cpp
 //
 // MiniSynth Pi - A virtual analogue synthesizer for Raspberry Pi
-// Copyright (C) 2017-2022  R. Stange <rsta2@o2online.de>
+// Copyright (C) 2017-2024  R. Stange <rsta2@o2online.de>
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -25,9 +25,9 @@ CSerialMIDIDevice::CSerialMIDIDevice (CMiniSynthesizer *pSynthesizer, CInterrupt
 				      CSynthConfig *pConfig)
 :	CMIDIDevice (pSynthesizer, pConfig),
 #if RASPPI <= 3 && defined (USE_USB_FIQ)
-	m_Serial (pInterrupt, FALSE),
+	m_Serial (pInterrupt, FALSE, 0),
 #else
-	m_Serial (pInterrupt, TRUE),
+	m_Serial (pInterrupt, TRUE, 0),
 #endif
 	m_nSerialState (0)
 {

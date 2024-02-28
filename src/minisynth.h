@@ -2,7 +2,7 @@
 // minisynth.h
 //
 // MiniSynth Pi - A virtual analogue synthesizer for Raspberry Pi
-// Copyright (C) 2017-2023  R. Stange <rsta2@o2online.de>
+// Copyright (C) 2017-2024  R. Stange <rsta2@o2online.de>
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -98,6 +98,8 @@ protected:
 
 //// PWM //////////////////////////////////////////////////////////////////////
 
+#if RASPPI <= 4
+
 class CMiniSynthesizerPWM : public CMiniSynthesizer, public CPWMSoundBaseDevice
 {
 public:
@@ -115,7 +117,11 @@ private:
 	boolean m_bChannelsSwapped;
 };
 
+#endif
+
 //// I2S //////////////////////////////////////////////////////////////////////
+
+#if RASPPI <= 4
 
 class CMiniSynthesizerI2S : public CMiniSynthesizer, public CI2SSoundBaseDevice
 {
@@ -134,6 +140,8 @@ private:
 	int m_nMaxLevel;
 	boolean m_bChannelsSwapped;
 };
+
+#endif
 
 //// USB //////////////////////////////////////////////////////////////////////
 
