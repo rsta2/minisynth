@@ -24,7 +24,7 @@ This version of MiniSynth Pi can be configured, so that it can be used with an e
 
 Other I2S interfaces with these DACs may be compatible too. The I2C slave address of the DAC is auto-probed (0x4C, 0x4D or 0x1A).
 
-On the Raspberry Pi 4 and 400 also external USB sound cards can be used. USB sound cards are the only supported option on the Raspberry Pi 5.
+On the Raspberry Pi 4 and 400 also external USB sound cards can be used. I2S and USB sound cards are the only supported option on the Raspberry Pi 5.
 
 Please note that the included reverb effect module is experimental, because it generates some noise, when no note is played. Just leave the reverb volume (wet/dry ratio) at 0% to eliminate it, if it disturbs.
 

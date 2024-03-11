@@ -121,8 +121,6 @@ private:
 
 //// I2S //////////////////////////////////////////////////////////////////////
 
-#if RASPPI <= 4
-
 class CMiniSynthesizerI2S : public CMiniSynthesizer, public CI2SSoundBaseDevice
 {
 public:
@@ -140,8 +138,6 @@ private:
 	int m_nMaxLevel;
 	boolean m_bChannelsSwapped;
 };
-
-#endif
 
 //// USB //////////////////////////////////////////////////////////////////////
 

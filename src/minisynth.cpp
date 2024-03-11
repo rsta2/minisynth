@@ -275,8 +275,6 @@ unsigned CMiniSynthesizerPWM::GetChunk (u32 *pBuffer, unsigned nChunkSize)
 
 //// I2S //////////////////////////////////////////////////////////////////////
 
-#if RASPPI <= 4
-
 CMiniSynthesizerI2S::CMiniSynthesizerI2S (CSynthConfig *pConfig,
 					  CInterruptSystem *pInterrupt,
 					  CI2CMaster *pI2CMaster)
@@ -361,8 +359,6 @@ unsigned CMiniSynthesizerI2S::GetChunk (u32 *pBuffer, unsigned nChunkSize)
 
 	return nResult;
 }
-
-#endif
 
 //// USB //////////////////////////////////////////////////////////////////////
 
