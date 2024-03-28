@@ -185,8 +185,6 @@ void CMiniSynthesizer::GlobalUnlock (void)
 
 //// PWM //////////////////////////////////////////////////////////////////////
 
-#if RASPPI <= 4
-
 CMiniSynthesizerPWM::CMiniSynthesizerPWM (CSynthConfig *pConfig,
 					  CInterruptSystem *pInterrupt)
 :	CMiniSynthesizer (pConfig, pInterrupt),
@@ -270,8 +268,6 @@ unsigned CMiniSynthesizerPWM::GetChunk (u32 *pBuffer, unsigned nChunkSize)
 
 	return nResult;
 }
-
-#endif
 
 //// I2S //////////////////////////////////////////////////////////////////////
 

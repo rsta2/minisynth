@@ -98,8 +98,6 @@ protected:
 
 //// PWM //////////////////////////////////////////////////////////////////////
 
-#if RASPPI <= 4
-
 class CMiniSynthesizerPWM : public CMiniSynthesizer, public CPWMSoundBaseDevice
 {
 public:
@@ -116,8 +114,6 @@ private:
 	unsigned m_nNullLevel;
 	boolean m_bChannelsSwapped;
 };
-
-#endif
 
 //// I2S //////////////////////////////////////////////////////////////////////
 
