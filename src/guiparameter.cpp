@@ -2,7 +2,7 @@
 // guiparameter.cpp
 //
 // MiniSynth Pi - A virtual analogue synthesizer for Raspberry Pi
-// Copyright (C) 2017-2022  R. Stange <rsta2@o2online.de>
+// Copyright (C) 2017-2024  R. Stange <rsta2@o2online.de>
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -238,7 +238,7 @@ void CGUIParameter::KeyboardEventHandler (lv_obj_t *pObject, lv_event_code_t Eve
 void CGUIParameter::KeyboardEventStub (lv_event_t *pEvent)
 {
 	assert (s_pCurrentEdit != 0);
-	s_pCurrentEdit->KeyboardEventHandler (lv_event_get_target (pEvent),
+	s_pCurrentEdit->KeyboardEventHandler ((lv_obj_t *) lv_event_get_target (pEvent),
 					      lv_event_get_code (pEvent));
 }
 

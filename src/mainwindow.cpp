@@ -2,7 +2,7 @@
 // mainwindow.cpp
 //
 // MiniSynth Pi - A virtual analogue synthesizer for Raspberry Pi
-// Copyright (C) 2017-2022  R. Stange <rsta2@o2online.de>
+// Copyright (C) 2017-2024  R. Stange <rsta2@o2online.de>
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -31,7 +31,7 @@ CMainWindow::CMainWindow (CMiniSynthesizer *pSynthesizer, CSynthConfig *pConfig)
 :	m_pSynthesizer (pSynthesizer),
 	m_pConfig (pConfig),
 	m_pWindow (lv_scr_act ()),
-	m_pTabView (lv_tabview_create (m_pWindow, LV_DIR_TOP, ScaleY (50))),
+	m_pTabView (lv_tabview_create (m_pWindow)),
 	m_pTabMain (lv_tabview_add_tab (m_pTabView, "MAIN")),
 	m_pTabPatches (lv_tabview_add_tab (m_pTabView, "PATCHES")),
 	m_pLabelStatus (0),
@@ -86,10 +86,10 @@ CMainWindow::CMainWindow (CMiniSynthesizer *pSynthesizer, CSynthConfig *pConfig)
 	lv_obj_add_style (m_pWindow, &m_StyleWhiteBackground, LV_PART_MAIN);
 
 	// set tabview style
+	lv_tabview_set_tab_bar_position (m_pTabView, LV_DIR_TOP);
+	lv_tabview_set_tab_bar_size (m_pTabView, ScaleY (50));
 	lv_obj_add_style (m_pTabView, &m_StyleWhiteBackground, LV_PART_MAIN);
 	lv_obj_set_style_pad_left (lv_tabview_get_tab_btns (m_pTabView), ScaleX (500), 0);
-	lv_obj_add_event_cb (lv_tabview_get_content (m_pTabView), TabViewEventHandler,
-			     LV_EVENT_SCROLL_BEGIN, 0);
 
 	// create controls
 	LabelCreate (m_pWindow, 15, 24, "MiniSynth Pi", LabelStyleTitle);
@@ -176,7 +176,7 @@ void CMainWindow::EventStub (lv_event_t *pEvent)
 {
 	if (s_pThis != 0)
 	{
-		s_pThis->EventHandler (lv_event_get_target (pEvent), lv_event_get_code (pEvent));
+		s_pThis->EventHandler ((lv_obj_t *) lv_event_get_target (pEvent), lv_event_get_code (pEvent));
 	}
 }
 
@@ -184,19 +184,6 @@ CMainWindow *CMainWindow::Get (void)
 {
 	assert (s_pThis != 0);
 	return s_pThis;
-}
-
-void CMainWindow::TabViewEventHandler (lv_event_t *pEvent)
-{
-	// Disable the scroll animations. Triggered when a tab button is clicked.
-	if (lv_event_get_code (pEvent) == LV_EVENT_SCROLL_BEGIN)
-	{
-		lv_anim_t *pAnim = (lv_anim_t *) lv_event_get_param (pEvent);
-		if (pAnim != 0)
-		{
-			pAnim->time = 0;
-		}
-	}
 }
 
 void CMainWindow::EventHandler (lv_obj_t *pObject, lv_event_code_t Event)

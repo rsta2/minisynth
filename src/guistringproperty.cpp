@@ -2,7 +2,7 @@
 // guistringproperty.cpp
 //
 // MiniSynth Pi - A virtual analogue synthesizer for Raspberry Pi
-// Copyright (C) 2020-2022  R. Stange <rsta2@o2online.de>
+// Copyright (C) 2020-2024  R. Stange <rsta2@o2online.de>
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -137,7 +137,7 @@ boolean CGUIStringProperty::EventHandler (lv_obj_t *pObject, lv_event_code_t Eve
 
 void CGUIStringProperty::KeyboardEventHandler (lv_event_t *pEvent)
 {
-	lv_obj_t *pObject = lv_event_get_target (pEvent);
+	lv_obj_t *pObject = (lv_obj_t *) lv_event_get_target (pEvent);
 	lv_event_code_t Event = lv_event_get_code (pEvent);
 
 	if (pObject != s_pKeyboard)
