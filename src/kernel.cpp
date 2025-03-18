@@ -2,7 +2,7 @@
 // kernel.cpp
 //
 // MiniSynth Pi - A virtual analogue synthesizer for Raspberry Pi
-// Copyright (C) 2017-2024  R. Stange <rsta2@o2online.de>
+// Copyright (C) 2017-2025  R. Stange <rsta2@o2online.de>
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -34,7 +34,7 @@ CKernel::CKernel (void)
 	m_I2CMaster (CMachineInfo::Get ()->GetDevice (DeviceI2CMaster), TRUE),
 	m_USBHCI (&m_Interrupt, &m_Timer, TRUE),
 	m_EMMC (&m_Interrupt, &m_Timer, &m_ActLED),
-	m_GUI (&m_Screen, &m_Interrupt),
+	m_GUI (&m_Screen),
 	m_Config (&m_FileSystem),
 	m_pSynthesizer (0)
 {
